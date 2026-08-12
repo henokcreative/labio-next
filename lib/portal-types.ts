@@ -13,6 +13,7 @@ export type ProjectFile = {
   category: "raw" | "preview" | "approval" | "final_delivery";
   download_url: string;
   preview_url: string | null;
+  pending_approval: boolean;
 };
 
 export type PortalMessage = { id: number; content: string; sender_username: string };
