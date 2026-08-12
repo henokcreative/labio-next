@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+.cache/
+.turbo/
 
 # production
 /build
@@ -32,6 +34,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local image inventories
+public/images/work/images.txt
+public/images/work/work-images.txt
 
 # vercel
 .vercel
