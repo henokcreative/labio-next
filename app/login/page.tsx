@@ -80,7 +80,11 @@ throw new Error(
       );
 
 
-      router.push("/client/dashboard");
+      router.push(
+        data.is_portal_staff
+          ? "/staff/messages"
+          : "/client/dashboard"
+      );
 
 
     } catch (err: unknown) {

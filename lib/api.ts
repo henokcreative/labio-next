@@ -38,7 +38,8 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   if (response.status === 401) expireSession();
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    const error = new Error(data.detail || data.non_field_errors?.[0] || "Request failed") as ApiError;
+    const fieldError = Object.values(data).find(Array.isArray)?.[0];
+    const error = new Error(data.detail || data.error || data.non_field_errors?.[0] || fieldError || "Request failed") as ApiError;
     error.status = response.status;
     throw error;
   }
