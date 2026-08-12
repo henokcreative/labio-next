@@ -44,15 +44,10 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
   }
 
   async function previewProtectedFile(endpoint: string) {
-    const previewWindow = window.open("about:blank", "_blank");
-    if (previewWindow) previewWindow.opener = null;
-
     try {
       const { url } = await apiFetch<FileAccess>(endpoint);
-      if (!previewWindow) throw new Error("Your browser blocked the preview window.");
-      previewWindow.location.replace(url);
+      window.location.assign(url);
     } catch (nextError) {
-      previewWindow?.close();
       setError((nextError as Error).message);
     }
   }
@@ -63,7 +58,9 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
       const link = document.createElement("a");
       link.href = url;
       link.download = filename;
+      link.target = "_self";
       link.rel = "noopener noreferrer";
+      link.style.display = "none";
       document.body.appendChild(link);
       link.click();
       link.remove();
