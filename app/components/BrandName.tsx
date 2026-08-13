@@ -1,6 +1,6 @@
 type BrandNameProps = {
   showDot?: boolean;
-  variant?: "dark" | "light";
+  variant?: "auto" | "dark" | "light";
   className?: string;
 };
 

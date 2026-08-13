@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { CmsSocialLink } from "@/lib/cms-types";
 import BrandName from "./BrandName";
+import ThemeControl from "./ThemeControl";
 
 export type PublicNavigationService = {
   id: number;
@@ -50,7 +51,7 @@ export default function PublicNavigation({
   return (
     <aside className="sidebar">
       <Link href="/" className="brand" aria-label="LaBio Media home" onClick={closeMenu}>
-        <BrandName />
+        <BrandName variant="auto" />
       </Link>
 
       <button
@@ -110,6 +111,7 @@ export default function PublicNavigation({
         </div>
 
         <div className="sidebar-bottom">
+          <ThemeControl />
           {(socialLinks.length > 0 || contactEmail) && (
             <div className="social-links">
               {socialLinks.map((link) => (

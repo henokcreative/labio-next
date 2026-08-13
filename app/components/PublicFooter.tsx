@@ -10,7 +10,7 @@ export default function PublicFooter({
   return (
     <footer className="footer">
       <span className="footer-brand">
-        <BrandName />
+        <BrandName variant="auto" />
         <span>{new Date().getFullYear()}</span>
       </span>
       <div className="footer-links">

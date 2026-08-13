@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Montserrat } from "next/font/google";
+import { getPublicThemeInitializationScript } from "@/lib/public-theme";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,8 +41,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${montserratBrand.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          id="public-theme-initializer"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: getPublicThemeInitializationScript() }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

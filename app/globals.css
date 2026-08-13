@@ -3845,3 +3845,319 @@ a {
     padding: 34px 0;
   }
 }
+
+/* =========================================
+   PUBLIC-SITE THEME
+========================================= */
+
+.site-shell {
+  --public-surface: #ffffff;
+  --public-surface-subtle: #f7f7f7;
+  --public-border: #eeeeee;
+  --public-border-strong: #dddddd;
+  --public-placeholder: #aaaaaa;
+  color-scheme: light;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+html:has(.site-shell) {
+  color-scheme: light;
+}
+
+.brand-name-auto .brand-labio {
+  color: var(--color-text);
+}
+
+.theme-control {
+  width: 120px;
+  margin-bottom: 28px;
+}
+
+.theme-control-label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--color-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.theme-option {
+  min-width: 0;
+  padding: 7px 3px;
+  border: 1px solid var(--public-border-strong);
+  border-right: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font: inherit;
+  font-size: 9px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.theme-option:last-child {
+  border-right: 1px solid var(--public-border-strong);
+}
+
+.theme-option:hover {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+html[data-public-theme-preference="system"] .site-shell .theme-option[data-theme-value="system"],
+html[data-public-theme-preference="light"] .site-shell .theme-option[data-theme-value="light"],
+html[data-public-theme-preference="dark"] .site-shell .theme-option[data-theme-value="dark"] {
+  border-color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+html[data-public-theme="dark"]:has(.site-shell) {
+  color-scheme: dark;
+  background: #111111;
+}
+
+html[data-public-theme="dark"]:has(.site-shell) body {
+  background: #111111;
+}
+
+html[data-public-theme="dark"] .site-shell {
+  --color-primary-dark: #df4646;
+  --color-bg: #111111;
+  --color-text: #f4f4f4;
+  --color-muted: #aaaaaa;
+  --color-light: #1a1a1a;
+  --public-surface: #111111;
+  --public-surface-subtle: #1a1a1a;
+  --public-border: #303030;
+  --public-border-strong: #424242;
+  --public-placeholder: #929292;
+  color-scheme: dark;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .main-content,
+  .sidebar,
+  .work-card,
+  .services-section,
+  .project-page,
+  .contact-route-section
+) {
+  background: var(--public-surface);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .contact-page-section,
+  .editorial-list-muted
+) {
+  background: var(--public-surface-subtle);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .sidebar,
+  .sidebar-section,
+  .sidebar-bottom,
+  .trusted,
+  .work-card,
+  .work-tags span,
+  .services-section,
+  .services-grid,
+  .service-item,
+  .about-section,
+  .contact-page-section,
+  .contact-success-mark,
+  .project-header,
+  .project-hero,
+  .project-information,
+  .project-services,
+  .service-list div,
+  .project-gallery,
+  .public-page-header,
+  .public-content-section,
+  .collaborators-section,
+  .collaborators-grid,
+  .testimonials-section,
+  .testimonials-list,
+  .testimonial,
+  .editorial-list-section,
+  .editorial-list-grid,
+  .editorial-list-grid article,
+  .pricing-list,
+  .pricing-item,
+  .pricing-positioning,
+  .pricing-cta,
+  .footer,
+  .standard-content .cms-stream > .cms-rich-text:first-child
+) {
+  border-color: var(--public-border);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .hero-image,
+  .work-image,
+  .about-image,
+  .public-hero-image,
+  .about-page-image,
+  .project-gallery-image
+) {
+  background: var(--public-surface-subtle);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .eyebrow,
+  .hero-text,
+  .trusted-title,
+  .trusted-items span,
+  .work-meta,
+  .work-index,
+  .work-card p,
+  .work-tags span,
+  .section-label,
+  .service-number,
+  .service-item p,
+  .about-copy p,
+  .contact-heading p,
+  .collaborators-heading,
+  .testimonial figcaption,
+  .public-page-lead,
+  .public-page-intro,
+  .cms-rich-text,
+  .cms-content-image figcaption,
+  .project-gallery-item figcaption,
+  .cms-quote cite,
+  .cms-embed-fallback,
+  .cms-empty,
+  .editorial-list-grid article > span,
+  .editorial-list-grid p,
+  .pricing-index,
+  .pricing-guidance,
+  .pricing-description,
+  .pricing-item li,
+  .pricing-empty p,
+  .pricing-positioning,
+  .project-back,
+  .project-heading p,
+  .project-details p,
+  .service-list div,
+  .project-not-found a,
+  .footer
+) {
+  color: var(--color-muted);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .services-heading-row h2,
+  .section-link,
+  .service-item h2,
+  .service-item h3,
+  .service-link,
+  .project-heading h1,
+  .project-intro h2,
+  .project-next a
+) {
+  color: var(--color-text);
+}
+
+html[data-public-theme="dark"] .site-shell .project-client {
+  color: var(--color-muted) !important;
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .work-image:empty,
+  .hero-image:empty
+) {
+  background: linear-gradient(135deg, #1a1a1a, #242424);
+}
+
+html[data-public-theme="dark"] .site-shell .collaborator-item {
+  padding: 10px 14px;
+  background: #f4f4f4;
+  filter: none;
+  opacity: 1;
+}
+
+html[data-public-theme="dark"] .site-shell .collaborator-item:hover {
+  filter: none;
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .button-dark,
+  .about-button,
+  .contact-submit
+) {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .button-dark:hover,
+  .about-button:hover,
+  .contact-submit:hover
+) {
+  background: var(--color-primary);
+  color: #111111;
+}
+
+html[data-public-theme="dark"] .site-shell .skip-link {
+  color: #111111;
+}
+
+html[data-public-theme="dark"] .site-shell .contact-field :where(
+  input,
+  select,
+  textarea
+) {
+  border-bottom-color: var(--public-border-strong);
+}
+
+html[data-public-theme="dark"] .site-shell .contact-field :where(
+  input,
+  select,
+  textarea
+):focus {
+  border-bottom-color: var(--color-text);
+}
+
+html[data-public-theme="dark"] .site-shell .contact-field :where(
+  input,
+  textarea
+)::placeholder {
+  color: var(--public-placeholder);
+}
+
+html[data-public-theme="dark"] .site-shell .contact-error {
+  color: #ff9b9b;
+}
+
+html[data-public-theme="dark"][data-public-theme-preference="system"] .site-shell .theme-option[data-theme-value="system"],
+html[data-public-theme="dark"][data-public-theme-preference="light"] .site-shell .theme-option[data-theme-value="light"],
+html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell .theme-option[data-theme-value="dark"] {
+  color: #111111;
+}
+
+@media (max-width: 900px) {
+  .theme-control {
+    grid-column: 1 / -1;
+    width: min(100%, 190px);
+    margin-bottom: 20px;
+  }
+
+  .sidebar-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px 28px;
+    align-items: end;
+  }
+
+  html[data-public-theme="dark"] .site-shell .sidebar {
+    background: rgba(17, 17, 17, 0.97);
+  }
+}
