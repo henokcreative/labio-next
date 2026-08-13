@@ -37,7 +37,7 @@ export default async function WorkPage() {
         <StreamFieldRenderer blocks={page.intro} className="public-page-intro" />
       </header>
       <section className="public-list-section">
-        <WorkGrid projects={projects} />
+        <WorkGrid projects={projects} variant="portfolio" headingLevel="h2" />
       </section>
       <PublicFooter settings={settings} />
     </PublicShell>

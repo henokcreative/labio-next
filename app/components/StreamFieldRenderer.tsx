@@ -42,7 +42,7 @@ function StreamBlock({ block }: { block: CmsStreamBlock }) {
     case "image":
       return (
         <figure className="cms-content-image">
-          <CmsImage image={block.value} sizes="(max-width: 900px) 100vw, 70vw" />
+          <CmsImage image={block.value} sizes="(max-width: 900px) 100vw, 820px" />
           {block.value.caption && <figcaption>{block.value.caption}</figcaption>}
         </figure>
       );

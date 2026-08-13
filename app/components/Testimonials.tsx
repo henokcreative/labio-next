@@ -9,9 +9,9 @@ export default function Testimonials({
 
   return (
     <section className="testimonials-section" aria-labelledby="testimonials-heading">
-      <div className="section-label" id="testimonials-heading">
+      <h2 className="section-label" id="testimonials-heading">
         Client perspectives <span />
-      </div>
+      </h2>
       <div className="testimonials-list">
         {testimonials.map((testimonial) => (
           <figure className="testimonial" key={testimonial.id}>

@@ -40,6 +40,7 @@ export default async function PricingPage() {
                   <p className="pricing-description">{item.description}</p>
                 </div>
                 <div>
+                  <span className="pricing-guidance">Starting point</span>
                   <p className="pricing-label">{item.priceLabel}</p>
                   {item.features.length > 0 && (
                     <ul>
@@ -62,7 +63,7 @@ export default async function PricingPage() {
               Pricing guidance is being prepared. Tell us about your goals and we’ll
               provide a tailored quote.
             </p>
-            <Link className="button button-dark" href="/#contact">Request a quote</Link>
+            <Link className="button button-dark" href="/contact">Request a quote</Link>
           </div>
         )}
 
@@ -70,6 +71,13 @@ export default async function PricingPage() {
           <aside className="pricing-positioning">{page.positioningMessage}</aside>
         )}
       </section>
+
+      {page && page.items.length > 0 && (
+        <section className="public-cta pricing-cta">
+          <h2>Every project starts with a conversation.</h2>
+          <Link className="button button-dark" href="/contact">Request a quote</Link>
+        </section>
+      )}
       <PublicFooter settings={settings} />
     </PublicShell>
   );

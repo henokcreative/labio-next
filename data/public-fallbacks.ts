@@ -51,7 +51,7 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Digital strategy", description: "Structure built around audiences and goals." },
     ],
     process: [],
-    cta: { label: "Discuss a web project", url: "/#contact" },
+    cta: { label: "Discuss a web project", url: "/contact" },
     relatedCaseStudies: [],
   },
   {
@@ -73,7 +73,7 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Editing", description: "A clear narrative from complex material." },
     ],
     process: [],
-    cta: { label: "Discuss a video project", url: "/#contact" },
+    cta: { label: "Discuss a video project", url: "/contact" },
     relatedCaseStudies: [],
   },
   {
@@ -95,7 +95,7 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Events", description: "Purposeful coverage and visual documentation." },
     ],
     process: [],
-    cta: { label: "Discuss photography", url: "/#contact" },
+    cta: { label: "Discuss photography", url: "/contact" },
     relatedCaseStudies: [],
   },
   {
@@ -117,7 +117,7 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Infographics", description: "Complex ideas made easier to understand." },
     ],
     process: [],
-    cta: { label: "Discuss a design project", url: "/#contact" },
+    cta: { label: "Discuss a design project", url: "/contact" },
     relatedCaseStudies: [],
   },
 ];

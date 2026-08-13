@@ -62,7 +62,11 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
 
         {project.heroImage && (
           <section className="project-hero">
-            <CmsImage image={project.heroImage} priority sizes="(max-width: 900px) 100vw, 90vw" />
+            <CmsImage
+              image={project.heroImage}
+              priority
+              sizes="(max-width: 900px) 100vw, calc(100vw - 280px)"
+            />
           </section>
         )}
 
@@ -89,7 +93,14 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
                   key={image.url + index}
                   className={"project-gallery-item " + (index % 3 === 0 ? "gallery-large" : "gallery-small")}
                 >
-                  <CmsImage image={image} sizes="(max-width: 650px) 100vw, 50vw" />
+                  <div className="project-gallery-image">
+                    <CmsImage
+                      image={image}
+                      sizes={index % 3 === 0
+                        ? "(max-width: 650px) 100vw, calc(100vw - 280px)"
+                        : "(max-width: 650px) 100vw, 50vw"}
+                    />
+                  </div>
                   {image.caption && <figcaption>{image.caption}</figcaption>}
                 </figure>
               ))}

@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
-export default function ContactForm() {
+export default function ContactForm({ contactEmail = "" }: { contactEmail?: string }) {
   const [status, setStatus] = useState<FormStatus>("idle");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -93,7 +93,8 @@ export default function ContactForm() {
     <form
       className="contact-form"
       onSubmit={handleSubmit}
-      noValidate
+      aria-busy={status === "sending"}
+      aria-describedby={status === "error" ? "contact-form-error" : undefined}
     >
       <div className="contact-field">
         <label htmlFor="name">
@@ -183,11 +184,14 @@ export default function ContactForm() {
 
       {status === "error" && (
         <p
+          id="contact-form-error"
           className="contact-error"
           role="alert"
         >
-          Something went wrong while sending your
-          message. Please try again, or email me directly.
+          Something went wrong while sending your message. Please try again
+          {contactEmail ? (
+            <>, or <a href={`mailto:${contactEmail}`}>email LaBio Media directly</a>.</>
+          ) : "."}
         </p>
       )}
 

@@ -73,7 +73,7 @@ const fallbackStandardPages: Record<string, CmsStandardPage> = {
       {
         type: "rich_text",
         value:
-          "<p>For a privacy question or request, use the <a href=\"/#contact\">LaBio Media contact form</a> or the public contact address shown on this website. Please provide enough detail to identify the relevant enquiry, account or project.</p>",
+          "<p>For a privacy question or request, use the <a href=\"/contact\">LaBio Media contact form</a> or the public contact address shown on this website. Please provide enough detail to identify the relevant enquiry, account or project.</p>",
       },
     ],
   },
@@ -174,7 +174,7 @@ const fallbackStandardPages: Record<string, CmsStandardPage> = {
       {
         type: "rich_text",
         value:
-          "<p>These general terms may be updated as the website and services evolve. Changes do not replace separately agreed project terms. Questions can be sent through the <a href=\"/#contact\">LaBio Media contact form</a> or the public contact address shown on this website.</p>",
+          "<p>These general terms may be updated as the website and services evolve. Changes do not replace separately agreed project terms. Questions can be sent through the <a href=\"/contact\">LaBio Media contact form</a> or the public contact address shown on this website.</p>",
       },
     ],
   },

@@ -17,13 +17,14 @@ export default async function PublicShell({ children }: { children: ReactNode })
 
   return (
     <div className="site-shell">
+      <a className="skip-link" href="#public-content">Skip to content</a>
       <PublicNavigation
         services={services}
         socialLinks={settings ? settings.socialLinks : []}
         address={settings ? settings.address : ""}
         contactEmail={settings ? settings.publicContactEmail : ""}
       />
-      <main className="main-content">{children}</main>
+      <main className="main-content" id="public-content" tabIndex={-1}>{children}</main>
     </div>
   );
 }

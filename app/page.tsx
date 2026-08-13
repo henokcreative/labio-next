@@ -105,8 +105,6 @@ export default async function Home() {
         )}
       </section>
 
-      <CollaboratorsSlider collaborators={displayedCollaborators} />
-
       <section className="section work-section" id="work">
         <div className="section-heading">
           <div>
@@ -119,7 +117,7 @@ export default async function Home() {
             View all work <span aria-hidden="true">→</span>
           </Link>
         </div>
-        <WorkGrid projects={selectedWork.slice(0, 3)} />
+        <WorkGrid projects={selectedWork.slice(0, 3)} variant="featured" />
       </section>
 
       <section className="services-section" id="services">
@@ -134,6 +132,10 @@ export default async function Home() {
         </div>
         <ServicesGrid services={featuredServices.slice(0, 4)} />
       </section>
+
+      <CollaboratorsSlider collaborators={displayedCollaborators} />
+
+      <Testimonials testimonials={testimonials} />
 
       <section id="about" className="about-section">
         <div className="section-label">
@@ -155,8 +157,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <Testimonials testimonials={testimonials} />
-
       <section className="contact-page-section" id="contact">
         <div className="contact-heading">
           <div className="section-label">
@@ -173,7 +173,7 @@ export default async function Home() {
           )}
         </div>
         <div className="contact-form-wrap">
-          <ContactForm />
+          <ContactForm contactEmail={settings?.publicContactEmail} />
         </div>
       </section>
 

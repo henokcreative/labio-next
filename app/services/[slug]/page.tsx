@@ -59,13 +59,19 @@ export default async function ServicePage({ params }: ServiceRouteProps) {
 
       {page.heroImage && (
         <div className="public-hero-image">
-          <CmsImage image={page.heroImage} priority sizes="(max-width: 900px) 100vw, 90vw" />
+          <CmsImage
+            image={page.heroImage}
+            priority
+            sizes="(max-width: 900px) 100vw, calc(100vw - 280px)"
+          />
         </div>
       )}
 
-      <section className="public-content-section">
-        <StreamFieldRenderer blocks={page.body} />
-      </section>
+      {page.body.length > 0 && (
+        <section className="public-content-section service-editorial-body">
+          <StreamFieldRenderer blocks={page.body} />
+        </section>
+      )}
 
       {page.capabilities.length > 0 && (
         <section className="editorial-list-section">
@@ -102,7 +108,7 @@ export default async function ServicePage({ params }: ServiceRouteProps) {
       {relatedProjects.length > 0 && (
         <section className="public-list-section related-work-section">
           <div className="section-label">Related work <span /></div>
-          <WorkGrid projects={relatedProjects} />
+          <WorkGrid projects={relatedProjects} variant="related" headingLevel="h2" />
         </section>
       )}
 

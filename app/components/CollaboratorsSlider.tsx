@@ -1,22 +1,15 @@
 import CmsImage from "./CmsImage";
 import type { CmsCollaborator } from "@/lib/cms-types";
 
-function CollaboratorItems({
-  collaborators,
-  duplicate = false,
-}: {
-  collaborators: CmsCollaborator[];
-  duplicate?: boolean;
-}) {
+function CollaboratorItems({ collaborators }: { collaborators: CmsCollaborator[] }) {
   return collaborators.map((collaborator) => (
     <a
       className="collaborator-item"
-      key={(duplicate ? "duplicate-" : "") + collaborator.id}
+      key={collaborator.id}
       href={collaborator.url}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${collaborator.organizationName} website`}
-      tabIndex={duplicate ? -1 : undefined}
     >
       <CmsImage image={collaborator.logo} sizes="180px" />
       <span className="sr-only">{collaborator.organizationName}</span>
@@ -33,18 +26,11 @@ export default function CollaboratorsSlider({
 
   return (
     <section className="collaborators-section" aria-labelledby="collaborators-title">
-      <div className="collaborators-heading">
-        <span id="collaborators-title">Trusted by &amp; collaborating with</span>
-      </div>
-      <div className="collaborators-viewport">
-        <div className="collaborators-track">
-          <div className="collaborators-row">
-            <CollaboratorItems collaborators={collaborators} />
-          </div>
-          <div className="collaborators-row" aria-hidden="true">
-            <CollaboratorItems collaborators={collaborators} duplicate />
-          </div>
-        </div>
+      <h2 className="collaborators-heading" id="collaborators-title">
+        Trusted by research groups and organisations
+      </h2>
+      <div className="collaborators-grid">
+        <CollaboratorItems collaborators={collaborators} />
       </div>
     </section>
   );
