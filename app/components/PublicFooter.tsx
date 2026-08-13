@@ -14,7 +14,7 @@ export default function PublicFooter({
         <span>{new Date().getFullYear()}</span>
       </span>
       <div className="footer-links">
-        <Link href="/privacy">Privacy policy</Link>
+        <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>
       </div>
       {settings && settings.socialLinks.length > 0 && (

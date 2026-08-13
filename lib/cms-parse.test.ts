@@ -10,6 +10,17 @@ import {
   parseTestimonials,
   resolveCmsMediaUrl,
 } from "./cms-parse";
+import type {
+  CmsAboutPage,
+  CmsCollaborator,
+  CmsStandardPage,
+} from "./cms-types";
+import {
+  resolveAboutPage,
+  resolveCollaborators,
+  resolveStandardPage,
+} from "./public-content";
+
 
 const apiUrl = "https://api.example.com";
 const meta = {
@@ -142,4 +153,87 @@ test("service and work payloads retain only controlled route data", () => {
 test("invalid collaborators and testimonials are omitted defensively", () => {
   assert.deepEqual(parseCollaborators([{ id: 1, organization_name: "No logo" }], apiUrl), []);
   assert.deepEqual(parseTestimonials([{ id: 1, quote: "Missing person" }]), []);
+});
+
+const fallbackAboutPage: CmsAboutPage = {
+  id: -1,
+  kind: "about",
+  title: "Fallback about",
+  meta: {
+    type: "fallback.AboutPage",
+    slug: "about",
+    seoTitle: "",
+    searchDescription: "",
+  },
+  socialImage: null,
+  heroImage: null,
+  intro: "Fallback introduction",
+  body: [],
+  values: [],
+  process: [],
+};
+
+test("About migration content prefers substantive CMS data and falls back when empty", () => {
+  const emptyCmsPage: CmsAboutPage = {
+    ...fallbackAboutPage,
+    id: 10,
+    title: "About",
+    intro: "",
+  };
+  const populatedCmsPage: CmsAboutPage = {
+    ...emptyCmsPage,
+    intro: "Published introduction",
+  };
+
+  assert.equal(resolveAboutPage(null, fallbackAboutPage), fallbackAboutPage);
+  assert.equal(resolveAboutPage(emptyCmsPage, fallbackAboutPage), fallbackAboutPage);
+  assert.equal(resolveAboutPage(populatedCmsPage, fallbackAboutPage), populatedCmsPage);
+});
+
+const fallbackCollaborator: CmsCollaborator = {
+  id: -1,
+  organizationName: "Fallback organisation",
+  logo: { url: "/logo.svg", width: 200, height: 80, alt: "Fallback logo" },
+  url: "https://fallback.example.com",
+  displayOrder: 1,
+  visualVariant: "default",
+};
+
+test("collaborator migration content uses CMS as a complete replacement when available", () => {
+  const fallback = [fallbackCollaborator];
+  const cms = [{ ...fallbackCollaborator, id: 9, organizationName: "CMS organisation" }];
+
+  assert.equal(resolveCollaborators([], fallback), fallback);
+  assert.equal(resolveCollaborators(cms, fallback), cms);
+});
+
+const fallbackStandardPage: CmsStandardPage = {
+  id: -2,
+  kind: "standard",
+  title: "Fallback legal page",
+  meta: {
+    type: "fallback.StandardPage",
+    slug: "privacy",
+    seoTitle: "",
+    searchDescription: "",
+  },
+  socialImage: null,
+  body: [{ type: "rich_text", value: "<p>Fallback copy</p>" }],
+};
+
+test("legal migration pages prefer non-empty StandardPage content and retain draft fallback", () => {
+  const emptyCmsPage: CmsStandardPage = {
+    ...fallbackStandardPage,
+    id: 11,
+    title: "Published title only",
+    body: [],
+  };
+  const populatedCmsPage: CmsStandardPage = {
+    ...emptyCmsPage,
+    body: [{ type: "rich_text", value: "<p>Published copy</p>" }],
+  };
+
+  assert.equal(resolveStandardPage(null, fallbackStandardPage), fallbackStandardPage);
+  assert.equal(resolveStandardPage(emptyCmsPage, fallbackStandardPage), fallbackStandardPage);
+  assert.equal(resolveStandardPage(populatedCmsPage, fallbackStandardPage), populatedCmsPage);
 });

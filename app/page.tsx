@@ -11,6 +11,7 @@ import Testimonials from "./components/Testimonials";
 import WorkGrid from "./components/WorkGrid";
 import {
   fallbackCaseStudies,
+  fallbackCollaborators,
   fallbackHome,
   fallbackServices,
 } from "@/data/public-fallbacks";
@@ -23,6 +24,7 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
+import { resolveCollaborators } from "@/lib/public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()]);
@@ -64,6 +66,10 @@ export default async function Home() {
   const selectedWork = resolvedSelectedWork.length > 0
     ? resolvedSelectedWork
     : projects;
+  const displayedCollaborators = resolveCollaborators(
+    collaborators,
+    fallbackCollaborators,
+  );
 
   return (
     <PublicShell>
@@ -99,7 +105,7 @@ export default async function Home() {
         )}
       </section>
 
-      <CollaboratorsSlider collaborators={collaborators} />
+      <CollaboratorsSlider collaborators={displayedCollaborators} />
 
       <section className="section work-section" id="work">
         <div className="section-heading">

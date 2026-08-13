@@ -2,6 +2,7 @@ import { projects } from "./projects";
 import type {
   CmsAboutPage,
   CmsCaseStudyPage,
+  CmsCollaborator,
   CmsHomePage,
   CmsPageMeta,
   CmsPortfolioIndexPage,
@@ -20,6 +21,13 @@ const localImage = (url: string, alt: string) => ({
   url,
   width: 1600,
   height: 1000,
+  alt,
+});
+
+const localLogo = (url: string, alt: string, width: number, height: number) => ({
+  url,
+  width,
+  height,
   alt,
 });
 
@@ -205,19 +213,122 @@ export const fallbackPortfolioIndex: CmsPortfolioIndexPage = {
   intro: [],
 };
 
+// Temporary migration fallback. Published, substantive AboutPage content always wins.
 export const fallbackAbout: CmsAboutPage = {
   id: -4,
   kind: "about",
-  title: "About",
-  meta: fallbackMeta("fallback.AboutPage", "about"),
+  title: "Science\nunderstanding.\nCreative\ncommunication.",
+  meta: {
+    ...fallbackMeta("fallback.AboutPage", "about"),
+    seoTitle: "About — LaBio Media",
+    searchDescription:
+      "LaBio Media brings scientific understanding and creative communication together.",
+  },
   socialImage: null,
   heroImage: localImage("/images/work/team/hk.jpg", "LaBio Media"),
   intro:
-    "LaBio Media combines scientific understanding with creative communication for research and innovation.",
-  body: [],
+    "LaBio Media helps research organisations turn complex ideas into clear, credible and engaging communication.",
+  body: [
+    {
+      type: "heading",
+      value: { text: "Bridging science and storytelling", level: "h2" },
+    },
+    {
+      type: "rich_text",
+      value:
+        "<p>Research deserves communication that respects its complexity while giving people a clear way into the story. LaBio Media works at that intersection, combining scientific context with thoughtful visual and editorial craft.</p><p>The work spans websites, video, photography and design for research groups, scientific organisations and innovation projects. Each format is shaped around the subject, audience and purpose rather than a fixed template.</p>",
+    },
+    {
+      type: "quote",
+      value: {
+        quote:
+          "Effective communication does not simplify science. It gives complex ideas a clear way into the world.",
+        attribution: "LaBio Media",
+      },
+    },
+    {
+      type: "heading",
+      value: { text: "Clarity with scientific context", level: "h2" },
+    },
+    {
+      type: "rich_text",
+      value:
+        "<p>Close collaboration makes the difference. Understanding the people, methods and aims behind a project helps the final communication stay accurate, human and useful.</p><p>The goal is not simply to make research look good. It is to help important work become visible, understood and remembered by the audiences it needs to reach.</p>",
+    },
+  ],
   values: [],
   process: [],
 };
+
+// Temporary migration fallback copied from the collaborators intentionally used by
+// the legacy public-site slider. Remove after equivalent active CMS snippets exist.
+export const fallbackCollaborators: CmsCollaborator[] = [
+  {
+    id: -301,
+    organizationName: "Turku Bioscience Centre",
+    logo: localLogo(
+      "/images/logos/tbc-logo.svg",
+      "Turku Bioscience Centre logo",
+      1200,
+      309,
+    ),
+    url: "https://bioscience.fi",
+    displayOrder: 1,
+    visualVariant: "default",
+  },
+  {
+    id: -302,
+    organizationName: "InFLAMES",
+    logo: localLogo(
+      "/images/logos/InFlames_logo.svg",
+      "InFLAMES logo",
+      707,
+      181,
+    ),
+    url: "https://inflames.utu.fi",
+    displayOrder: 2,
+    visualVariant: "default",
+  },
+  {
+    id: -303,
+    organizationName: "Nordic Metabolomics Society",
+    logo: localLogo(
+      "/images/logos/nms-logo.svg",
+      "Nordic Metabolomics Society logo",
+      252,
+      87,
+    ),
+    url: "https://nordicmetsoc.org",
+    displayOrder: 3,
+    visualVariant: "default",
+  },
+  {
+    id: -304,
+    organizationName: "BioCity Turku",
+    logo: localLogo(
+      "/images/logos/BioCityLogoRGB.svg",
+      "BioCity Turku logo",
+      342,
+      113,
+    ),
+    url: "https://biocityturku.fi",
+    displayOrder: 4,
+    visualVariant: "default",
+  },
+  {
+    id: -305,
+    organizationName: "INITIALISE",
+    logo: localLogo(
+      "/images/logos/initialise-logo.svg",
+      "INITIALISE logo",
+      395,
+      64,
+    ),
+    url: "https://initialise-project.eu/",
+    displayOrder: 5,
+    visualVariant: "default",
+  },
+];
 
 export function findFallbackService(slug: string): CmsServicePage | null {
   return fallbackServices.find((service) => service.meta.slug === slug) ?? null;

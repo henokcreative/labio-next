@@ -14,7 +14,8 @@ function CollaboratorItems({
       key={(duplicate ? "duplicate-" : "") + collaborator.id}
       href={collaborator.url}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
+      aria-label={`${collaborator.organizationName} website`}
       tabIndex={duplicate ? -1 : undefined}
     >
       <CmsImage image={collaborator.logo} sizes="180px" />

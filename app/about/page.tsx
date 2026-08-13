@@ -7,9 +7,11 @@ import Testimonials from "@/app/components/Testimonials";
 import { fallbackAbout } from "@/data/public-fallbacks";
 import { getAboutPage, getSiteSettings, getTestimonials } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
+import { resolveAboutPage } from "@/lib/public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [page, settings] = await Promise.all([getAboutPage(), getSiteSettings()]);
+  const [cmsPage, settings] = await Promise.all([getAboutPage(), getSiteSettings()]);
+  const page = resolveAboutPage(cmsPage, fallbackAbout);
   return pageMetadata(
     page,
     "About — LaBio Media",
@@ -24,12 +26,12 @@ export default async function AboutPage() {
     getTestimonials(),
     getSiteSettings(),
   ]);
-  const page = cmsPage ?? fallbackAbout;
+  const page = resolveAboutPage(cmsPage, fallbackAbout);
 
   return (
     <PublicShell>
       <header className="public-page-header about-page-header">
-        <div>
+        <div className="about-page-copy">
           <div className="eyebrow">About LaBio Media <span /></div>
           <h1>{page.title}</h1>
           <p className="public-page-lead">{page.intro}</p>
@@ -41,8 +43,8 @@ export default async function AboutPage() {
         )}
       </header>
 
-      <section className="public-content-section">
-        <StreamFieldRenderer blocks={page.body} />
+      <section className="public-content-section about-page-body">
+        <StreamFieldRenderer blocks={page.body} className="about-editorial-body" />
       </section>
 
       {page.values.length > 0 && (
