@@ -7,12 +7,21 @@ export type Project = {
   progress: number;
 };
 
+export type ProjectFilePreviewKind = "image" | "pdf" | "video" | "audio" | null;
+
 export type ProjectFile = {
   id: number;
   filename: string;
+  display_name: string;
   category: "raw" | "preview" | "approval" | "final_delivery";
+  content_type: string;
+  extension: string;
+  size_bytes: number | null;
+  supersedes_id: number | null;
   download_url: string;
   preview_url: string | null;
+  preview_supported: boolean;
+  preview_kind: ProjectFilePreviewKind;
   pending_approval: boolean;
 };
 
