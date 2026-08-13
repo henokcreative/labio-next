@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:cms": "tsc lib/cms-types.ts lib/cms-parse.ts lib/cms-parse.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/cms-tests && node --test .cache/cms-tests/cms-parse.test.js"
   },
   "dependencies": {
     "next": "16.3.0",
