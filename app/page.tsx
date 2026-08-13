@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrandName from "./components/BrandName";
 import CmsImage from "./components/CmsImage";
 import CollaboratorsSlider from "./components/CollaboratorsSlider";
 import ContactForm from "./components/ContactForm";
@@ -93,7 +94,7 @@ export default async function Home() {
               priority
               sizes="(max-width: 900px) 100vw, 50vw"
             />
-            <div className="hero-image-label">LABIO MEDIA</div>
+            <div className="hero-image-label"><BrandName variant="light" /></div>
           </div>
         )}
       </section>

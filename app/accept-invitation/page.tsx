@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import BrandName from "@/app/components/BrandName";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -90,9 +91,7 @@ if (success) {
     <main className="invite-page">
       <div className="invite-card">
 
-        <div className="invite-brand">
-          LABIO MEDIA
-        </div>
+        <div className="invite-brand"><BrandName /></div>
 
         <div className="invite-result">
 
@@ -134,9 +133,7 @@ return (
 
     <div className="invite-card">
 
-      <div className="invite-brand">
-        LABIO MEDIA
-      </div>
+      <div className="invite-brand"><BrandName /></div>
 
 
       <header className="invite-header">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CmsSiteSettings } from "@/lib/cms-types";
+import BrandName from "./BrandName";
 
 export default function PublicFooter({
   settings,
@@ -8,7 +9,10 @@ export default function PublicFooter({
 }) {
   return (
     <footer className="footer">
-      <span>LaBio Media {new Date().getFullYear()}</span>
+      <span className="footer-brand">
+        <BrandName />
+        <span>{new Date().getFullYear()}</span>
+      </span>
       <div className="footer-links">
         <Link href="/privacy">Privacy policy</Link>
         <Link href="/terms">Terms</Link>

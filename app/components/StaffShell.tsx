@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { clearTokens } from "@/lib/api";
+import BrandName from "./BrandName";
 
 export default function StaffShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -16,7 +17,8 @@ export default function StaffShell({ children }: { children: React.ReactNode }) 
     <main className="portal staff-portal">
       <header className="portal-header">
         <Link href="/staff/messages" className="portal-brand">
-          LABIO MEDIA <span>STAFF PORTAL</span>
+          <BrandName />
+          <span className="portal-brand-label">Staff portal</span>
         </Link>
         <nav>
           <Link href="/staff/messages">Messages</Link>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import BrandName from "@/app/components/BrandName";
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -112,9 +113,7 @@ throw new Error(
       <div className="invite-card">
 
 
-        <div className="invite-brand">
-          LABIO MEDIA
-        </div>
+        <div className="invite-brand"><BrandName /></div>
 
 
         <header className="invite-header">

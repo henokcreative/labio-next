@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { CmsSocialLink } from "@/lib/cms-types";
+import BrandName from "./BrandName";
 
 export type PublicNavigationService = {
   id: number;
@@ -43,8 +44,7 @@ export default function PublicNavigation({
   return (
     <aside className="sidebar">
       <Link href="/" className="brand" aria-label="LaBio Media home">
-        <span>LABIO</span>
-        <span>MEDIA</span>
+        <BrandName />
       </Link>
 
       <nav className="main-nav" aria-label="Primary navigation">

@@ -3,6 +3,7 @@
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import BrandName from "@/app/components/BrandName";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -149,7 +150,7 @@ function InviteContent() {
     return (
       <main className="invite-page">
         <div className="invite-card">
-          <div className="invite-brand">LABIO MEDIA</div>
+          <div className="invite-brand"><BrandName /></div>
 
           <div className="invite-loading">
             <span className="invite-spinner" />
@@ -164,7 +165,7 @@ function InviteContent() {
     return (
       <main className="invite-page">
         <div className="invite-card">
-          <div className="invite-brand">LABIO MEDIA</div>
+          <div className="invite-brand"><BrandName /></div>
 
           <div className="invite-result">
             <div className="invite-result-mark invite-result-mark-error">
@@ -189,7 +190,7 @@ function InviteContent() {
     return (
       <main className="invite-page">
         <div className="invite-card">
-          <div className="invite-brand">LABIO MEDIA</div>
+          <div className="invite-brand"><BrandName /></div>
 
           <div className="invite-result">
             <div className="invite-result-mark">✓</div>
@@ -218,7 +219,7 @@ function InviteContent() {
   return (
     <main className="invite-page">
       <div className="invite-card">
-        <div className="invite-brand">LABIO MEDIA</div>
+        <div className="invite-brand"><BrandName /></div>
 
         <div className="invite-header">
           <p className="invite-eyebrow">CLIENT ACCOUNT</p>
@@ -314,7 +315,7 @@ function InviteContent() {
 
 export default function InvitePage() {
   return (
-    <Suspense fallback={<main className="invite-page"><div className="invite-card"><div className="invite-brand">LABIO MEDIA</div><div className="invite-loading">Loading invitation…</div></div></main>}>
+    <Suspense fallback={<main className="invite-page"><div className="invite-card"><div className="invite-brand"><BrandName /></div><div className="invite-loading">Loading invitation…</div></div></main>}>
       <InviteContent />
     </Suspense>
   );
