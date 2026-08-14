@@ -36,11 +36,11 @@ export default async function AboutPage() {
           <h1>{page.title}</h1>
           <p className="public-page-lead">{page.intro}</p>
         </div>
-        {page.heroImage && (
+        {/* {page.heroImage && (
           <div className="about-page-image">
             <CmsImage image={page.heroImage} priority sizes="(max-width: 900px) 100vw, 45vw" />
           </div>
-        )}
+        )} */}
       </header>
 
       <section className="public-content-section about-page-body">
