@@ -101,6 +101,10 @@ export type CmsHomePage = CmsPageBase & {
   secondaryCta: CmsLink;
   selectedWork: CmsPageSummary[];
   featuredServices: CmsPageSummary[];
+  collaboratorsConfigured: boolean;
+  collaboratorsEnabled: boolean;
+  collaboratorsHeading: string;
+  collaborators: CmsCollaborator[];
   aboutHeading: string;
   aboutCopy: string;
   aboutImage: CmsImage | null;
