@@ -253,6 +253,10 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
   const heroHeading = asString(raw.hero_heading).trim();
   const heroCopy = asString(raw.hero_copy).trim();
   if (!heroHeading || !heroCopy) return null;
+  const collaboratorsConfigured = Object.prototype.hasOwnProperty.call(
+    raw,
+    "collaborators",
+  );
 
   return {
     ...page,
@@ -265,6 +269,14 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
     secondaryCta: parseLink(raw.secondary_cta_label, raw.secondary_cta_url),
     selectedWork: parseSummaries(raw.selected_work),
     featuredServices: parseSummaries(raw.featured_services),
+    collaboratorsConfigured,
+    collaboratorsEnabled: collaboratorsConfigured
+      ? asBoolean(raw.collaborators_enabled)
+      : true,
+    collaboratorsHeading:
+      asString(raw.collaborators_heading).trim()
+      || "Trusted by research groups and organisations",
+    collaborators: parseCollaborators(raw.collaborators, apiBaseUrl),
     aboutHeading: asString(raw.about_heading).trim(),
     aboutCopy: asString(raw.about_copy).trim(),
     aboutImage: parseCmsImage(raw.about_image, apiBaseUrl),

@@ -24,7 +24,7 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
-import { resolveCollaborators } from "@/lib/public-content";
+import { resolveHomeCollaborators } from "@/lib/public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()]);
@@ -66,10 +66,14 @@ export default async function Home() {
   const selectedWork = resolvedSelectedWork.length > 0
     ? resolvedSelectedWork
     : projects;
-  const displayedCollaborators = resolveCollaborators(
+  const displayedCollaborators = resolveHomeCollaborators(
+    cmsHome,
     collaborators,
     fallbackCollaborators,
   );
+  const collaboratorsEnabled = cmsHome?.collaboratorsConfigured
+    ? cmsHome.collaboratorsEnabled
+    : true;
 
   return (
     <PublicShell>
@@ -133,7 +137,12 @@ export default async function Home() {
         <ServicesGrid services={featuredServices.slice(0, 4)} />
       </section>
 
-      <CollaboratorsSlider collaborators={displayedCollaborators} />
+      {collaboratorsEnabled && (
+        <CollaboratorsSlider
+          collaborators={displayedCollaborators}
+          heading={home.collaboratorsHeading}
+        />
+      )}
 
       <Testimonials testimonials={testimonials} />
 

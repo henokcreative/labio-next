@@ -1,6 +1,7 @@
 import type {
   CmsAboutPage,
   CmsCollaborator,
+  CmsHomePage,
   CmsStandardPage,
 } from "./cms-types";
 
@@ -27,6 +28,17 @@ export function resolveCollaborators(
   return cmsCollaborators.length > 0
     ? cmsCollaborators
     : fallbackCollaborators;
+}
+
+export function resolveHomeCollaborators(
+  cmsHome: CmsHomePage | null,
+  cmsCollaborators: CmsCollaborator[],
+  fallbackCollaborators: CmsCollaborator[],
+): CmsCollaborator[] {
+  if (cmsHome?.collaboratorsConfigured) {
+    return cmsHome.collaborators;
+  }
+  return resolveCollaborators(cmsCollaborators, fallbackCollaborators);
 }
 
 export function resolveStandardPage(

@@ -19,15 +19,17 @@ function CollaboratorItems({ collaborators }: { collaborators: CmsCollaborator[]
 
 export default function CollaboratorsSlider({
   collaborators,
+  heading,
 }: {
   collaborators: CmsCollaborator[];
+  heading: string;
 }) {
   if (collaborators.length === 0) return null;
 
   return (
     <section className="collaborators-section" aria-labelledby="collaborators-title">
       <h2 className="collaborators-heading" id="collaborators-title">
-        Trusted by research groups and organisations
+        {heading}
       </h2>
       <div className="collaborators-grid">
         <CollaboratorItems collaborators={collaborators} />

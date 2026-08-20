@@ -18,6 +18,7 @@ import type {
 import {
   resolveAboutPage,
   resolveCollaborators,
+  resolveHomeCollaborators,
   resolveStandardPage,
 } from "./public-content";
 
@@ -42,12 +43,28 @@ test("parses valid CMS pages and resolves relative rendition URLs", () => {
       hero_image: { url: "/media/hero.jpg", width: 1600, height: 900, alt: "Hero" },
       selected_work: [{ id: 2, title: "Study", slug: "study" }],
       featured_services: [],
+      collaborators_enabled: true,
+      collaborators_heading: "Research partners",
+      collaborators: [
+        {
+          id: 3,
+          organization_name: "CMS partner",
+          logo: { url: "/media/logo.svg", width: 200, height: 80, alt: "Logo" },
+          url: "https://partner.example.com",
+          display_order: 1,
+          visual_variant: "default",
+        },
+      ],
     },
     apiUrl,
   );
 
   assert.equal(page?.heroImage?.url, "https://api.example.com/media/hero.jpg");
   assert.equal(page?.selectedWork[0].slug, "study");
+  assert.equal(page?.collaboratorsConfigured, true);
+  assert.equal(page?.collaboratorsEnabled, true);
+  assert.equal(page?.collaboratorsHeading, "Research partners");
+  assert.equal(page?.collaborators[0].organizationName, "CMS partner");
   assert.equal(page?.meta.seoTitle, "Public title");
 });
 
@@ -205,6 +222,40 @@ test("collaborator migration content uses CMS as a complete replacement when ava
 
   assert.equal(resolveCollaborators([], fallback), fallback);
   assert.equal(resolveCollaborators(cms, fallback), cms);
+});
+
+test("homepage collaborator configuration is authoritative, including an empty selection", () => {
+  const fallback = [fallbackCollaborator];
+  const legacyHome = parseHomePage(
+    {
+      id: 1,
+      title: "Home",
+      meta,
+      hero_heading: "Clear science",
+      hero_copy: "Introduction",
+    },
+    apiUrl,
+  );
+  const configuredHome = parseHomePage(
+    {
+      id: 1,
+      title: "Home",
+      meta,
+      hero_heading: "Clear science",
+      hero_copy: "Introduction",
+      collaborators_enabled: true,
+      collaborators_heading: "Selected partners",
+      collaborators: [],
+    },
+    apiUrl,
+  );
+
+  assert.equal(legacyHome?.collaboratorsConfigured, false);
+  assert.equal(resolveHomeCollaborators(legacyHome, [], fallback), fallback);
+  assert.deepEqual(
+    resolveHomeCollaborators(configuredHome, [], fallback),
+    [],
+  );
 });
 
 const fallbackStandardPage: CmsStandardPage = {

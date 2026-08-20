@@ -185,6 +185,10 @@ export const fallbackHome: CmsHomePage = {
     slug: meta.slug,
     summary,
   })),
+  collaboratorsConfigured: false,
+  collaboratorsEnabled: true,
+  collaboratorsHeading: "Trusted by research groups and organisations",
+  collaborators: [],
   aboutHeading: "Science understanding. Creative communication.",
   aboutCopy:
     "LaBio Media combines scientific understanding with creative communication to help research organisations explain what they do clearly and effectively.",
