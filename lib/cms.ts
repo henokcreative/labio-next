@@ -6,6 +6,7 @@ import {
   parseArticlePage,
   parseCaseStudyPage,
   parseCollaborators,
+  parseContactPage,
   parseEventPage,
   parseHomePage,
   parsePortfolioIndexPage,
@@ -22,6 +23,7 @@ import type {
   CmsArticlePage,
   CmsCaseStudyPage,
   CmsCollaborator,
+  CmsContactPage,
   CmsEventPage,
   CmsHomePage,
   CmsPortfolioIndexPage,
@@ -223,6 +225,12 @@ export const getStandardPage = cache(
     )[0] ?? null;
   },
 );
+
+export const getContactPage = cache(async (): Promise<CmsContactPage | null> => {
+  return (
+    await getPageItems("public_content.ContactPage", parseContactPage)
+  )[0] ?? null;
+});
 
 export const getStandardPages = cache(async (): Promise<CmsStandardPage[]> => {
   return getPageItems("public_content.StandardPage", parseStandardPage);

@@ -5,6 +5,7 @@ import {
   parseArticlePage,
   parseCaseStudyPage,
   parseCollaborators,
+  parseContactPage,
   parseEventPage,
   parseHomePage,
   parsePricingPage,
@@ -854,4 +855,28 @@ test("legal migration pages prefer non-empty StandardPage content and retain dra
   assert.equal(resolveStandardPage(null, fallbackStandardPage), fallbackStandardPage);
   assert.equal(resolveStandardPage(emptyCmsPage, fallbackStandardPage), fallbackStandardPage);
   assert.equal(resolveStandardPage(populatedCmsPage, fallbackStandardPage), populatedCmsPage);
+});
+
+test("contact parser keeps CMS editorial fields and an intentionally empty body", () => {
+  const contact = parseContactPage(
+    {
+      id: 31,
+      title: "Contact",
+      meta: {
+        ...meta,
+        type: "public_content.ContactPage",
+        slug: "contact",
+      },
+      eyebrow: "Start a conversation",
+      intro: "Tell us what you need to communicate.",
+      body: [],
+    },
+    apiUrl,
+  );
+
+  assert.ok(contact);
+  assert.equal(contact.kind, "contact");
+  assert.equal(contact.eyebrow, "Start a conversation");
+  assert.equal(contact.intro, "Tell us what you need to communicate.");
+  assert.deepEqual(contact.body, []);
 });
