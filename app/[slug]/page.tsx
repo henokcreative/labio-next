@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: StandardRouteProps): Promise<
     fallbackPage?.meta.seoTitle || "LaBio Media",
     fallbackPage?.meta.searchDescription || "Information from LaBio Media.",
     settings,
+    `/${slug}`,
   );
 }
 

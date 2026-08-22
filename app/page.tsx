@@ -25,6 +25,7 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
+import { organizationSchema } from "@/lib/public-schema";
 import {
   resolveHomeCollaborators,
   resolveHomeTestimonials,
@@ -38,6 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "LaBio Media — Research communication",
     "LaBio Media makes complex science clear through websites, video, photography and design.",
     settings,
+    "/",
   );
 }
 
@@ -72,9 +74,16 @@ export default async function Home() {
   const testimonialsEnabled = cmsHome?.testimonialsConfigured
     ? cmsHome.testimonialsEnabled
     : true;
+  const jsonLd = organizationSchema(settings);
 
   return (
     <PublicShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <section className="hero section" id="home">
         <div className="hero-content">
           <div className="eyebrow">

@@ -4,12 +4,18 @@ import ContactForm from "@/app/components/ContactForm";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import { getSiteSettings } from "@/lib/cms";
+import { pageMetadata } from "@/lib/public-metadata";
 
-export const metadata: Metadata = {
-  title: "Contact — LaBio Media",
-  description:
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return pageMetadata(
+    null,
+    "Contact — LaBio Media",
     "Start a conversation with LaBio Media about research communication, websites, video, photography or design.",
-};
+    settings,
+    "/contact",
+  );
+}
 
 export default async function ContactPage() {
   const settings = await getSiteSettings();

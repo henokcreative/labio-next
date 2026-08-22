@@ -10,15 +10,13 @@ export async function generateMetadata(): Promise<Metadata> {
     getUpdatesIndexPage(),
     getSiteSettings(),
   ]);
-  return {
-    ...pageMetadata(
-      page,
-      "Updates — LaBio Media",
-      "Occasional notes, insights, milestones and events from LaBio Media.",
-      settings,
-    ),
-    alternates: { canonical: "/updates" },
-  };
+  return pageMetadata(
+    page,
+    "Updates — LaBio Media",
+    "Occasional notes, insights, milestones and events from LaBio Media.",
+    settings,
+    "/updates",
+  );
 }
 
 export default async function UpdatesPage() {

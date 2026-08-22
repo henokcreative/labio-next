@@ -17,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "About — LaBio Media",
     "Scientific understanding meets creative communication at LaBio Media.",
     settings,
+    "/about",
   );
 }
 

@@ -14,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Services — LaBio Media",
     "Creative communication services for research organisations and scientific projects.",
     settings,
+    "/services",
   );
 }
 

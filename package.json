@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:cms": "tsc lib/cms-types.ts lib/cms-parse.ts lib/cms-parse.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/cms-tests && node --test .cache/cms-tests/cms-parse.test.js",
     "test:theme": "tsc lib/public-theme.ts lib/public-theme.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/theme-tests && node --test .cache/theme-tests/public-theme.test.js",
-    "test:consent": "tsc lib/public-consent.ts lib/public-consent.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/consent-tests && node --test .cache/consent-tests/public-consent.test.js"
+    "test:consent": "tsc lib/public-consent.ts lib/public-consent.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/consent-tests && node --test .cache/consent-tests/public-consent.test.js",
+    "test:seo": "tsc lib/cms-types.ts lib/public-url.ts lib/public-metadata.ts lib/public-schema.ts lib/public-seo.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/seo-tests && node --test .cache/seo-tests/public-seo.test.js"
   },
   "dependencies": {
     "next": "16.3.0",

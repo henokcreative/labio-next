@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: WorkRouteProps): Promise<Meta
     "Work — LaBio Media",
     resolved?.summary || "A LaBio Media case study.",
     settings,
+    `/work/${slug}`,
   );
 }
 

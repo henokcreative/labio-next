@@ -224,6 +224,10 @@ export const getStandardPage = cache(
   },
 );
 
+export const getStandardPages = cache(async (): Promise<CmsStandardPage[]> => {
+  return getPageItems("public_content.StandardPage", parseStandardPage);
+});
+
 export const getCollaborators = cache(async (): Promise<CmsCollaborator[]> => {
   const baseUrl = getCmsApiBaseUrl();
   if (!baseUrl) return [];
