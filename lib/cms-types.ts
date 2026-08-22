@@ -162,6 +162,13 @@ export type CmsCaseStudyPage = CmsPageBase & {
   clientDisplayName: string;
   category: string;
   summary: string;
+  projectYear: string;
+  challenge: string;
+  approach: string;
+  deliverables: string[];
+  outcome: string;
+  projectUrl: string;
+  cta: CmsLink;
   body: CmsStreamBlock[];
   heroImage: CmsImage | null;
   gallery: CmsImage[];

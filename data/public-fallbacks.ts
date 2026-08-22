@@ -132,6 +132,13 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
     clientDisplayName: project.title,
     category: project.category,
     summary: project.description,
+    projectYear: "",
+    challenge: "",
+    approach: "",
+    deliverables: [],
+    outcome: "",
+    projectUrl: "",
+    cta: { label: "", url: "" },
     body: [
       {
         type: "heading",

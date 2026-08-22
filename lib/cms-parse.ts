@@ -172,6 +172,15 @@ function parseSummaries(value: unknown): CmsPageSummary[] {
     .filter((item): item is CmsPageSummary => item !== null);
 }
 
+function parseStringBlocks(value: unknown, blockType: string): string[] {
+  return asArray(value).flatMap((blockValue) => {
+    const block = asRecord(blockValue);
+    if (!block || block.type !== blockType) return [];
+    const text = asString(block.value).trim();
+    return text ? [text] : [];
+  });
+}
+
 export function parseStreamField(
   value: unknown,
   apiBaseUrl: string,
@@ -397,6 +406,13 @@ export function parseCaseStudyPage(
     clientDisplayName: asString(raw.client_display_name).trim(),
     category: asString(raw.category).trim(),
     summary: asString(raw.summary).trim(),
+    projectYear: asString(raw.project_year).trim(),
+    challenge: asString(raw.challenge).trim(),
+    approach: asString(raw.approach).trim(),
+    deliverables: parseStringBlocks(raw.deliverables, "deliverable"),
+    outcome: asString(raw.outcome).trim(),
+    projectUrl: safeHref(raw.project_url),
+    cta: parseLink(raw.cta_label, raw.cta_url),
     body: parseStreamField(raw.body, apiBaseUrl),
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     gallery,

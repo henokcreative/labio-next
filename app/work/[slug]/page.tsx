@@ -44,6 +44,15 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
   const testimonials = allTestimonials.filter(
     (testimonial) => testimonial.relatedCaseStudy?.id === project.id,
   );
+  const hasContext = Boolean(
+    project.clientDisplayName || project.projectYear || project.category || project.projectUrl,
+  );
+  const hasNarrative = Boolean(
+    project.challenge
+      || project.approach
+      || project.deliverables.length
+      || project.outcome,
+  );
 
   return (
     <PublicShell>
@@ -51,11 +60,33 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
         <header className="project-header">
           <Link href="/work" className="project-back">← Back to work</Link>
           <div className="project-heading">
-            <div className="section-label">{project.category}<span /></div>
+            {project.category && (
+              <div className="section-label">{project.category}<span /></div>
+            )}
             <h1>{project.title}</h1>
-            <p>{project.summary}</p>
-            {project.clientDisplayName && (
-              <p className="project-client">For {project.clientDisplayName}</p>
+            {project.summary && <p>{project.summary}</p>}
+            {hasContext && (
+              <dl className="case-study-context">
+                {project.clientDisplayName && (
+                  <div><dt>Client</dt><dd>{project.clientDisplayName}</dd></div>
+                )}
+                {project.projectYear && (
+                  <div><dt>Year</dt><dd>{project.projectYear}</dd></div>
+                )}
+                {project.category && (
+                  <div><dt>Context</dt><dd>{project.category}</dd></div>
+                )}
+                {project.projectUrl && (
+                  <div>
+                    <dt>Project</dt>
+                    <dd>
+                      <a href={project.projectUrl} target="_blank" rel="noreferrer">
+                        Visit project ↗
+                      </a>
+                    </dd>
+                  </div>
+                )}
+              </dl>
             )}
           </div>
         </header>
@@ -70,13 +101,47 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </section>
         )}
 
-        <section className="project-information cms-project-body">
-          <div className="project-intro">
-            <div className="section-label">The project <span /></div>
-            <h2>Purposeful communication, grounded in the work.</h2>
-          </div>
-          <StreamFieldRenderer blocks={project.body} className="project-details" />
-        </section>
+        {hasNarrative && (
+          <section className="case-study-narrative" aria-label="Case study">
+            {project.challenge && (
+              <article>
+                <h2>Challenge</h2>
+                <p>{project.challenge}</p>
+              </article>
+            )}
+            {project.approach && (
+              <article>
+                <h2>Approach</h2>
+                <p>{project.approach}</p>
+              </article>
+            )}
+            {project.deliverables.length > 0 && (
+              <article>
+                <h2>Deliverables</h2>
+                <ul>
+                  {project.deliverables.map((deliverable) => (
+                    <li key={deliverable}>{deliverable}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+            {project.outcome && (
+              <article>
+                <h2>Outcome</h2>
+                <p>{project.outcome}</p>
+              </article>
+            )}
+          </section>
+        )}
+
+        {project.body.length > 0 && (
+          <section className="project-information cms-project-body">
+            <div className="project-intro">
+              <div className="section-label">Project story <span /></div>
+            </div>
+            <StreamFieldRenderer blocks={project.body} className="project-details" />
+          </section>
+        )}
 
         {project.embedUrl && (
           <section className="public-content-section">
@@ -120,6 +185,13 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
         )}
 
         <Testimonials testimonials={testimonials} />
+
+        {project.cta.label && project.cta.url && (
+          <section className="case-study-cta">
+            <div className="section-label">Enquiries <span /></div>
+            <a href={project.cta.url}>{project.cta.label} <span aria-hidden="true">→</span></a>
+          </section>
+        )}
 
         <section className="project-next">
           <div className="section-label">Continue exploring <span /></div>

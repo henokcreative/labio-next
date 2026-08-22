@@ -227,7 +227,21 @@ test("service and work payloads retain only controlled route data", () => {
       id: 3,
       title: "A study",
       meta: { ...meta, type: "public_content.CaseStudyPage", slug: "a-study" },
+      client_display_name: "Research Institute",
+      category: "Photography",
       summary: "A public case study",
+      project_year: "2025",
+      challenge: "Make the research visible.",
+      approach: "Work closely with the research team.",
+      deliverables: [
+        { type: "deliverable", value: "Editorial photography" },
+        { type: "unknown", value: "Ignore this" },
+        { type: "deliverable", value: " " },
+      ],
+      outcome: "A reusable visual library.",
+      project_url: "https://project.example.com",
+      cta_label: "Discuss a project",
+      cta_url: "/contact",
       gallery: [
         {
           type: "image",
@@ -243,6 +257,38 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(service?.relatedCaseStudies[0].slug, "a-study");
   assert.equal(project?.gallery[0].url, "https://api.example.com/media/work.jpg");
   assert.equal(project?.services[0].slug, "photography");
+  assert.equal(project?.clientDisplayName, "Research Institute");
+  assert.equal(project?.projectYear, "2025");
+  assert.equal(project?.challenge, "Make the research visible.");
+  assert.equal(project?.approach, "Work closely with the research team.");
+  assert.deepEqual(project?.deliverables, ["Editorial photography"]);
+  assert.equal(project?.outcome, "A reusable visual library.");
+  assert.equal(project?.projectUrl, "https://project.example.com");
+  assert.deepEqual(project?.cta, { label: "Discuss a project", url: "/contact" });
+});
+
+test("case-study editorial additions stay optional and reject unsafe links", () => {
+  const project = parseCaseStudyPage(
+    {
+      id: 9,
+      title: "Small project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "small-project" },
+      project_url: "javascript:alert(1)",
+      cta_label: "Unsafe CTA",
+      cta_url: "javascript:alert(1)",
+    },
+    apiUrl,
+  );
+
+  assert.equal(project?.clientDisplayName, "");
+  assert.equal(project?.summary, "");
+  assert.equal(project?.projectYear, "");
+  assert.equal(project?.challenge, "");
+  assert.equal(project?.approach, "");
+  assert.deepEqual(project?.deliverables, []);
+  assert.equal(project?.outcome, "");
+  assert.equal(project?.projectUrl, "");
+  assert.deepEqual(project?.cta, { label: "Unsafe CTA", url: "" });
 });
 
 test("updates index preserves backend article and event ordering", () => {
