@@ -3,6 +3,7 @@ import type {
   CmsAboutPage,
   CmsCaseStudyPage,
   CmsCollaborator,
+  CmsContactPage,
   CmsHomePage,
   CmsPageMeta,
   CmsPortfolioIndexPage,
@@ -30,6 +31,33 @@ const localLogo = (url: string, alt: string, width: number, height: number) => (
   height,
   alt,
 });
+
+export const fallbackContact: CmsContactPage = {
+  id: -5,
+  kind: "contact",
+  title: "Let’s make the complex clear.",
+  meta: {
+    ...fallbackMeta("fallback.ContactPage", "contact"),
+    seoTitle: "Contact — LaBio Media",
+    searchDescription:
+      "Start a conversation with LaBio Media about research communication, websites, video, photography or design.",
+  },
+  socialImage: null,
+  eyebrow: "Contact",
+  intro:
+    "Tell us what you are working on, who it needs to reach, and where the communication could be stronger.",
+  body: [
+    {
+      type: "heading",
+      value: { text: "A thoughtful first conversation.", level: "h2" },
+    },
+    {
+      type: "rich_text",
+      value:
+        "<p>Share a little about your research, organisation or idea. We’ll respond with the right questions and a practical next step.</p>",
+    },
+  ],
+};
 
 export const fallbackServices: CmsServicePage[] = [
   {

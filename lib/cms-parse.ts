@@ -6,6 +6,7 @@ import type {
   CmsCapability,
   CmsCaseStudyPage,
   CmsCollaborator,
+  CmsContactPage,
   CmsEventPage,
   CmsEventSummary,
   CmsHomePage,
@@ -457,6 +458,22 @@ export function parseStandardPage(
   return {
     ...page,
     kind: "standard",
+    body: parseStreamField(raw.body, apiBaseUrl),
+  };
+}
+
+export function parseContactPage(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsContactPage | null {
+  const base = parsePageBase(value, apiBaseUrl);
+  if (!base) return null;
+  const { raw, ...page } = base;
+  return {
+    ...page,
+    kind: "contact",
+    eyebrow: asString(raw.eyebrow).trim(),
+    intro: asString(raw.intro).trim(),
     body: parseStreamField(raw.body, apiBaseUrl),
   };
 }

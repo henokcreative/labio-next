@@ -4224,6 +4224,16 @@ html[data-public-theme="dark"] .consent-layer {
   max-width: 11ch;
 }
 
+.contact-heading .contact-editorial-body {
+  margin: 0;
+}
+
+.contact-heading .contact-editorial-body h2 {
+  margin: 0 0 28px;
+  font-size: clamp(42px, 4vw, 62px);
+  line-height: 1.02;
+}
+
 .contact-route-section {
   background: #ffffff;
 }

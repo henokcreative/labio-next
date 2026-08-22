@@ -198,6 +198,13 @@ export type CmsStandardPage = CmsPageBase & {
   body: CmsStreamBlock[];
 };
 
+export type CmsContactPage = CmsPageBase & {
+  kind: "contact";
+  eyebrow: string;
+  intro: string;
+  body: CmsStreamBlock[];
+};
+
 export type CmsPricingMode = "starting_from" | "fixed" | "custom";
 
 export type CmsPricingItem = {
@@ -333,6 +340,7 @@ export type CmsPublicPage =
   | CmsPortfolioIndexPage
   | CmsCaseStudyPage
   | CmsAboutPage
+  | CmsContactPage
   | CmsStandardPage
   | CmsPricingPage
   | CmsUpdatesIndexPage
