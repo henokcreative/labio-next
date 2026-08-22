@@ -77,6 +77,53 @@ const fallbackStandardPages: Record<string, CmsStandardPage> = {
       },
     ],
   },
+  cookies: {
+    id: -403,
+    kind: "standard",
+    title: "Cookie and storage policy",
+    meta: {
+      type: "fallback.StandardPage",
+      slug: "cookies",
+      seoTitle: "Cookie and storage policy — LaBio Media",
+      searchDescription:
+        "The essential and optional browser storage categories used by LaBio Media.",
+    },
+    socialImage: null,
+    body: [
+      {
+        type: "rich_text",
+        value:
+          "<p>This site uses limited browser storage to remember essential preferences and, where you choose, permission for optional services. Optional categories remain off until you consent.</p>",
+      },
+      {
+        type: "heading",
+        value: { text: "Consent categories", level: "h2" },
+      },
+      {
+        type: "rich_text",
+        value:
+          "<ul><li><strong>Essential:</strong> always active where needed for privacy choices, visual preferences, security and authenticated client-portal access.</li><li><strong>Analytics:</strong> optional audience measurement. No analytics tracker is currently enabled.</li><li><strong>Marketing:</strong> optional advertising or campaign services. No marketing tracker is currently enabled.</li><li><strong>External media:</strong> optional embedded content, such as video hosted by third-party providers.</li></ul>",
+      },
+      {
+        type: "heading",
+        value: { text: "Your choices", level: "h2" },
+      },
+      {
+        type: "rich_text",
+        value:
+          "<p>Your consent choice is stored locally in your browser until you change it or clear the site’s stored data. Rejecting optional categories does not prevent use of the public website or authenticated client portal. External media stays unloaded unless that category is allowed.</p>",
+      },
+      {
+        type: "heading",
+        value: { text: "Change your settings", level: "h2" },
+      },
+      {
+        type: "rich_text",
+        value:
+          "<p>Use the <strong>Cookie settings</strong> control in the website footer at any time to review or change optional consent. For further information about personal data, read the <a href=\"/privacy\">privacy policy</a>.</p>",
+      },
+    ],
+  },
   terms: {
     id: -402,
     kind: "standard",

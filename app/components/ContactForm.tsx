@@ -21,6 +21,7 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
       organisation: String(formData.get("organisation") || "").trim(),
       service: String(formData.get("service") || "").trim(),
       message: String(formData.get("message") || "").trim(),
+      website: String(formData.get("website") || "").trim(),
     };
 
     setStatus("sending");
@@ -96,6 +97,18 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
       aria-busy={status === "sending"}
       aria-describedby={status === "error" ? "contact-form-error" : undefined}
     >
+      <div className="contact-honeypot" aria-hidden="true">
+        <label htmlFor="contact-website">Website</label>
+        <input
+          id="contact-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          disabled={status === "sending"}
+        />
+      </div>
+
       <div className="contact-field">
         <label htmlFor="name">
           Name <span aria-hidden="true">*</span>
@@ -106,6 +119,8 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
           name="name"
           type="text"
           required
+          minLength={2}
+          maxLength={100}
           autoComplete="name"
           disabled={status === "sending"}
         />
@@ -121,6 +136,7 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
           name="email"
           type="email"
           required
+          maxLength={254}
           autoComplete="email"
           disabled={status === "sending"}
         />
@@ -136,6 +152,7 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
           name="organisation"
           type="text"
           autoComplete="organization"
+          maxLength={150}
           disabled={status === "sending"}
         />
       </div>
@@ -177,6 +194,8 @@ export default function ContactForm({ contactEmail = "" }: { contactEmail?: stri
           name="message"
           rows={6}
           required
+          minLength={10}
+          maxLength={5000}
           placeholder="Tell me a little about your project..."
           disabled={status === "sending"}
         />
