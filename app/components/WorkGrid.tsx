@@ -44,7 +44,7 @@ export default function WorkGrid({
               {project.category && <span className="work-category">{project.category}</span>}
             </div>
             <Heading>{project.title}</Heading>
-            <p>{project.summary}</p>
+            {project.summary && <p>{project.summary}</p>}
           </div>
         </Link>
       ))}
