@@ -316,6 +316,14 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
     contactHeading: asString(raw.contact_heading).trim(),
     contactCopy: asString(raw.contact_copy).trim(),
     contactCta: parseLink(raw.contact_cta_label, raw.contact_cta_url),
+    updatesEnabled: asBoolean(raw.updates_enabled),
+    updatesEyebrow: asString(raw.updates_eyebrow).trim(),
+    updatesHeading: asString(raw.updates_heading).trim(),
+    updatesItemCount: asNumber(raw.updates_item_count) ?? 3,
+    updatesCta: parseLink(raw.updates_cta_label, raw.updates_cta_url),
+    latestUpdates: asArray(raw.latest_updates)
+      .map((item) => parseUpdateSummary(item, apiBaseUrl))
+      .filter((item): item is CmsUpdateSummary => item !== null),
   };
 }
 
@@ -411,6 +419,14 @@ export function parseAboutPage(value: unknown, apiBaseUrl: string): CmsAboutPage
     body: parseStreamField(raw.body, apiBaseUrl),
     values: parseStructuredList<CmsValue>(raw.values, "value"),
     process: parseStructuredList<CmsProcessStep>(raw.process, "step"),
+    pageEyebrow:
+      asString(raw.page_eyebrow).trim() || "About LaBio Media",
+    valuesLabel: asString(raw.values_label).trim() || "Values",
+    processLabel: asString(raw.process_label).trim() || "How we work",
+    testimonialsEnabled: asBoolean(raw.testimonials_enabled),
+    testimonialsHeading:
+      asString(raw.testimonials_heading).trim() || "Client perspectives",
+    testimonials: parseTestimonials(raw.testimonials),
   };
 }
 

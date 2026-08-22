@@ -128,6 +128,12 @@ export type CmsHomePage = CmsPageBase & {
   contactHeading: string;
   contactCopy: string;
   contactCta: CmsLink;
+  updatesEnabled: boolean;
+  updatesEyebrow: string;
+  updatesHeading: string;
+  updatesItemCount: number;
+  updatesCta: CmsLink;
+  latestUpdates: CmsUpdateSummary[];
 };
 
 export type CmsServiceIndexPage = CmsPageBase & {
@@ -172,6 +178,12 @@ export type CmsAboutPage = CmsPageBase & {
   body: CmsStreamBlock[];
   values: CmsValue[];
   process: CmsProcessStep[];
+  pageEyebrow: string;
+  valuesLabel: string;
+  processLabel: string;
+  testimonialsEnabled: boolean;
+  testimonialsHeading: string;
+  testimonials: CmsTestimonial[];
 };
 
 export type CmsStandardPage = CmsPageBase & {

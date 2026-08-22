@@ -4,6 +4,7 @@ import BrandName from "./components/BrandName";
 import CmsImage from "./components/CmsImage";
 import CollaboratorsSlider from "./components/CollaboratorsSlider";
 import ContactForm from "./components/ContactForm";
+import LatestUpdates from "./components/LatestUpdates";
 import PublicFooter from "./components/PublicFooter";
 import PublicShell from "./components/PublicShell";
 import ServicesGrid from "./components/ServicesGrid";
@@ -148,6 +149,8 @@ export default async function Home() {
           <ServicesGrid services={featuredServices.slice(0, 4)} />
         </section>
       )}
+
+      <LatestUpdates home={home} />
 
       {collaboratorsEnabled && (
         <CollaboratorsSlider

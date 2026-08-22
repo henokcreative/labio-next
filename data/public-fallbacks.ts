@@ -214,6 +214,12 @@ export const fallbackHome: CmsHomePage = {
   contactCopy:
     "Have an idea, a research project, a website that needs a new direction, or simply want to explore something?",
   contactCta: { label: "Start a conversation", url: "/#contact" },
+  updatesEnabled: false,
+  updatesEyebrow: "From LaBio",
+  updatesHeading: "A few notes, ideas and milestones.",
+  updatesItemCount: 3,
+  updatesCta: { label: "View all updates", url: "/updates" },
+  latestUpdates: [],
 };
 
 export const fallbackServiceIndex: CmsServiceIndexPage = {
@@ -279,6 +285,12 @@ export const fallbackAbout: CmsAboutPage = {
   ],
   values: [],
   process: [],
+  pageEyebrow: "About LaBio Media",
+  valuesLabel: "Values",
+  processLabel: "How we work",
+  testimonialsEnabled: false,
+  testimonialsHeading: "Client perspectives",
+  testimonials: [],
 };
 
 // Temporary migration fallback copied from the collaborators intentionally used by
