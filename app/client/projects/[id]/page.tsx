@@ -46,6 +46,12 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
     return () => window.clearTimeout(timer);
   }, [load]);
 
+  useEffect(() => {
+    if (!files.length || !window.location.hash) return;
+    const target = document.getElementById(window.location.hash.slice(1));
+    target?.scrollIntoView({ block: "center" });
+  }, [files]);
+
   async function send(event: React.FormEvent) {
     event.preventDefault();
     const message = content.trim();
@@ -91,18 +97,10 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
     }
   }
 
-  async function downloadProtectedFile(endpoint: string, filename: string) {
+  async function downloadProtectedFile(endpoint: string) {
     try {
       const { url } = await apiFetch<FileAccess>(endpoint);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      link.target = "_self";
-      link.rel = "noopener noreferrer";
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      window.location.assign(url);
     } catch (nextError) {
       setError((nextError as Error).message);
     }
@@ -132,7 +130,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                 {files.length ? (
                   <div className="project-file-list">
                     {files.map((file) => (
-                      <div className="file-row" key={file.id}>
+                      <div className="file-row" id={`file-${file.id}`} key={file.id}>
                         <span className="file-details">
                           <strong>{file.display_name || file.filename}</strong>
                           <small>{file.category.replaceAll("_", " ")}</small>
@@ -147,7 +145,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                           <button
                             type="button"
                             className="portal-action portal-action-primary"
-                            onClick={() => void downloadProtectedFile(file.download_url, file.filename)}
+                            onClick={() => void downloadProtectedFile(file.download_url)}
                           >
                             Download
                           </button>

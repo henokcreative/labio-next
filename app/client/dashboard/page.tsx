@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PortalShell from "@/app/components/PortalShell";
 import { apiFetch } from "@/lib/api";
-import type { Dashboard, PortalMessage } from "@/lib/portal-types";
+import type { Approval, Dashboard, PortalMessage } from "@/lib/portal-types";
+
+function approvalHref(approval: Approval): string {
+  return `/client/projects/${approval.project}#file-${approval.file}`;
+}
 
 function formatMessageDate(value: string): string {
   const date = new Date(value);
@@ -88,6 +92,31 @@ function SummaryList({ title, items }: { title: string; items: string[] }) {
   );
 }
 
+function PendingApprovals({ approvals }: { approvals: Approval[] }) {
+  return (
+    <section className="portal-section dashboard-list-section">
+      <h2>Pending approvals</h2>
+      {approvals.length ? (
+        <ul className="dashboard-summary-list">
+          {approvals.map((approval) => (
+            <li className="dashboard-approval-item" key={approval.id}>
+              <Link
+                className="dashboard-approval-link"
+                href={approvalHref(approval)}
+              >
+                <span>{approval.file_name}</span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="portal-empty-state">Nothing to show.</p>
+      )}
+    </section>
+  );
+}
+
 export default function ClientDashboard() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
@@ -121,7 +150,13 @@ export default function ClientDashboard() {
               value={data.latest_messages.length}
               href="/client/messages"
             />
-            <StatCard label="Pending approvals" value={data.pending_approvals.length} />
+            <StatCard
+              label="Pending approvals"
+              value={data.pending_approvals.length}
+              href={data.pending_approvals[0]
+                ? approvalHref(data.pending_approvals[0])
+                : undefined}
+            />
             <StatCard label="Delivered files" value={data.latest_files.length} />
           </div>
 
@@ -152,10 +187,7 @@ export default function ClientDashboard() {
 
           <div className="dashboard-detail-grid">
             <LatestMessages messages={data.latest_messages} />
-            <SummaryList
-              title="Pending approvals"
-              items={data.pending_approvals.map((approval) => approval.file_name)}
-            />
+            <PendingApprovals approvals={data.pending_approvals} />
             <SummaryList
               title="Latest delivered files"
               items={data.latest_files.map((file) => file.filename)}
