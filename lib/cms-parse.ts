@@ -1,8 +1,13 @@
 import type {
   CmsAboutPage,
+  CmsArticlePage,
+  CmsArticleSummary,
+  CmsArticleType,
   CmsCapability,
   CmsCaseStudyPage,
   CmsCollaborator,
+  CmsEventPage,
+  CmsEventSummary,
   CmsHomePage,
   CmsImage,
   CmsLink,
@@ -19,6 +24,8 @@ import type {
   CmsStandardPage,
   CmsStreamBlock,
   CmsTestimonial,
+  CmsUpdateSummary,
+  CmsUpdatesIndexPage,
   CmsValue,
 } from "./cms-types";
 
@@ -436,6 +443,169 @@ function parsePricingItem(value: unknown): CmsPricingItem | null {
       .map((feature) => asString(feature).trim())
       .filter(Boolean),
     cta: parseLink(record.cta_label, record.cta_url),
+  };
+}
+
+const ARTICLE_TYPE_LABELS: Record<CmsArticleType, string> = {
+  insight: "Insight",
+  milestone: "Milestone",
+  update: "Update",
+};
+
+function parseArticleType(value: unknown): CmsArticleType | null {
+  return value === "insight" || value === "milestone" || value === "update"
+    ? value
+    : null;
+}
+
+function parseOptionalString(value: unknown): string | undefined {
+  const parsed = asString(value).trim();
+  return parsed || undefined;
+}
+
+export function parseUpdateSummary(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsUpdateSummary | null {
+  const record = asRecord(value);
+  if (!record) return null;
+  const id = asNumber(record.id);
+  const title = asString(record.title).trim();
+  const slug = asString(record.slug).trim();
+  const summary = asString(record.summary).trim();
+  const kind = asString(record.kind);
+  if (id === null || !title || !slug || !summary) return null;
+
+  const common = {
+    id,
+    title,
+    slug,
+    summary,
+    featured: asBoolean(record.featured),
+    featuredImage: parseCmsImage(record.featured_image, apiBaseUrl),
+  };
+
+  if (kind === "article") {
+    const articleType = parseArticleType(record.article_type);
+    const publicationDate = asString(record.publication_date).trim();
+    if (!articleType || !publicationDate) return null;
+    return {
+      ...common,
+      kind,
+      articleType,
+      articleTypeLabel:
+        asString(record.article_type_label).trim()
+        || ARTICLE_TYPE_LABELS[articleType],
+      publicationDate,
+    } satisfies CmsArticleSummary;
+  }
+
+  if (kind === "event") {
+    const startDate = asString(record.start_date).trim();
+    if (!startDate) return null;
+    const startTime = parseOptionalString(record.start_time);
+    const endDate = parseOptionalString(record.end_date);
+    const endTime = parseOptionalString(record.end_time);
+    return {
+      ...common,
+      kind,
+      startDate,
+      ...(startTime ? { startTime } : {}),
+      ...(endDate ? { endDate } : {}),
+      ...(endTime ? { endTime } : {}),
+      location: asString(record.location).trim(),
+      registrationUrl: safeHref(record.registration_url),
+    } satisfies CmsEventSummary;
+  }
+
+  return null;
+}
+
+function parseUpdateSummaries<T extends CmsUpdateSummary["kind"]>(
+  value: unknown,
+  apiBaseUrl: string,
+  kind: T,
+): Extract<CmsUpdateSummary, { kind: T }>[] {
+  return asArray(value)
+    .map((item) => parseUpdateSummary(item, apiBaseUrl))
+    .filter(
+      (item): item is Extract<CmsUpdateSummary, { kind: T }> =>
+        item !== null && item.kind === kind,
+    );
+}
+
+export function parseUpdatesIndexPage(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsUpdatesIndexPage | null {
+  const base = parsePageBase(value, apiBaseUrl);
+  if (!base) return null;
+  const { raw, ...page } = base;
+  return {
+    ...page,
+    kind: "updates-index",
+    articles: parseUpdateSummaries(raw.articles, apiBaseUrl, "article"),
+    upcomingEvents: parseUpdateSummaries(
+      raw.upcoming_events,
+      apiBaseUrl,
+      "event",
+    ),
+    pastEvents: parseUpdateSummaries(raw.past_events, apiBaseUrl, "event"),
+  };
+}
+
+export function parseArticlePage(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsArticlePage | null {
+  const base = parsePageBase(value, apiBaseUrl);
+  if (!base) return null;
+  const { raw, ...page } = base;
+  const articleType = parseArticleType(raw.article_type);
+  const summary = asString(raw.summary).trim();
+  const publicationDate = asString(raw.publication_date).trim();
+  if (!articleType || !summary || !publicationDate) return null;
+
+  return {
+    ...page,
+    kind: "article",
+    articleType,
+    articleTypeLabel: ARTICLE_TYPE_LABELS[articleType],
+    summary,
+    featuredImage: parseCmsImage(raw.featured_image, apiBaseUrl),
+    publicationDate,
+    featured: asBoolean(raw.featured),
+    body: parseStreamField(raw.body, apiBaseUrl),
+  };
+}
+
+export function parseEventPage(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsEventPage | null {
+  const base = parsePageBase(value, apiBaseUrl);
+  if (!base) return null;
+  const { raw, ...page } = base;
+  const summary = asString(raw.summary).trim();
+  const startDate = asString(raw.start_date).trim();
+  if (!summary || !startDate) return null;
+
+  const startTime = parseOptionalString(raw.start_time);
+  const endDate = parseOptionalString(raw.end_date);
+  const endTime = parseOptionalString(raw.end_time);
+  return {
+    ...page,
+    kind: "event",
+    summary,
+    featuredImage: parseCmsImage(raw.featured_image, apiBaseUrl),
+    startDate,
+    ...(startTime ? { startTime } : {}),
+    ...(endDate ? { endDate } : {}),
+    ...(endTime ? { endTime } : {}),
+    location: asString(raw.location).trim(),
+    registrationUrl: safeHref(raw.registration_url),
+    featured: asBoolean(raw.featured),
+    body: parseStreamField(raw.body, apiBaseUrl),
   };
 }
 

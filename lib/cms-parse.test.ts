@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  parseArticlePage,
   parseCaseStudyPage,
   parseCollaborators,
+  parseEventPage,
   parseHomePage,
   parsePricingPage,
   parseServicePage,
   parseStreamField,
   parseTestimonials,
+  parseUpdatesIndexPage,
   resolveCmsMediaUrl,
 } from "./cms-parse";
 import type {
@@ -23,6 +26,11 @@ import {
   resolveSelectedHomeItems,
   resolveStandardPage,
 } from "./public-content";
+import {
+  formatEventSchedule,
+  formatPublicDate,
+  updateTypeLabel,
+} from "./public-updates";
 
 
 const apiUrl = "https://api.example.com";
@@ -208,6 +216,183 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(service?.relatedCaseStudies[0].slug, "a-study");
   assert.equal(project?.gallery[0].url, "https://api.example.com/media/work.jpg");
   assert.equal(project?.services[0].slug, "photography");
+});
+
+test("updates index preserves backend article and event ordering", () => {
+  const page = parseUpdatesIndexPage(
+    {
+      id: 20,
+      title: "Updates",
+      meta: {
+        ...meta,
+        type: "public_content.UpdatesIndexPage",
+        slug: "updates",
+      },
+      articles: [
+        {
+          id: 21,
+          title: "Newest insight",
+          slug: "newest-insight",
+          kind: "article",
+          article_type: "insight",
+          article_type_label: "Insight",
+          summary: "A current note.",
+          publication_date: "2026-08-20",
+          featured: true,
+          featured_image: {
+            url: "/media/insight.jpg",
+            width: 1200,
+            height: 675,
+            alt: "Insight image",
+          },
+        },
+        {
+          id: 22,
+          title: "Earlier milestone",
+          slug: "earlier-milestone",
+          kind: "article",
+          article_type: "milestone",
+          summary: "An earlier note.",
+          publication_date: "2026-08-10",
+          featured: false,
+        },
+      ],
+      upcoming_events: [
+        {
+          id: 23,
+          title: "Nearest event",
+          slug: "nearest-event",
+          kind: "event",
+          summary: "An upcoming event.",
+          start_date: "2026-09-01",
+          start_time: "09:30:00",
+          location: "Turku",
+          registration_url: "https://events.example.com/register",
+          featured: false,
+        },
+        {
+          id: 24,
+          title: "Later event",
+          slug: "later-event",
+          kind: "event",
+          summary: "A later event.",
+          start_date: "2026-10-01",
+          location: "Helsinki",
+          registration_url: "",
+          featured: false,
+        },
+      ],
+      past_events: [
+        {
+          id: 25,
+          title: "Past event",
+          slug: "past-event",
+          kind: "event",
+          summary: "An archived event.",
+          start_date: "2026-07-01",
+          location: "Turku",
+          registration_url: "",
+          featured: false,
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(page?.articles.map((item) => item.slug), [
+    "newest-insight",
+    "earlier-milestone",
+  ]);
+  assert.equal(page?.articles[0].featuredImage?.url, "https://api.example.com/media/insight.jpg");
+  assert.deepEqual(page?.upcomingEvents.map((item) => item.slug), [
+    "nearest-event",
+    "later-event",
+  ]);
+  assert.deepEqual(page?.pastEvents.map((item) => item.slug), ["past-event"]);
+});
+
+test("article detail parser reuses controlled image and StreamField data", () => {
+  const page = parseArticlePage(
+    {
+      id: 30,
+      title: "A research insight",
+      meta: {
+        ...meta,
+        type: "public_content.ArticlePage",
+        slug: "research-insight",
+      },
+      article_type: "insight",
+      summary: "A concise article summary.",
+      featured_image: {
+        url: "/media/article.jpg",
+        width: 1600,
+        height: 900,
+        alt: "Research team",
+      },
+      publication_date: "2026-08-20",
+      featured: true,
+      body: [{ type: "rich_text", value: "<p>Published body.</p>" }],
+    },
+    apiUrl,
+  );
+
+  assert.equal(page?.kind, "article");
+  assert.equal(page?.articleTypeLabel, "Insight");
+  assert.equal(page?.featuredImage?.alt, "Research team");
+  assert.equal(page?.body[0].type, "rich_text");
+});
+
+test("event detail parser keeps optional schedule data and sanitizes registration links", () => {
+  const page = parseEventPage(
+    {
+      id: 40,
+      title: "Research communication event",
+      meta: {
+        ...meta,
+        type: "public_content.EventPage",
+        slug: "research-event",
+      },
+      summary: "A concise event summary.",
+      start_date: "2026-09-12",
+      start_time: "10:00:00",
+      end_date: "2026-09-12",
+      end_time: "12:00:00",
+      location: "Turku, Finland",
+      registration_url: "javascript:alert(1)",
+      featured: false,
+      body: [{ type: "heading", value: { text: "Programme", level: "h2" } }],
+    },
+    apiUrl,
+  );
+
+  assert.equal(page?.kind, "event");
+  assert.equal(page?.startTime, "10:00:00");
+  assert.equal(page?.endTime, "12:00:00");
+  assert.equal(page?.location, "Turku, Finland");
+  assert.equal(page?.registrationUrl, "");
+  assert.equal(page?.body[0].type, "heading");
+});
+
+test("updates presentation helpers format editorial dates and labels", () => {
+  const event = {
+    id: 41,
+    title: "Event",
+    slug: "event",
+    kind: "event" as const,
+    summary: "Summary",
+    featured: false,
+    featuredImage: null,
+    startDate: "2026-09-12",
+    startTime: "10:00:00",
+    endDate: "2026-09-12",
+    endTime: "12:00:00",
+    location: "Turku",
+    registrationUrl: "",
+  };
+
+  assert.equal(formatPublicDate("2026-09-12"), "12 September 2026");
+  assert.equal(formatEventSchedule(event), "12 September 2026 · 10:00–12:00");
+  assert.equal(updateTypeLabel(event), "Event");
 });
 
 test("invalid collaborators and testimonials are omitted defensively", () => {

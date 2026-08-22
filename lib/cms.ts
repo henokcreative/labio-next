@@ -3,8 +3,10 @@ import "server-only";
 import { cache } from "react";
 import {
   parseAboutPage,
+  parseArticlePage,
   parseCaseStudyPage,
   parseCollaborators,
+  parseEventPage,
   parseHomePage,
   parsePortfolioIndexPage,
   parsePricingPage,
@@ -13,11 +15,14 @@ import {
   parseSiteSettings,
   parseStandardPage,
   parseTestimonials,
+  parseUpdatesIndexPage,
 } from "./cms-parse";
 import type {
   CmsAboutPage,
+  CmsArticlePage,
   CmsCaseStudyPage,
   CmsCollaborator,
+  CmsEventPage,
   CmsHomePage,
   CmsPortfolioIndexPage,
   CmsPricingPage,
@@ -26,6 +31,8 @@ import type {
   CmsSiteSettings,
   CmsStandardPage,
   CmsTestimonial,
+  CmsUpdatePage,
+  CmsUpdatesIndexPage,
 } from "./cms-types";
 
 const CMS_REVALIDATE_SECONDS = 300;
@@ -171,6 +178,43 @@ export const getPricingPage = cache(async (): Promise<CmsPricingPage | null> => 
     await getPageItems("public_content.PricingPage", parsePricingPage)
   )[0] ?? null;
 });
+
+export const getUpdatesIndexPage = cache(
+  async (): Promise<CmsUpdatesIndexPage | null> => {
+    return (
+      await getPageItems(
+        "public_content.UpdatesIndexPage",
+        parseUpdatesIndexPage,
+      )
+    )[0] ?? null;
+  },
+);
+
+export const getArticlePage = cache(
+  async (slug: string): Promise<CmsArticlePage | null> => {
+    return (
+      await getPageItems("public_content.ArticlePage", parseArticlePage, slug)
+    )[0] ?? null;
+  },
+);
+
+export const getEventPage = cache(
+  async (slug: string): Promise<CmsEventPage | null> => {
+    return (
+      await getPageItems("public_content.EventPage", parseEventPage, slug)
+    )[0] ?? null;
+  },
+);
+
+export const getUpdatePage = cache(
+  async (slug: string): Promise<CmsUpdatePage | null> => {
+    const [article, event] = await Promise.all([
+      getArticlePage(slug),
+      getEventPage(slug),
+    ]);
+    return article ?? event;
+  },
+);
 
 export const getStandardPage = cache(
   async (slug: string): Promise<CmsStandardPage | null> => {

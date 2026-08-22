@@ -195,6 +195,70 @@ export type CmsPricingPage = CmsPageBase & {
   positioningMessage: string;
 };
 
+export type CmsArticleType = "insight" | "milestone" | "update";
+
+type CmsUpdateSummaryBase = {
+  id: number;
+  title: string;
+  slug: string;
+  summary: string;
+  featured: boolean;
+  featuredImage: CmsImage | null;
+};
+
+export type CmsArticleSummary = CmsUpdateSummaryBase & {
+  kind: "article";
+  articleType: CmsArticleType;
+  articleTypeLabel: string;
+  publicationDate: string;
+};
+
+export type CmsEventSummary = CmsUpdateSummaryBase & {
+  kind: "event";
+  startDate: string;
+  startTime?: string;
+  endDate?: string;
+  endTime?: string;
+  location: string;
+  registrationUrl: string;
+};
+
+export type CmsUpdateSummary = CmsArticleSummary | CmsEventSummary;
+
+export type CmsUpdatesIndexPage = CmsPageBase & {
+  kind: "updates-index";
+  articles: CmsArticleSummary[];
+  upcomingEvents: CmsEventSummary[];
+  pastEvents: CmsEventSummary[];
+};
+
+export type CmsArticlePage = CmsPageBase & {
+  kind: "article";
+  articleType: CmsArticleType;
+  articleTypeLabel: string;
+  summary: string;
+  featuredImage: CmsImage | null;
+  publicationDate: string;
+  featured: boolean;
+  body: CmsStreamBlock[];
+};
+
+export type CmsEventPage = CmsPageBase & {
+  kind: "event";
+  summary: string;
+  featuredImage: CmsImage | null;
+  startDate: string;
+  startTime?: string;
+  endDate?: string;
+  endTime?: string;
+  location: string;
+  registrationUrl: string;
+  featured: boolean;
+  body: CmsStreamBlock[];
+};
+
+export type CmsUpdatePage = CmsArticlePage | CmsEventPage;
+
 export type CmsCollaborator = {
   id: number;
   organizationName: string;
@@ -238,4 +302,6 @@ export type CmsPublicPage =
   | CmsCaseStudyPage
   | CmsAboutPage
   | CmsStandardPage
-  | CmsPricingPage;
+  | CmsPricingPage
+  | CmsUpdatesIndexPage
+  | CmsUpdatePage;
