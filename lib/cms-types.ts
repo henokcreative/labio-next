@@ -198,13 +198,22 @@ export type CmsStandardPage = CmsPageBase & {
   body: CmsStreamBlock[];
 };
 
+export type CmsPricingMode = "starting_from" | "fixed" | "custom";
+
 export type CmsPricingItem = {
   id: number;
   title: string;
+  pricingMode: CmsPricingMode;
+  currency: string;
   priceLabel: string;
   description: string;
+  idealFor: string;
   features: string[];
+  context: string;
   cta: CmsLink;
+  featured: boolean;
+  relatedServices: CmsPageSummary[];
+  relatedCaseStudies: CmsPageSummary[];
 };
 
 export type CmsPricingPage = CmsPageBase & {
