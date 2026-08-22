@@ -61,6 +61,7 @@ test("organization schema exposes only public business identity fields", () => {
     address: "Example street 1",
     defaultCta: { label: "", url: "" },
     socialLinks: [{ label: "LinkedIn", url: "https://www.linkedin.com/company/example" }],
+    navigationLinks: [],
     defaultSocialImage: null,
   };
   const schema = organizationSchema(settings);

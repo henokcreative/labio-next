@@ -12,6 +12,7 @@ import type {
   CmsHomePage,
   CmsImage,
   CmsLink,
+  CmsNavigationLink,
   CmsPageBase,
   CmsPageMeta,
   CmsPageSummary,
@@ -747,6 +748,10 @@ export function parseSiteSettings(
     const link = parseLink(linkValue.label, linkValue.url);
     return link.label && link.url ? [link] : [];
   });
+  const navigationLinks = asArray(record.navigation_links).flatMap((item) => {
+    const link = parseNavigationLink(item);
+    return link ? [link] : [];
+  });
   return {
     legalBusinessName: asString(record.legal_business_name).trim(),
     businessId: asString(record.business_id).trim(),
@@ -757,6 +762,61 @@ export function parseSiteSettings(
     address: asString(record.address).trim(),
     defaultCta: parseLink(record.default_cta_label, record.default_cta_url),
     socialLinks,
+    navigationLinks,
     defaultSocialImage: parseCmsImage(record.default_social_image, apiBaseUrl),
+  };
+}
+
+function navigationPageHref(type: string, slug: string): string {
+  switch (type) {
+    case "public_content.HomePage":
+      return "/";
+    case "public_content.ServiceIndexPage":
+      return "/services";
+    case "public_content.ServicePage":
+      return `/services/${slug}`;
+    case "public_content.PortfolioIndexPage":
+      return "/work";
+    case "public_content.CaseStudyPage":
+      return `/work/${slug}`;
+    case "public_content.AboutPage":
+      return "/about";
+    case "public_content.ContactPage":
+      return "/contact";
+    case "public_content.PricingPage":
+      return "/pricing";
+    case "public_content.UpdatesIndexPage":
+      return "/updates";
+    case "public_content.ArticlePage":
+    case "public_content.EventPage":
+      return `/updates/${slug}`;
+    case "public_content.StandardPage":
+      return `/${slug}`;
+    default:
+      return "";
+  }
+}
+
+function parseNavigationLink(value: unknown): CmsNavigationLink | null {
+  const record = asRecord(value);
+  if (!record) return null;
+  const label = asString(record.label).trim();
+  if (!label) return null;
+
+  const explicitHref = safeHref(record.url);
+  const page = asRecord(record.page);
+  const pageHref = page
+    ? navigationPageHref(
+        asString(page.type).trim(),
+        asString(page.slug).trim(),
+      )
+    : "";
+  const href = pageHref || explicitHref;
+  if (!href) return null;
+
+  return {
+    label,
+    href,
+    external: Boolean(explicitHref && asBoolean(record.external)),
   };
 }

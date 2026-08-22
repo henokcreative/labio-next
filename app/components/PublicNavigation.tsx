@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import type { CmsSocialLink } from "@/lib/cms-types";
+import type { CmsNavigationLink, CmsSocialLink } from "@/lib/cms-types";
 import BrandName from "./BrandName";
 import ThemeControl from "./ThemeControl";
 
@@ -18,16 +18,8 @@ type PublicNavigationProps = {
   socialLinks: CmsSocialLink[];
   address: string;
   contactEmail: string;
+  navigationLinks: CmsNavigationLink[];
 };
-
-const primaryLinks = [
-  { label: "Home", href: "/" },
-  { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-  { label: "Pricing", href: "/pricing" },
-];
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -40,6 +32,7 @@ export default function PublicNavigation({
   socialLinks,
   address,
   contactEmail,
+  navigationLinks,
 }: PublicNavigationProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -73,11 +66,24 @@ export default function PublicNavigation({
         className={`public-navigation-panel${menuOpen ? " is-open" : ""}`}
       >
         <nav className="main-nav" aria-label="Primary navigation">
-          {primaryLinks.map((link) => {
-            const active = isActive(pathname, link.href);
+          {navigationLinks.map((link) => {
+            const active = !link.external && isActive(pathname, link.href);
+            if (link.external) {
+              return (
+                <a
+                  key={link.label + link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={closeMenu}
+                >
+                  {link.label}
+                </a>
+              );
+            }
             return (
               <Link
-                key={link.href}
+                key={link.label + link.href}
                 href={link.href}
                 className={active ? "active" : undefined}
                 aria-current={active ? "page" : undefined}
@@ -87,6 +93,23 @@ export default function PublicNavigation({
               </Link>
             );
           })}
+          <Link
+            href="/login"
+            className="account-access-link"
+            aria-label="Client login"
+            title="Client login"
+            onClick={closeMenu}
+          >
+            <svg
+              className="account-access-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5.5 20c.7-4 3-6 6.5-6s5.8 2 6.5 6" />
+            </svg>
+            <span className="account-access-label">Client login</span>
+          </Link>
         </nav>
 
         <div className="sidebar-section">

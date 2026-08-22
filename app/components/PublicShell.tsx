@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { fallbackServices } from "@/data/public-fallbacks";
 import { getServicePages, getSiteSettings } from "@/lib/cms";
+import { resolvePublicNavigation } from "@/lib/public-navigation";
 import PublicNavigation from "./PublicNavigation";
 
 export default async function PublicShell({ children }: { children: ReactNode }) {
@@ -23,6 +24,7 @@ export default async function PublicShell({ children }: { children: ReactNode })
         socialLinks={settings ? settings.socialLinks : []}
         address={settings ? settings.address : ""}
         contactEmail={settings ? settings.publicContactEmail : ""}
+        navigationLinks={resolvePublicNavigation(settings?.navigationLinks)}
       />
       <main className="main-content" id="public-content" tabIndex={-1}>{children}</main>
     </div>
