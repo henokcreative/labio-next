@@ -40,6 +40,10 @@ import {
   formatPublicDate,
   updateTypeLabel,
 } from "./public-updates";
+import {
+  FALLBACK_PUBLIC_NAVIGATION,
+  resolvePublicNavigation,
+} from "./public-navigation";
 
 
 const apiUrl = "https://api.example.com";
@@ -81,6 +85,55 @@ test("business identity supports compact footer and full legal/contact details",
   const emptyIdentity = resolveBusinessIdentity(parseSiteSettings({}, apiUrl));
   assert.equal(emptyIdentity.footerLine, "");
   assert.equal(emptyIdentity.hasDetails, false);
+});
+
+test("site settings parse ordered public navigation and resolve page destinations", () => {
+  const settings = parseSiteSettings(
+    {
+      navigation_links: [
+        {
+          label: "Work",
+          url: "",
+          page: {
+            id: 2,
+            title: "Work",
+            slug: "work",
+            type: "public_content.PortfolioIndexPage",
+          },
+          external: false,
+        },
+        {
+          label: "Journal",
+          url: "https://journal.example.com",
+          page: null,
+          external: true,
+        },
+        {
+          label: "Unsafe",
+          url: "javascript:alert(1)",
+          page: null,
+          external: true,
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(settings?.navigationLinks, [
+    { label: "Work", href: "/work", external: false },
+    { label: "Journal", href: "https://journal.example.com", external: true },
+  ]);
+});
+
+test("public navigation keeps rollout-safe defaults for missing or empty CMS data", () => {
+  assert.deepEqual(resolvePublicNavigation(null), FALLBACK_PUBLIC_NAVIGATION);
+  assert.deepEqual(resolvePublicNavigation([]), FALLBACK_PUBLIC_NAVIGATION);
+  assert.deepEqual(
+    resolvePublicNavigation([
+      { label: "Updates", href: "/updates", external: false },
+    ]),
+    [{ label: "Updates", href: "/updates", external: false }],
+  );
 });
 
 test("parses valid CMS pages and resolves relative rendition URLs", () => {

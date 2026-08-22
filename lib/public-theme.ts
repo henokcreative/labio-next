@@ -8,6 +8,8 @@ export const PUBLIC_THEME_ISOLATED_ROUTES = [
   "/login",
   "/invite",
   "/accept-invitation",
+  "/forgot-password",
+  "/reset-password",
 ] as const;
 
 export type PublicThemePreference = (typeof PUBLIC_THEME_PREFERENCES)[number];

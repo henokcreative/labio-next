@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import BrandName from "@/app/components/BrandName";
 
 
@@ -174,12 +175,17 @@ throw new Error(
 
           <div className="invite-field">
 
-            <label>
-              Password
-            </label>
+            <div className="invite-field-heading">
+              <label htmlFor="login-password">Password</label>
+              <Link href="/forgot-password" className="invite-help-link">
+                Forgot password?
+              </Link>
+            </div>
 
 
             <input
+
+              id="login-password"
 
               type="password"
 

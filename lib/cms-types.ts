@@ -320,6 +320,12 @@ export type CmsLink = {
 
 export type CmsSocialLink = CmsLink;
 
+export type CmsNavigationLink = {
+  label: string;
+  href: string;
+  external: boolean;
+};
+
 export type CmsSiteSettings = {
   legalBusinessName: string;
   businessId: string;
@@ -330,6 +336,7 @@ export type CmsSiteSettings = {
   address: string;
   defaultCta: CmsLink;
   socialLinks: CmsSocialLink[];
+  navigationLinks: CmsNavigationLink[];
   defaultSocialImage: CmsImage | null;
 };
 

@@ -72,6 +72,8 @@ test("private and authentication routes remain outside the public theme", () => 
     "/login",
     "/invite/example",
     "/accept-invitation",
+    "/forgot-password",
+    "/reset-password",
   ]) {
     assert.equal(isPublicThemePath(pathname), false, pathname);
   }
