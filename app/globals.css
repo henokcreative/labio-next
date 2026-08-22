@@ -4011,12 +4011,30 @@ html[data-public-theme="dark"] .consent-layer {
   scroll-margin-block: 24px;
 }
 
-.file-row:target {
+.file-row.is-focused {
   margin: 0 -12px;
   padding-right: 12px;
   padding-left: 12px;
   border-radius: 8px;
   background: #faf6f6;
+}
+
+.file-row.is-focused:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.file-review-status,
+.file-approval-label {
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.file-approval-label {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  font-size: .78rem;
 }
 
 .file-details {
