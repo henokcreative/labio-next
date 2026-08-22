@@ -5,6 +5,7 @@ import type {
   CmsPageSummary,
   CmsStandardPage,
   CmsTestimonial,
+  CmsUpdateSummary,
 } from "./cms-types";
 
 export function resolveAboutPage(
@@ -60,6 +61,13 @@ export function resolveHomeTestimonials(
     return cmsHome.testimonials;
   }
   return cmsTestimonials;
+}
+
+export function resolveHomeLatestUpdates(
+  home: CmsHomePage,
+): CmsUpdateSummary[] {
+  if (!home.updatesEnabled || home.updatesItemCount < 1) return [];
+  return home.latestUpdates.slice(0, home.updatesItemCount);
 }
 
 export function resolveStandardPage(

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  parseAboutPage,
   parseArticlePage,
   parseCaseStudyPage,
   parseCollaborators,
@@ -22,6 +23,7 @@ import {
   resolveAboutPage,
   resolveCollaborators,
   resolveHomeCollaborators,
+  resolveHomeLatestUpdates,
   resolveHomeTestimonials,
   resolveSelectedHomeItems,
   resolveStandardPage,
@@ -94,6 +96,26 @@ test("parses valid CMS pages and resolves relative rendition URLs", () => {
       about_cta_url: "/about",
       contact_enabled: true,
       contact_eyebrow: "Contact",
+      updates_enabled: true,
+      updates_eyebrow: "From LaBio",
+      updates_heading: "A few notes, ideas and milestones.",
+      updates_item_count: 3,
+      updates_cta_label: "View all updates",
+      updates_cta_url: "/updates",
+      latest_updates: [
+        {
+          id: 11,
+          title: "Latest insight",
+          slug: "latest-insight",
+          kind: "article",
+          article_type: "insight",
+          article_type_label: "Insight",
+          summary: "A current note.",
+          publication_date: "2026-08-21",
+          featured: false,
+          featured_image: null,
+        },
+      ],
     },
     apiUrl,
   );
@@ -116,6 +138,11 @@ test("parses valid CMS pages and resolves relative rendition URLs", () => {
   assert.equal(page?.aboutCta.url, "/about");
   assert.equal(page?.contactEnabled, true);
   assert.equal(page?.contactEyebrow, "Contact");
+  assert.equal(page?.updatesEnabled, true);
+  assert.equal(page?.updatesEyebrow, "From LaBio");
+  assert.equal(page?.updatesItemCount, 3);
+  assert.equal(page?.updatesCta.url, "/updates");
+  assert.equal(page?.latestUpdates[0].slug, "latest-insight");
   assert.equal(page?.meta.seoTitle, "Public title");
 });
 
@@ -412,11 +439,57 @@ const fallbackAboutPage: CmsAboutPage = {
   },
   socialImage: null,
   heroImage: null,
+  pageEyebrow: "About LaBio Media",
   intro: "Fallback introduction",
   body: [],
+  valuesLabel: "Values",
   values: [],
+  processLabel: "How we work",
   process: [],
+  testimonialsEnabled: false,
+  testimonialsHeading: "Client perspectives",
+  testimonials: [],
 };
+
+test("About parser preserves the editorial portrait and selected testimonials", () => {
+  const page = parseAboutPage(
+    {
+      id: 12,
+      title: "About",
+      meta: { ...meta, type: "public_content.AboutPage", slug: "about" },
+      hero_image: {
+        url: "/media/portrait.jpg",
+        width: 800,
+        height: 800,
+        alt: "Founder portrait",
+      },
+      page_eyebrow: "About LaBio Media",
+      intro: "Scientific understanding meets creative communication.",
+      values_label: "Values",
+      process_label: "How we work",
+      testimonials_enabled: true,
+      testimonials_heading: "Selected perspectives",
+      testimonials: [
+        {
+          id: 8,
+          quote: "Thoughtful and clear.",
+          person: "Research partner",
+          role: "Director",
+          organization: "Institute",
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.equal(page?.heroImage?.alt, "Founder portrait");
+  assert.equal(page?.pageEyebrow, "About LaBio Media");
+  assert.equal(page?.valuesLabel, "Values");
+  assert.equal(page?.processLabel, "How we work");
+  assert.equal(page?.testimonialsEnabled, true);
+  assert.equal(page?.testimonialsHeading, "Selected perspectives");
+  assert.equal(page?.testimonials[0].person, "Research partner");
+});
 
 test("About migration content prefers substantive CMS data and falls back when empty", () => {
   const emptyCmsPage: CmsAboutPage = {
@@ -523,6 +596,48 @@ test("homepage testimonial configuration is authoritative, including an empty se
     resolveHomeTestimonials(configuredHome, legacyTestimonials),
     [],
   );
+});
+
+test("homepage latest updates respect count, disabled and empty CMS states", () => {
+  const home = parseHomePage(
+    {
+      id: 1,
+      title: "Home",
+      meta,
+      hero_heading: "Clear science",
+      hero_copy: "Introduction",
+      updates_enabled: true,
+      updates_item_count: 1,
+      latest_updates: [
+        {
+          id: 21,
+          title: "Newest insight",
+          slug: "newest-insight",
+          kind: "article",
+          article_type: "insight",
+          summary: "A new note.",
+          publication_date: "2026-08-21",
+        },
+        {
+          id: 22,
+          title: "Research event",
+          slug: "research-event",
+          kind: "event",
+          summary: "An upcoming event.",
+          start_date: "2026-09-01",
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.ok(home);
+  assert.deepEqual(
+    resolveHomeLatestUpdates(home).map((item) => item.slug),
+    ["newest-insight"],
+  );
+  assert.deepEqual(resolveHomeLatestUpdates({ ...home, updatesEnabled: false }), []);
+  assert.deepEqual(resolveHomeLatestUpdates({ ...home, latestUpdates: [] }), []);
 });
 
 test("empty homepage service and work selections do not expand to available items", () => {

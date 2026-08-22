@@ -5,7 +5,7 @@ import PublicShell from "@/app/components/PublicShell";
 import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
 import Testimonials from "@/app/components/Testimonials";
 import { fallbackAbout } from "@/data/public-fallbacks";
-import { getAboutPage, getSiteSettings, getTestimonials } from "@/lib/cms";
+import { getAboutPage, getSiteSettings } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
 import { resolveAboutPage } from "@/lib/public-content";
 
@@ -21,9 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [cmsPage, testimonials, settings] = await Promise.all([
+  const [cmsPage, settings] = await Promise.all([
     getAboutPage(),
-    getTestimonials(),
     getSiteSettings(),
   ]);
   const page = resolveAboutPage(cmsPage, fallbackAbout);
@@ -32,24 +31,24 @@ export default async function AboutPage() {
     <PublicShell>
       <header className="public-page-header about-page-header">
         <div className="about-page-copy">
-          <div className="eyebrow">About LaBio Media <span /></div>
+          <div className="eyebrow">{page.pageEyebrow} <span /></div>
           <h1>{page.title}</h1>
           <p className="public-page-lead">{page.intro}</p>
         </div>
-        {/* {page.heroImage && (
-          <div className="about-page-image">
-            <CmsImage image={page.heroImage} priority sizes="(max-width: 900px) 100vw, 45vw" />
-          </div>
-        )} */}
       </header>
 
       <section className="public-content-section about-page-body">
+        {page.heroImage && (
+          <figure className="about-editorial-portrait">
+            <CmsImage image={page.heroImage} sizes="(max-width: 600px) 128px, 160px" />
+          </figure>
+        )}
         <StreamFieldRenderer blocks={page.body} className="about-editorial-body" />
       </section>
 
       {page.values.length > 0 && (
         <section className="editorial-list-section">
-          <div className="section-label">Values <span /></div>
+          <div className="section-label">{page.valuesLabel} <span /></div>
           <div className="editorial-list-grid">
             {page.values.map((value) => (
               <article key={value.id || value.title}>
@@ -63,7 +62,7 @@ export default async function AboutPage() {
 
       {page.process.length > 0 && (
         <section className="editorial-list-section editorial-list-muted">
-          <div className="section-label">How we work <span /></div>
+          <div className="section-label">{page.processLabel} <span /></div>
           <div className="editorial-list-grid">
             {page.process.map((step, index) => (
               <article key={step.id || step.title}>
@@ -76,7 +75,12 @@ export default async function AboutPage() {
         </section>
       )}
 
-      <Testimonials testimonials={testimonials} />
+      {page.testimonialsEnabled && (
+        <Testimonials
+          testimonials={page.testimonials}
+          heading={page.testimonialsHeading}
+        />
+      )}
       <PublicFooter settings={settings} />
     </PublicShell>
   );
