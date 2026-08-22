@@ -19,6 +19,8 @@ import {
   resolveAboutPage,
   resolveCollaborators,
   resolveHomeCollaborators,
+  resolveHomeTestimonials,
+  resolveSelectedHomeItems,
   resolveStandardPage,
 } from "./public-content";
 
@@ -41,7 +43,17 @@ test("parses valid CMS pages and resolves relative rendition URLs", () => {
       hero_heading: "Clear science",
       hero_copy: "A clear introduction.",
       hero_image: { url: "/media/hero.jpg", width: 1600, height: 900, alt: "Hero" },
+      selected_work_enabled: true,
+      selected_work_eyebrow: "Selected work",
+      selected_work_heading: "Research stories",
+      selected_work_cta_label: "View work",
+      selected_work_cta_url: "/work",
       selected_work: [{ id: 2, title: "Study", slug: "study" }],
+      services_enabled: true,
+      services_eyebrow: "What we do",
+      services_heading: "Research communication",
+      services_cta_label: "View services",
+      services_cta_url: "/services",
       featured_services: [],
       collaborators_enabled: true,
       collaborators_heading: "Research partners",
@@ -55,16 +67,47 @@ test("parses valid CMS pages and resolves relative rendition URLs", () => {
           visual_variant: "default",
         },
       ],
+      testimonials_enabled: true,
+      testimonials_heading: "Client perspectives",
+      testimonials: [
+        {
+          id: 4,
+          quote: "A clear collaboration.",
+          person: "Client",
+          role: "Researcher",
+          organization: "Institute",
+          related_service: null,
+          related_case_study: null,
+        },
+      ],
+      about_enabled: true,
+      about_eyebrow: "About LaBio Media",
+      about_cta_label: "More about LaBio Media",
+      about_cta_url: "/about",
+      contact_enabled: true,
+      contact_eyebrow: "Contact",
     },
     apiUrl,
   );
 
   assert.equal(page?.heroImage?.url, "https://api.example.com/media/hero.jpg");
+  assert.equal(page?.selectedWorkEnabled, true);
+  assert.equal(page?.selectedWorkHeading, "Research stories");
+  assert.equal(page?.selectedWorkCta.url, "/work");
   assert.equal(page?.selectedWork[0].slug, "study");
+  assert.equal(page?.servicesEnabled, true);
+  assert.equal(page?.servicesHeading, "Research communication");
+  assert.equal(page?.servicesCta.url, "/services");
   assert.equal(page?.collaboratorsConfigured, true);
   assert.equal(page?.collaboratorsEnabled, true);
   assert.equal(page?.collaboratorsHeading, "Research partners");
   assert.equal(page?.collaborators[0].organizationName, "CMS partner");
+  assert.equal(page?.testimonialsConfigured, true);
+  assert.equal(page?.testimonials[0].person, "Client");
+  assert.equal(page?.aboutEnabled, true);
+  assert.equal(page?.aboutCta.url, "/about");
+  assert.equal(page?.contactEnabled, true);
+  assert.equal(page?.contactEyebrow, "Contact");
   assert.equal(page?.meta.seoTitle, "Public title");
 });
 
@@ -255,6 +298,58 @@ test("homepage collaborator configuration is authoritative, including an empty s
   assert.deepEqual(
     resolveHomeCollaborators(configuredHome, [], fallback),
     [],
+  );
+});
+
+test("homepage testimonial configuration is authoritative, including an empty selection", () => {
+  const legacyTestimonials = parseTestimonials([
+    { id: 5, quote: "Legacy CMS testimonial", person: "Legacy client" },
+  ]);
+  const legacyHome = parseHomePage(
+    {
+      id: 1,
+      title: "Home",
+      meta,
+      hero_heading: "Clear science",
+      hero_copy: "Introduction",
+    },
+    apiUrl,
+  );
+  const configuredHome = parseHomePage(
+    {
+      id: 1,
+      title: "Home",
+      meta,
+      hero_heading: "Clear science",
+      hero_copy: "Introduction",
+      testimonials_enabled: true,
+      testimonials_heading: "Selected perspectives",
+      testimonials: [],
+    },
+    apiUrl,
+  );
+
+  assert.equal(legacyHome?.testimonialsConfigured, false);
+  assert.equal(
+    resolveHomeTestimonials(legacyHome, legacyTestimonials),
+    legacyTestimonials,
+  );
+  assert.deepEqual(
+    resolveHomeTestimonials(configuredHome, legacyTestimonials),
+    [],
+  );
+});
+
+test("empty homepage service and work selections do not expand to available items", () => {
+  const available = [{ id: 7, title: "Available item" }];
+
+  assert.deepEqual(resolveSelectedHomeItems([], available), []);
+  assert.deepEqual(
+    resolveSelectedHomeItems(
+      [{ id: 7, title: "Selected item", slug: "selected-item" }],
+      available,
+    ),
+    available,
   );
 });
 

@@ -257,6 +257,10 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
     raw,
     "collaborators",
   );
+  const testimonialsConfigured = Object.prototype.hasOwnProperty.call(
+    raw,
+    "testimonials",
+  );
 
   return {
     ...page,
@@ -267,7 +271,18 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     primaryCta: parseLink(raw.primary_cta_label, raw.primary_cta_url),
     secondaryCta: parseLink(raw.secondary_cta_label, raw.secondary_cta_url),
+    selectedWorkEnabled: asBoolean(raw.selected_work_enabled),
+    selectedWorkEyebrow: asString(raw.selected_work_eyebrow).trim(),
+    selectedWorkHeading: asString(raw.selected_work_heading).trim(),
+    selectedWorkCta: parseLink(
+      raw.selected_work_cta_label,
+      raw.selected_work_cta_url,
+    ),
     selectedWork: parseSummaries(raw.selected_work),
+    servicesEnabled: asBoolean(raw.services_enabled),
+    servicesEyebrow: asString(raw.services_eyebrow).trim(),
+    servicesHeading: asString(raw.services_heading).trim(),
+    servicesCta: parseLink(raw.services_cta_label, raw.services_cta_url),
     featuredServices: parseSummaries(raw.featured_services),
     collaboratorsConfigured,
     collaboratorsEnabled: collaboratorsConfigured
@@ -277,9 +292,20 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
       asString(raw.collaborators_heading).trim()
       || "Trusted by research groups and organisations",
     collaborators: parseCollaborators(raw.collaborators, apiBaseUrl),
+    testimonialsConfigured,
+    testimonialsEnabled: testimonialsConfigured
+      ? asBoolean(raw.testimonials_enabled)
+      : true,
+    testimonialsHeading: asString(raw.testimonials_heading).trim(),
+    testimonials: parseTestimonials(raw.testimonials),
+    aboutEnabled: asBoolean(raw.about_enabled),
+    aboutEyebrow: asString(raw.about_eyebrow).trim(),
     aboutHeading: asString(raw.about_heading).trim(),
     aboutCopy: asString(raw.about_copy).trim(),
     aboutImage: parseCmsImage(raw.about_image, apiBaseUrl),
+    aboutCta: parseLink(raw.about_cta_label, raw.about_cta_url),
+    contactEnabled: asBoolean(raw.contact_enabled),
+    contactEyebrow: asString(raw.contact_eyebrow).trim(),
     contactHeading: asString(raw.contact_heading).trim(),
     contactCopy: asString(raw.contact_copy).trim(),
     contactCta: parseLink(raw.contact_cta_label, raw.contact_cta_url),
