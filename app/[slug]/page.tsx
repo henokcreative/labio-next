@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import BusinessIdentity from "@/app/components/BusinessIdentity";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
 import { findFallbackStandardPage } from "@/data/legal-fallbacks";
+import { isBusinessIdentityLegalPage } from "@/lib/business-identity";
 import { getSiteSettings, getStandardPage } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
 import { resolveStandardPage } from "@/lib/public-content";
@@ -45,6 +47,12 @@ export default async function StandardPage({ params }: StandardRouteProps) {
         <h1>{page.title}</h1>
       </header>
       <section className="public-content-section standard-content">
+        {isBusinessIdentityLegalPage(slug) && (
+          <BusinessIdentity
+            label={slug === "privacy" ? "Data controller" : "Business details"}
+            settings={settings}
+          />
+        )}
         <StreamFieldRenderer blocks={page.body} />
       </section>
       <PublicFooter settings={settings} />

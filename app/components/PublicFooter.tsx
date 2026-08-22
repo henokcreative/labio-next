@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { resolveBusinessIdentity } from "@/lib/business-identity";
 import type { CmsSiteSettings } from "@/lib/cms-types";
 import BrandName from "./BrandName";
 import CookieSettingsButton from "./CookieSettingsButton";
@@ -8,12 +9,19 @@ export default function PublicFooter({
 }: {
   settings: CmsSiteSettings | null;
 }) {
+  const identity = resolveBusinessIdentity(settings);
+
   return (
     <footer className="footer">
-      <span className="footer-brand">
-        <BrandName variant="auto" />
-        <span>{new Date().getFullYear()}</span>
-      </span>
+      <div className="footer-company">
+        <span className="footer-brand">
+          <BrandName variant="auto" />
+          <span>{new Date().getFullYear()}</span>
+        </span>
+        {identity.footerLine && (
+          <p className="footer-business-identity">{identity.footerLine}</p>
+        )}
+      </div>
       <div className="footer-links">
         <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>

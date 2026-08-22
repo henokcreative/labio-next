@@ -731,6 +731,10 @@ export function parseSiteSettings(
     return link.label && link.url ? [link] : [];
   });
   return {
+    legalBusinessName: asString(record.legal_business_name).trim(),
+    businessId: asString(record.business_id).trim(),
+    city: asString(record.city).trim(),
+    country: asString(record.country).trim(),
     publicContactEmail: asString(record.public_contact_email).trim(),
     publicPhone: asString(record.public_phone).trim(),
     address: asString(record.address).trim(),

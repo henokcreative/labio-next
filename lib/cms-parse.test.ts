@@ -9,6 +9,7 @@ import {
   parseHomePage,
   parsePricingPage,
   parseServicePage,
+  parseSiteSettings,
   parseStreamField,
   parseTestimonials,
   parseUpdatesIndexPage,
@@ -19,6 +20,10 @@ import type {
   CmsCollaborator,
   CmsStandardPage,
 } from "./cms-types";
+import {
+  isBusinessIdentityLegalPage,
+  resolveBusinessIdentity,
+} from "./business-identity";
 import { formatOfferPrice } from "./pricing";
 import {
   resolveAboutPage,
@@ -43,6 +48,39 @@ const meta = {
   seo_title: "Public title",
   search_description: "Public description",
 };
+
+test("business identity supports compact footer and full legal/contact details", () => {
+  const settings = parseSiteSettings(
+    {
+      legal_business_name: "LaBio Media Oy",
+      business_id: "1234567-8",
+      city: "Turku",
+      country: "Finland",
+      public_contact_email: "hello@example.com",
+      public_phone: "+358 40 123 4567",
+      address: "Example Street 1",
+    },
+    apiUrl,
+  );
+  const identity = resolveBusinessIdentity(settings);
+
+  assert.equal(
+    identity.footerLine,
+    "LaBio Media Oy · Business ID 1234567-8 · Turku, Finland",
+  );
+  assert.equal(identity.fullAddress, "Example Street 1\nTurku, Finland");
+  assert.equal(identity.publicContactEmail, "hello@example.com");
+  assert.equal(identity.phoneHref, "+358401234567");
+  assert.equal(identity.hasDetails, true);
+  assert.equal(isBusinessIdentityLegalPage("privacy"), true);
+  assert.equal(isBusinessIdentityLegalPage("cookies"), true);
+  assert.equal(isBusinessIdentityLegalPage("terms"), true);
+  assert.equal(isBusinessIdentityLegalPage("about"), false);
+
+  const emptyIdentity = resolveBusinessIdentity(parseSiteSettings({}, apiUrl));
+  assert.equal(emptyIdentity.footerLine, "");
+  assert.equal(emptyIdentity.hasDetails, false);
+});
 
 test("parses valid CMS pages and resolves relative rendition URLs", () => {
   const page = parseHomePage(

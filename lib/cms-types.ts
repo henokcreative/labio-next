@@ -314,6 +314,10 @@ export type CmsLink = {
 export type CmsSocialLink = CmsLink;
 
 export type CmsSiteSettings = {
+  legalBusinessName: string;
+  businessId: string;
+  city: string;
+  country: string;
   publicContactEmail: string;
   publicPhone: string;
   address: string;
