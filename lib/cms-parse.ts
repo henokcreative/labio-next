@@ -16,6 +16,7 @@ import type {
   CmsPageSummary,
   CmsPortfolioIndexPage,
   CmsPricingItem,
+  CmsPricingMode,
   CmsPricingPage,
   CmsProcessStep,
   CmsServiceIndexPage,
@@ -460,6 +461,12 @@ export function parseStandardPage(
   };
 }
 
+function parsePricingMode(value: unknown): CmsPricingMode {
+  return value === "fixed" || value === "custom" || value === "starting_from"
+    ? value
+    : "starting_from";
+}
+
 function parsePricingItem(value: unknown): CmsPricingItem | null {
   const record = asRecord(value);
   if (!record) return null;
@@ -469,12 +476,19 @@ function parsePricingItem(value: unknown): CmsPricingItem | null {
   return {
     id,
     title,
+    pricingMode: parsePricingMode(record.pricing_mode),
+    currency: asString(record.currency).trim(),
     priceLabel: asString(record.price_label).trim(),
     description: asString(record.description).trim(),
+    idealFor: asString(record.ideal_for).trim(),
     features: asArray(record.features)
       .map((feature) => asString(feature).trim())
       .filter(Boolean),
+    context: asString(record.context).trim(),
     cta: parseLink(record.cta_label, record.cta_url),
+    featured: asBoolean(record.featured),
+    relatedServices: parseSummaries(record.related_services),
+    relatedCaseStudies: parseSummaries(record.related_case_studies),
   };
 }
 

@@ -19,6 +19,7 @@ import type {
   CmsCollaborator,
   CmsStandardPage,
 } from "./cms-types";
+import { formatOfferPrice } from "./pricing";
 import {
   resolveAboutPage,
   resolveCollaborators,
@@ -190,11 +191,22 @@ test("pricing parser preserves API order and tolerates empty items", () => {
         {
           id: 3,
           title: "Photography",
-          price_label: "From 400",
+          pricing_mode: "fixed",
+          currency: "€",
+          price_label: "400",
           description: "A shoot",
+          ideal_for: "Research teams",
           features: ["Planning", 7, "Delivery"],
+          context: "Travel is scoped separately.",
           cta_label: "Quote",
           cta_url: "/#contact",
+          featured: true,
+          related_services: [
+            { id: 4, title: "Photography", slug: "photography" },
+          ],
+          related_case_studies: [
+            { id: 5, title: "A research story", slug: "a-research-story" },
+          ],
         },
       ],
       positioning_message: "Scoped individually.",
@@ -203,8 +215,84 @@ test("pricing parser preserves API order and tolerates empty items", () => {
   );
 
   assert.deepEqual(page?.items[0].features, ["Planning", "Delivery"]);
+  assert.equal(page?.items[0].pricingMode, "fixed");
+  assert.equal(page?.items[0].currency, "€");
+  assert.equal(page?.items[0].idealFor, "Research teams");
+  assert.equal(page?.items[0].context, "Travel is scoped separately.");
+  assert.equal(page?.items[0].featured, true);
+  assert.equal(page?.items[0].relatedServices[0].slug, "photography");
+  assert.equal(page?.items[0].relatedCaseStudies[0].slug, "a-research-story");
   assert.equal(page?.items[0].cta.url, "/#contact");
   assert.deepEqual(parsePricingPage({ id: 8, title: "Pricing", meta }, apiUrl)?.items, []);
+});
+
+test("pricing modes format structured and legacy CMS labels without inventing prices", () => {
+  assert.equal(formatOfferPrice({
+    pricingMode: "starting_from",
+    currency: "€",
+    priceLabel: "1,500",
+  }), "From €1,500");
+  assert.equal(formatOfferPrice({
+    pricingMode: "fixed",
+    currency: "EUR",
+    priceLabel: "1,500",
+  }), "EUR 1,500");
+  assert.equal(formatOfferPrice({
+    pricingMode: "custom",
+    currency: "",
+    priceLabel: "Let’s talk",
+  }), "Let’s talk");
+  assert.equal(formatOfferPrice({
+    pricingMode: "starting_from",
+    currency: "€",
+    priceLabel: "From €400",
+  }), "From €400");
+  assert.equal(formatOfferPrice({
+    pricingMode: "starting_from",
+    currency: "€",
+    priceLabel: "[MOCK] From €1,500",
+  }), "[MOCK] From €1,500");
+  assert.equal(formatOfferPrice({
+    pricingMode: "fixed",
+    currency: "€",
+    priceLabel: "",
+  }), "");
+});
+
+test("pricing parser keeps intentionally empty optional offer fields empty", () => {
+  const page = parsePricingPage(
+    {
+      id: 8,
+      title: "Pricing",
+      meta: { ...meta, type: "public_content.PricingPage", slug: "pricing" },
+      pricing_items: [
+        {
+          id: 10,
+          title: "Custom project",
+          pricing_mode: "unsupported",
+          price_label: "",
+          description: "",
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(page?.items[0], {
+    id: 10,
+    title: "Custom project",
+    pricingMode: "starting_from",
+    currency: "",
+    priceLabel: "",
+    description: "",
+    idealFor: "",
+    features: [],
+    context: "",
+    cta: { label: "", url: "" },
+    featured: false,
+    relatedServices: [],
+    relatedCaseStudies: [],
+  });
 });
 
 test("service and work payloads retain only controlled route data", () => {
