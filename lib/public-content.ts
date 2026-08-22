@@ -2,7 +2,9 @@ import type {
   CmsAboutPage,
   CmsCollaborator,
   CmsHomePage,
+  CmsPageSummary,
   CmsStandardPage,
+  CmsTestimonial,
 } from "./cms-types";
 
 export function resolveAboutPage(
@@ -39,6 +41,25 @@ export function resolveHomeCollaborators(
     return cmsHome.collaborators;
   }
   return resolveCollaborators(cmsCollaborators, fallbackCollaborators);
+}
+
+export function resolveSelectedHomeItems<T extends { id: number }>(
+  selectedItems: CmsPageSummary[],
+  availableItems: T[],
+): T[] {
+  return selectedItems
+    .map((summary) => availableItems.find((item) => item.id === summary.id))
+    .filter((item): item is T => Boolean(item));
+}
+
+export function resolveHomeTestimonials(
+  cmsHome: CmsHomePage | null,
+  cmsTestimonials: CmsTestimonial[],
+): CmsTestimonial[] {
+  if (cmsHome?.testimonialsConfigured) {
+    return cmsHome.testimonials;
+  }
+  return cmsTestimonials;
 }
 
 export function resolveStandardPage(

@@ -24,7 +24,11 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
-import { resolveHomeCollaborators } from "@/lib/public-content";
+import {
+  resolveHomeCollaborators,
+  resolveHomeTestimonials,
+  resolveSelectedHomeItems,
+} from "@/lib/public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const [home, settings] = await Promise.all([getHomePage(), getSiteSettings()]);
@@ -50,22 +54,11 @@ export default async function Home() {
   const home = cmsHome ?? fallbackHome;
   const services = cmsServices.length > 0 ? cmsServices : fallbackServices;
   const projects = cmsProjects.length > 0 ? cmsProjects : fallbackCaseStudies;
-  const resolvedFeaturedServices = home.featuredServices.length > 0
-    ? home.featuredServices
-        .map((summary) => services.find((service) => service.id === summary.id))
-        .filter((service): service is (typeof services)[number] => Boolean(service))
-    : services;
-  const featuredServices = resolvedFeaturedServices.length > 0
-    ? resolvedFeaturedServices
-    : services;
-  const resolvedSelectedWork = home.selectedWork.length > 0
-    ? home.selectedWork
-        .map((summary) => projects.find((project) => project.id === summary.id))
-        .filter((project): project is (typeof projects)[number] => Boolean(project))
-    : projects;
-  const selectedWork = resolvedSelectedWork.length > 0
-    ? resolvedSelectedWork
-    : projects;
+  const featuredServices = resolveSelectedHomeItems(
+    home.featuredServices,
+    services,
+  );
+  const selectedWork = resolveSelectedHomeItems(home.selectedWork, projects);
   const displayedCollaborators = resolveHomeCollaborators(
     cmsHome,
     collaborators,
@@ -73,6 +66,10 @@ export default async function Home() {
   );
   const collaboratorsEnabled = cmsHome?.collaboratorsConfigured
     ? cmsHome.collaboratorsEnabled
+    : true;
+  const displayedTestimonials = resolveHomeTestimonials(cmsHome, testimonials);
+  const testimonialsEnabled = cmsHome?.testimonialsConfigured
+    ? cmsHome.testimonialsEnabled
     : true;
 
   return (
@@ -109,33 +106,48 @@ export default async function Home() {
         )}
       </section>
 
-      <section className="section work-section" id="work">
-        <div className="section-heading">
-          <div>
-            <div className="eyebrow">
-              Selected work <span />
+      {home.selectedWorkEnabled && (
+        <section className="section work-section" id="work">
+          <div className="section-heading">
+            <div>
+              {home.selectedWorkEyebrow && (
+                <div className="eyebrow">
+                  {home.selectedWorkEyebrow} <span />
+                </div>
+              )}
+              <h2>{home.selectedWorkHeading}</h2>
             </div>
-            <h2>Turning research into meaningful stories</h2>
+            {home.selectedWorkCta.label && home.selectedWorkCta.url && (
+              <Link
+                href={home.selectedWorkCta.url}
+                className="text-link desktop-link"
+              >
+                {home.selectedWorkCta.label} <span aria-hidden="true">→</span>
+              </Link>
+            )}
           </div>
-          <Link href="/work" className="text-link desktop-link">
-            View all work <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-        <WorkGrid projects={selectedWork.slice(0, 3)} variant="featured" />
-      </section>
+          <WorkGrid projects={selectedWork.slice(0, 3)} variant="featured" />
+        </section>
+      )}
 
-      <section className="services-section" id="services">
-        <div className="section-label">
-          What we do <span />
-        </div>
-        <div className="services-heading-row">
-          <h2>Communication solutions for research and innovation.</h2>
-          <Link href="/services" className="section-link">
-            See all services <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-        <ServicesGrid services={featuredServices.slice(0, 4)} />
-      </section>
+      {home.servicesEnabled && (
+        <section className="services-section" id="services">
+          {home.servicesEyebrow && (
+            <div className="section-label">
+              {home.servicesEyebrow} <span />
+            </div>
+          )}
+          <div className="services-heading-row">
+            <h2>{home.servicesHeading}</h2>
+            {home.servicesCta.label && home.servicesCta.url && (
+              <Link href={home.servicesCta.url} className="section-link">
+                {home.servicesCta.label} <span aria-hidden="true">→</span>
+              </Link>
+            )}
+          </div>
+          <ServicesGrid services={featuredServices.slice(0, 4)} />
+        </section>
+      )}
 
       {collaboratorsEnabled && (
         <CollaboratorsSlider
@@ -144,47 +156,62 @@ export default async function Home() {
         />
       )}
 
-      <Testimonials testimonials={testimonials} />
+      {testimonialsEnabled && (
+        <Testimonials
+          testimonials={displayedTestimonials}
+          heading={home.testimonialsHeading}
+        />
+      )}
 
-      <section id="about" className="about-section">
-        <div className="section-label">
-          About LaBio Media <span />
-        </div>
-        <div className="about-grid">
-          <div className="about-copy">
-            <h2>{home.aboutHeading}</h2>
-            <p className="about-lead">{home.aboutCopy}</p>
-            <Link href="/about" className="about-button">
-              More about LaBio Media <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-          {home.aboutImage && (
-            <div className="about-image">
-              <CmsImage image={home.aboutImage} sizes="(max-width: 768px) 100vw, 50vw" />
+      {home.aboutEnabled && (
+        <section id="about" className="about-section">
+          {home.aboutEyebrow && (
+            <div className="section-label">
+              {home.aboutEyebrow} <span />
             </div>
           )}
-        </div>
-      </section>
-
-      <section className="contact-page-section" id="contact">
-        <div className="contact-heading">
-          <div className="section-label">
-            Contact <span />
+          <div className="about-grid">
+            <div className="about-copy">
+              <h2>{home.aboutHeading}</h2>
+              <p className="about-lead">{home.aboutCopy}</p>
+              {home.aboutCta.label && home.aboutCta.url && (
+                <Link href={home.aboutCta.url} className="about-button">
+                  {home.aboutCta.label} <span aria-hidden="true">→</span>
+                </Link>
+              )}
+            </div>
+            {home.aboutImage && (
+              <div className="about-image">
+                <CmsImage image={home.aboutImage} sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
+            )}
           </div>
-          <h2>{home.contactHeading}</h2>
-          <p>{home.contactCopy}</p>
-          {settings?.publicContactEmail && (
-            <p className="public-contact-detail">
-              <a href={"mailto:" + settings.publicContactEmail}>
-                {settings.publicContactEmail}
-              </a>
-            </p>
-          )}
-        </div>
-        <div className="contact-form-wrap">
-          <ContactForm contactEmail={settings?.publicContactEmail} />
-        </div>
-      </section>
+        </section>
+      )}
+
+      {home.contactEnabled && (
+        <section className="contact-page-section" id="contact">
+          <div className="contact-heading">
+            {home.contactEyebrow && (
+              <div className="section-label">
+                {home.contactEyebrow} <span />
+              </div>
+            )}
+            <h2>{home.contactHeading}</h2>
+            <p>{home.contactCopy}</p>
+            {settings?.publicContactEmail && (
+              <p className="public-contact-detail">
+                <a href={"mailto:" + settings.publicContactEmail}>
+                  {settings.publicContactEmail}
+                </a>
+              </p>
+            )}
+          </div>
+          <div className="contact-form-wrap">
+            <ContactForm contactEmail={settings?.publicContactEmail} />
+          </div>
+        </section>
+      )}
 
       <PublicFooter settings={settings} />
     </PublicShell>
