@@ -27,6 +27,8 @@ export type ProjectFile = {
 
 export type PortalMessage = {
   id: number;
+  conversation_id?: number;
+  project_id?: number | null;
   body: string;
   content: string;
   sender_username: string;
@@ -68,6 +70,10 @@ export type Approval = {
 };
 export type Dashboard = {
   client: { name: string; company: string };
+  active_project_count?: number;
+  message_count?: number;
+  pending_approval_count?: number;
+  delivered_file_count?: number;
   active_projects: Project[];
   pending_approvals: Approval[];
   latest_messages: PortalMessage[];

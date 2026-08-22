@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PortalShell from "@/app/components/PortalShell";
 import { apiFetch } from "@/lib/api";
+import { conversationHref, projectFileHref } from "@/lib/portal-navigation";
 import type { Approval, Dashboard, PortalMessage } from "@/lib/portal-types";
 
 function approvalHref(approval: Approval): string {
-  return `/client/projects/${approval.project}#file-${approval.file}`;
+  return projectFileHref(approval.project, approval.file);
 }
 
 function formatMessageDate(value: string): string {
@@ -58,7 +59,9 @@ function LatestMessages({ messages }: { messages: PortalMessage[] }) {
             return (
               <Link
                 className="dashboard-message-preview"
-                href="/client/messages"
+                href={message.conversation_id
+                  ? conversationHref(message.conversation_id)
+                  : "/client/messages"}
                 key={message.id}
               >
                 <span className="dashboard-message-meta">
@@ -142,22 +145,25 @@ export default function ClientDashboard() {
           <div className="portal-cards">
             <StatCard
               label="Active projects"
-              value={data.active_projects.length}
+              value={data.active_project_count ?? data.active_projects.length}
               href="/client/projects"
             />
             <StatCard
               label="Messages"
-              value={data.latest_messages.length}
+              value={data.message_count ?? data.latest_messages.length}
               href="/client/messages"
             />
             <StatCard
               label="Pending approvals"
-              value={data.pending_approvals.length}
+              value={data.pending_approval_count ?? data.pending_approvals.length}
               href={data.pending_approvals[0]
                 ? approvalHref(data.pending_approvals[0])
                 : undefined}
             />
-            <StatCard label="Delivered files" value={data.latest_files.length} />
+            <StatCard
+              label="Delivered files"
+              value={data.delivered_file_count ?? data.latest_files.length}
+            />
           </div>
 
           <section className="portal-section dashboard-projects">

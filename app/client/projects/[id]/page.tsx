@@ -3,6 +3,10 @@
 import { use, useCallback, useEffect, useState } from "react";
 import PortalShell from "@/app/components/PortalShell";
 import { apiFetch } from "@/lib/api";
+import {
+  projectFileIdFromSearch,
+  projectFileTargetId,
+} from "@/lib/portal-navigation";
 import type { PortalMessage, Project, ProjectFile } from "@/lib/portal-types";
 
 type FileAccess = { url: string };
@@ -47,9 +51,15 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
   }, [load]);
 
   useEffect(() => {
-    if (!files.length || !window.location.hash) return;
-    const target = document.getElementById(window.location.hash.slice(1));
-    target?.scrollIntoView({ block: "center" });
+    if (!files.length) return;
+    const fileId = projectFileIdFromSearch(window.location.search);
+    if (!fileId) return;
+    const target = document.getElementById(projectFileTargetId(fileId));
+    if (!target) return;
+    target.classList.add("is-focused");
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: "center" });
+    return () => target.classList.remove("is-focused");
   }, [files]);
 
   async function send(event: React.FormEvent) {
@@ -130,10 +140,18 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                 {files.length ? (
                   <div className="project-file-list">
                     {files.map((file) => (
-                      <div className="file-row" id={`file-${file.id}`} key={file.id}>
+                      <div
+                        className="file-row"
+                        id={projectFileTargetId(file.id)}
+                        key={file.id}
+                        tabIndex={-1}
+                      >
                         <span className="file-details">
                           <strong>{file.display_name || file.filename}</strong>
                           <small>{file.category.replaceAll("_", " ")}</small>
+                          {file.category === "approval" && file.pending_approval && (
+                            <small className="file-review-status">Review requested</small>
+                          )}
                           {(file.category === "preview" || file.category === "approval")
                             && !file.preview_supported && (
                               <small>
@@ -160,6 +178,7 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                           )}
                           {file.category === "approval" && file.pending_approval && (
                             <>
+                              <span className="file-approval-label">Approval required</span>
                               <button
                                 type="button"
                                 className="portal-action portal-action-primary"

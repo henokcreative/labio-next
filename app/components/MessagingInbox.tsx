@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { conversationIdFromSearch } from "@/lib/portal-navigation";
 import type { Conversation, MessagingClient } from "@/lib/portal-types";
 
 type StaffFilter = "all" | "unread" | "mine" | "unassigned";
@@ -35,11 +36,17 @@ export default function MessagingInbox({ staff }: { staff: boolean }) {
         `/api/messaging/conversations/${query}`
       );
       setConversations(next);
-      setSelectedId((current) =>
-        current && next.some((conversation) => conversation.id === current)
-          ? current
-          : next[0]?.id ?? null
-      );
+      setSelectedId((current) => {
+        if (current && next.some((conversation) => conversation.id === current)) {
+          return current;
+        }
+        const requested = staff
+          ? null
+          : conversationIdFromSearch(window.location.search);
+        return requested && next.some((conversation) => conversation.id === requested)
+          ? requested
+          : next[0]?.id ?? null;
+      });
       setError("");
     } catch (nextError) {
       setError((nextError as Error).message);
@@ -71,22 +78,35 @@ export default function MessagingInbox({ staff }: { staff: boolean }) {
     return () => window.clearTimeout(timer);
   }, [staff]);
 
+  useEffect(() => {
+    const selected = conversations.find(
+      (conversation) => conversation.id === selectedId
+    );
+    if (!selected?.unread_count) return;
+    let cancelled = false;
+    apiFetch(`/api/messaging/conversations/${selected.id}/mark-read/`, {
+      method: "POST",
+    })
+      .then(() => {
+        if (cancelled) return;
+        setConversations((current) => current.map((conversation) =>
+          conversation.id === selected.id
+            ? { ...conversation, unread_count: 0 }
+            : conversation
+        ));
+      })
+      .catch((nextError: Error) => {
+        if (!cancelled) setError(nextError.message);
+      });
+    return () => { cancelled = true; };
+  }, [conversations, selectedId]);
+
   const selected = conversations.find(
     (conversation) => conversation.id === selectedId
   );
 
-  async function selectConversation(conversation: Conversation) {
+  function selectConversation(conversation: Conversation) {
     setSelectedId(conversation.id);
-    if (!conversation.unread_count) return;
-    try {
-      await apiFetch(
-        `/api/messaging/conversations/${conversation.id}/mark-read/`,
-        { method: "POST" }
-      );
-      await loadConversations();
-    } catch (nextError) {
-      setError((nextError as Error).message);
-    }
   }
 
   async function sendReply(event: React.FormEvent) {
@@ -231,7 +251,7 @@ export default function MessagingInbox({ staff }: { staff: boolean }) {
                 <button
                   className={selectedId === conversation.id ? "active" : ""}
                   key={conversation.id}
-                  onClick={() => void selectConversation(conversation)}
+                  onClick={() => selectConversation(conversation)}
                 >
                   <span className="conversation-title">
                     <strong>{staff ? conversation.client_name : conversation.subject}</strong>
