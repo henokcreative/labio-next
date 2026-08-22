@@ -1,4 +1,5 @@
 import CmsImage from "./CmsImage";
+import ConsentAwareEmbed from "./ConsentAwareEmbed";
 import type { CmsStreamBlock } from "@/lib/cms-types";
 
 function getEmbedUrl(value: string): string | null {
@@ -56,15 +57,7 @@ function StreamBlock({ block }: { block: CmsStreamBlock }) {
     case "embed": {
       const embedUrl = getEmbedUrl(block.value);
       return embedUrl ? (
-        <div className="cms-embed">
-          <iframe
-            src={embedUrl}
-            title="Embedded media"
-            loading="lazy"
-            allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
+        <ConsentAwareEmbed embedUrl={embedUrl} sourceUrl={block.value} />
       ) : (
         <p className="cms-embed-fallback">
           <a href={block.value}>View embedded media</a>

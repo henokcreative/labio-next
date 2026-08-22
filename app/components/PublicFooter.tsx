@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CmsSiteSettings } from "@/lib/cms-types";
 import BrandName from "./BrandName";
+import CookieSettingsButton from "./CookieSettingsButton";
 
 export default function PublicFooter({
   settings,
@@ -16,6 +17,8 @@ export default function PublicFooter({
       <div className="footer-links">
         <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>
+        <Link href="/cookies">Cookies</Link>
+        <CookieSettingsButton />
       </div>
       {settings && settings.socialLinks.length > 0 && (
         <div className="footer-social">

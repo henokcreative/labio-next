@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Montserrat } from "next/font/google";
+import ConsentManager from "@/app/components/ConsentManager";
 import { getPublicThemeInitializationScript } from "@/lib/public-theme";
 import "./globals.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: getPublicThemeInitializationScript() }}
         />
         {children}
+        <ConsentManager />
       </body>
     </html>
   );
