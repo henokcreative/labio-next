@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import BusinessIdentity from "@/app/components/BusinessIdentity";
 import ContactForm from "@/app/components/ContactForm";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
@@ -32,13 +33,7 @@ export default async function ContactPage() {
             Share a little about your research, organisation or idea. We’ll
             respond with the right questions and a practical next step.
           </p>
-          {settings?.publicContactEmail && (
-            <p className="public-contact-detail">
-              <a href={`mailto:${settings.publicContactEmail}`}>
-                {settings.publicContactEmail}
-              </a>
-            </p>
-          )}
+          <BusinessIdentity label="Official details" settings={settings} />
         </div>
         <div className="contact-form-wrap">
           <ContactForm contactEmail={settings?.publicContactEmail} />
