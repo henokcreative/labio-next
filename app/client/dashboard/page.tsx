@@ -20,28 +20,51 @@ function formatMessageDate(value: string): string {
   }).format(date);
 }
 
+type StatIcon = "project" | "message" | "approval" | "delivery";
+
+function DashboardIcon({ icon }: { icon: StatIcon }) {
+  const paths = {
+    project: <path d="M3 7.5h18v11H3zM8 7.5V5h8v2.5" />,
+    message: <path d="M4 5h16v11H9l-5 4v-4z" />,
+    approval: <path d="M5 4h14v16H5zM8 12l2.5 2.5L16 9" />,
+    delivery: <path d="M12 3v12m-4-4 4 4 4-4M5 20h14" />,
+  };
+  return (
+    <span className={`portal-card-icon portal-card-icon-${icon}`} aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        {paths[icon]}
+      </svg>
+    </span>
+  );
+}
+
 function StatCard({
   label,
   value,
   href,
+  icon,
 }: {
   label: string;
   value: number;
   href?: string;
+  icon: StatIcon;
 }) {
   const content = (
     <>
-      <span>{label}</span>
-      <strong>{value}</strong>
+      <DashboardIcon icon={icon} />
+      <span className="portal-card-copy">
+        <span>{label}</span>
+        <strong>{value}</strong>
+      </span>
     </>
   );
 
   return href ? (
-    <Link className="portal-card portal-card-link" href={href}>
+    <Link className="portal-card portal-card-summary portal-card-link" href={href}>
       {content}
     </Link>
   ) : (
-    <div className="portal-card">{content}</div>
+    <div className="portal-card portal-card-summary">{content}</div>
   );
 }
 
@@ -147,11 +170,13 @@ export default function ClientDashboard() {
               label="Active projects"
               value={data.active_project_count ?? data.active_projects.length}
               href="/client/projects"
+              icon="project"
             />
             <StatCard
               label="Messages"
               value={data.message_count ?? data.latest_messages.length}
               href="/client/messages"
+              icon="message"
             />
             <StatCard
               label="Pending approvals"
@@ -159,10 +184,12 @@ export default function ClientDashboard() {
               href={data.pending_approvals[0]
                 ? approvalHref(data.pending_approvals[0])
                 : undefined}
+              icon="approval"
             />
             <StatCard
               label="Delivered files"
               value={data.delivered_file_count ?? data.latest_files.length}
+              icon="delivery"
             />
           </div>
 

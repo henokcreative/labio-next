@@ -4,7 +4,7 @@ import { use, useCallback, useEffect, useState } from "react";
 import PortalShell from "@/app/components/PortalShell";
 import { apiFetch } from "@/lib/api";
 import {
-  projectFileIdFromSearch,
+  projectFileIdFromValue,
   projectFileTargetId,
 } from "@/lib/portal-navigation";
 import type { PortalMessage, Project, ProjectFile } from "@/lib/portal-types";
@@ -20,8 +20,16 @@ function formatMessageDate(value: string): string {
   }).format(date);
 }
 
-export default function ProjectDetail({ params }: { params: Promise<{ id: string }> }) {
+export default function ProjectDetail({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ file?: string | string[] }>;
+}) {
   const { id } = use(params);
+  const query = use(searchParams);
+  const requestedFileId = projectFileIdFromValue(query.file);
   const [project, setProject] = useState<Project>();
   const [files, setFiles] = useState<ProjectFile[]>([]);
   const [messages, setMessages] = useState<PortalMessage[]>([]);
@@ -52,15 +60,14 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
 
   useEffect(() => {
     if (!files.length) return;
-    const fileId = projectFileIdFromSearch(window.location.search);
-    if (!fileId) return;
-    const target = document.getElementById(projectFileTargetId(fileId));
+    if (!requestedFileId || !files.some((file) => file.id === requestedFileId)) {
+      return;
+    }
+    const target = document.getElementById(projectFileTargetId(requestedFileId));
     if (!target) return;
-    target.classList.add("is-focused");
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: "center" });
-    return () => target.classList.remove("is-focused");
-  }, [files]);
+  }, [files, requestedFileId]);
 
   async function send(event: React.FormEvent) {
     event.preventDefault();
@@ -141,7 +148,9 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                   <div className="project-file-list">
                     {files.map((file) => (
                       <div
-                        className="file-row"
+                        className={`file-row${
+                          file.id === requestedFileId ? " is-targeted" : ""
+                        }`}
                         id={projectFileTargetId(file.id)}
                         key={file.id}
                         tabIndex={-1}
@@ -160,40 +169,44 @@ export default function ProjectDetail({ params }: { params: Promise<{ id: string
                             )}
                         </span>
                         <div className="file-actions">
-                          <button
-                            type="button"
-                            className="portal-action portal-action-primary"
-                            onClick={() => void downloadProtectedFile(file.download_url)}
-                          >
-                            Download
-                          </button>
-                          {file.preview_supported && file.preview_url && (
-                            <button
-                              type="button"
-                              className="portal-action portal-action-secondary"
-                              onClick={() => void previewProtectedFile(file.preview_url!)}
-                            >
-                              Preview
-                            </button>
-                          )}
-                          {file.category === "approval" && file.pending_approval && (
-                            <>
-                              <span className="file-approval-label">Approval required</span>
-                              <button
-                                type="button"
-                                className="portal-action portal-action-primary"
-                                onClick={() => void respondToApproval(file.id, "approved")}
-                              >
-                                Approve
-                              </button>
+                          <div className="file-access-actions">
+                            {file.preview_supported && file.preview_url && (
                               <button
                                 type="button"
                                 className="portal-action portal-action-secondary"
-                                onClick={() => void respondToApproval(file.id, "changes_requested")}
+                                onClick={() => void previewProtectedFile(file.preview_url!)}
                               >
-                                Request changes
+                                Preview
                               </button>
-                            </>
+                            )}
+                            <button
+                              type="button"
+                              className="portal-action portal-action-secondary"
+                              onClick={() => void downloadProtectedFile(file.download_url)}
+                            >
+                              Download
+                            </button>
+                          </div>
+                          {file.category === "approval" && file.pending_approval && (
+                            <div className="file-approval-actions">
+                              <strong>Approval required</strong>
+                              <div className="file-approval-buttons">
+                                <button
+                                  type="button"
+                                  className="portal-action portal-action-primary"
+                                  onClick={() => void respondToApproval(file.id, "approved")}
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  type="button"
+                                  className="portal-action portal-action-secondary"
+                                  onClick={() => void respondToApproval(file.id, "changes_requested")}
+                                >
+                                  Request changes
+                                </button>
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
