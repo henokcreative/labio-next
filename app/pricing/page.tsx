@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     "Pricing — LaBio Media",
     "Editorial starting points for LaBio Media projects. Every engagement is scoped individually.",
     settings,
+    "/pricing",
   );
 }
 

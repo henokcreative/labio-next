@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Montserrat } from "next/font/google";
 import ConsentManager from "@/app/components/ConsentManager";
 import { getPublicThemeInitializationScript } from "@/lib/public-theme";
+import { publicSiteUrl } from "@/lib/public-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,12 +18,23 @@ const montserratBrand = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://labiomedia.com",
-  ),
-  title: { default: "LaBio Media", template: "%s | LaBio Media" },
+  metadataBase: new URL(publicSiteUrl("/")),
+  title: "LaBio Media",
   description: "Creative communication for research and science.",
   applicationName: "LaBio Media",
+  openGraph: {
+    type: "website",
+    siteName: "LaBio Media",
+    locale: "en_GB",
+    title: "LaBio Media",
+    description: "Creative communication for research and science.",
+    url: publicSiteUrl("/"),
+  },
+  twitter: {
+    card: "summary",
+    title: "LaBio Media",
+    description: "Creative communication for research and science.",
+  },
   icons: {
     icon: [
       { url: "/brand/logo.svg", type: "image/svg+xml" },

@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: ServiceRouteProps): Promise<M
     "Service — LaBio Media",
     resolved?.summary || "LaBio Media services for research communication.",
     settings,
+    `/services/${slug}`,
   );
 }
 

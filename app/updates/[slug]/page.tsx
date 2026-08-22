@@ -8,6 +8,7 @@ import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
 import { getSiteSettings, getUpdatePage } from "@/lib/cms";
 import type { CmsEventPage, CmsUpdatePage } from "@/lib/cms-types";
 import { pageMetadata } from "@/lib/public-metadata";
+import { publicSiteUrl } from "@/lib/public-url";
 import {
   formatEventSchedule,
   formatPublicDate,
@@ -18,13 +19,11 @@ import {
 type UpdateRouteProps = { params: Promise<{ slug: string }> };
 
 function canonicalUrl(slug: string): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://labiomedia.com";
-  return new URL(`/updates/${slug}`, siteUrl).toString();
+  return publicSiteUrl(`/updates/${slug}`);
 }
 
 function siteRootUrl(): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://labiomedia.com";
-  return new URL("/", siteUrl).toString();
+  return publicSiteUrl("/");
 }
 
 function eventDateTime(date: string, time?: string): string {
@@ -74,17 +73,17 @@ export async function generateMetadata({ params }: UpdateRouteProps): Promise<Me
     getUpdatePage(slug),
     getSiteSettings(),
   ]);
+  const canonical = canonicalUrl(page?.meta.slug || slug);
   const metadata = pageMetadata(
     page,
     "Updates — LaBio Media",
     page?.summary || "An update from LaBio Media.",
     settings,
+    canonical,
   );
-  const canonical = `/updates/${page?.meta.slug || slug}`;
 
   return {
     ...metadata,
-    alternates: { canonical },
     openGraph: page?.kind === "article"
       ? {
           ...metadata.openGraph,
