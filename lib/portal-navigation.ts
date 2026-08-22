@@ -16,6 +16,12 @@ export function projectFileIdFromSearch(search: string): number | null {
   return positiveInteger(new URLSearchParams(search).get("file"));
 }
 
+export function projectFileIdFromValue(
+  value: string | string[] | undefined,
+): number | null {
+  return typeof value === "string" ? positiveInteger(value) : null;
+}
+
 export function conversationHref(conversationId: number): string {
   return `/client/messages?conversation=${conversationId}`;
 }
