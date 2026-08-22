@@ -58,7 +58,14 @@ export type MessagingClient = {
   last_name: string;
   name: string;
 };
-export type Approval = { id: number; file: number; file_name: string; status: string; comment: string };
+export type Approval = {
+  id: number;
+  project: number;
+  file: number;
+  file_name: string;
+  status: string;
+  comment: string;
+};
 export type Dashboard = {
   client: { name: string; company: string };
   active_projects: Project[];

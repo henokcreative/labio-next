@@ -3844,6 +3844,7 @@ html[data-public-theme="dark"] .consent-layer {
 .portal-card-link:focus-visible,
 .project-row:focus-visible,
 .dashboard-message-preview:focus-visible,
+.dashboard-approval-link:focus-visible,
 .dashboard-content .section-heading a:focus-visible,
 .portal-action:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -3956,6 +3957,27 @@ html[data-public-theme="dark"] .consent-layer {
   overflow-wrap: anywhere;
 }
 
+.dashboard-summary-list .dashboard-approval-item {
+  padding: 0;
+}
+
+.dashboard-approval-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  color: inherit;
+  text-decoration: none;
+  transition: color 160ms ease, padding 160ms ease;
+}
+
+.dashboard-approval-link:hover {
+  padding-right: 3px;
+  padding-left: 3px;
+  color: var(--color-primary-dark);
+}
+
 .portal-empty-state {
   margin: 16px 0 0;
   color: #777777;
@@ -3986,6 +4008,15 @@ html[data-public-theme="dark"] .consent-layer {
 .file-row {
   align-items: flex-start;
   padding: 20px 0;
+  scroll-margin-block: 24px;
+}
+
+.file-row:target {
+  margin: 0 -12px;
+  padding-right: 12px;
+  padding-left: 12px;
+  border-radius: 8px;
+  background: #faf6f6;
 }
 
 .file-details {
