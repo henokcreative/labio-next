@@ -8,6 +8,7 @@ import {
   projectFileTargetId,
 } from "@/lib/portal-navigation";
 import type { PortalMessage, Project, ProjectFile } from "@/lib/portal-types";
+import { downloadProtectedFile } from "@/lib/protected-file-download";
 
 type FileAccess = { url: string };
 
@@ -114,10 +115,9 @@ export default function ProjectDetail({
     }
   }
 
-  async function downloadProtectedFile(endpoint: string) {
+  async function handleProtectedFileDownload(endpoint: string) {
     try {
-      const { url } = await apiFetch<FileAccess>(endpoint);
-      window.location.assign(url);
+      await downloadProtectedFile(endpoint);
     } catch (nextError) {
       setError((nextError as Error).message);
     }
@@ -182,7 +182,7 @@ export default function ProjectDetail({
                             <button
                               type="button"
                               className="portal-action portal-action-secondary"
-                              onClick={() => void downloadProtectedFile(file.download_url)}
+                              onClick={() => void handleProtectedFileDownload(file.download_url)}
                             >
                               Download
                             </button>
