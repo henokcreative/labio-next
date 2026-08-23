@@ -4,6 +4,7 @@ import type {
   CmsArticleSummary,
   CmsArticleType,
   CmsCapability,
+  CmsCaseStudySummary,
   CmsCaseStudyPage,
   CmsCollaborator,
   CmsContactPage,
@@ -173,6 +174,28 @@ function parseSummaries(value: unknown): CmsPageSummary[] {
   return asArray(value)
     .map(parsePageSummary)
     .filter((item): item is CmsPageSummary => item !== null);
+}
+
+function parseCaseStudySummaries(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsCaseStudySummary[] {
+  return asArray(value).flatMap((item) => {
+    const record = asRecord(item);
+    if (!record) return [];
+    const id = asNumber(record.id);
+    const title = asString(record.title).trim();
+    const slug = asString(record.slug).trim();
+    if (id === null || !title || !slug) return [];
+    return [{
+      id,
+      title,
+      slug,
+      summary: asString(record.summary).trim(),
+      category: asString(record.category).trim(),
+      heroImage: parseCmsImage(record.hero_image, apiBaseUrl),
+    }];
+  });
 }
 
 function parseStringBlocks(value: unknown, blockType: string): string[] {
@@ -368,8 +391,26 @@ export function parseServicePage(
     body: parseStreamField(raw.body, apiBaseUrl),
     capabilities: parseStructuredList(raw.capabilities, "capability"),
     process: parseStructuredList<CmsProcessStep>(raw.process, "step"),
+    testimonialsEnabled: Object.prototype.hasOwnProperty.call(
+      raw,
+      "testimonials_enabled",
+    ) ? asBoolean(raw.testimonials_enabled) : true,
+    testimonialsHeading:
+      asString(raw.testimonials_heading).trim() || "Client perspectives",
+    testimonials: parseTestimonials(raw.testimonials),
+    relatedWorkEnabled: Object.prototype.hasOwnProperty.call(
+      raw,
+      "related_work_enabled",
+    ) ? asBoolean(raw.related_work_enabled) : true,
+    relatedWorkHeading:
+      asString(raw.related_work_heading).trim() || "Related work",
+    ctaHeading:
+      asString(raw.cta_heading).trim() || "Have a project in mind?",
     cta: parseLink(raw.cta_label, raw.cta_url),
-    relatedCaseStudies: parseSummaries(raw.related_case_studies),
+    relatedCaseStudies: parseCaseStudySummaries(
+      raw.related_case_studies,
+      apiBaseUrl,
+    ),
   };
 }
 

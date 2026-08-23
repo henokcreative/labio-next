@@ -141,6 +141,15 @@ export type CmsServiceIndexPage = CmsPageBase & {
   intro: CmsStreamBlock[];
 };
 
+export type CmsCaseStudySummary = {
+  id: number;
+  title: string;
+  slug: string;
+  summary: string;
+  category: string;
+  heroImage: CmsImage | null;
+};
+
 export type CmsServicePage = CmsPageBase & {
   kind: "service";
   summary: string;
@@ -148,8 +157,14 @@ export type CmsServicePage = CmsPageBase & {
   body: CmsStreamBlock[];
   capabilities: CmsCapability[];
   process: CmsProcessStep[];
+  testimonialsEnabled: boolean;
+  testimonialsHeading: string;
+  testimonials: CmsTestimonial[];
+  relatedWorkEnabled: boolean;
+  relatedWorkHeading: string;
+  ctaHeading: string;
   cta: CmsLink;
-  relatedCaseStudies: CmsPageSummary[];
+  relatedCaseStudies: CmsCaseStudySummary[];
 };
 
 export type CmsPortfolioIndexPage = CmsPageBase & {

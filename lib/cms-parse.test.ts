@@ -399,7 +399,35 @@ test("service and work payloads retain only controlled route data", () => {
         { type: "capability", value: { title: "Portraits", description: "On location" } },
         { type: "unknown", value: { title: "Ignored" } },
       ],
-      related_case_studies: [{ id: 3, title: "A study", slug: "a-study" }],
+      testimonials_enabled: true,
+      testimonials_heading: "Selected perspectives",
+      testimonials: [
+        {
+          id: 8,
+          quote: "Thoughtful work.",
+          person: "Research client",
+          role: "Director",
+          organization: "Institute",
+        },
+      ],
+      related_work_enabled: true,
+      related_work_heading: "Selected projects",
+      cta_heading: "Discuss your research",
+      related_case_studies: [
+        {
+          id: 3,
+          title: "A study",
+          slug: "a-study",
+          summary: "A public case study",
+          category: "Photography",
+          hero_image: {
+            url: "/media/work.jpg",
+            width: 900,
+            height: 600,
+            alt: "Work",
+          },
+        },
+      ],
     },
     apiUrl,
   );
@@ -436,6 +464,16 @@ test("service and work payloads retain only controlled route data", () => {
 
   assert.equal(service?.capabilities.length, 1);
   assert.equal(service?.relatedCaseStudies[0].slug, "a-study");
+  assert.equal(
+    service?.relatedCaseStudies[0].heroImage?.url,
+    "https://api.example.com/media/work.jpg",
+  );
+  assert.equal(service?.testimonialsEnabled, true);
+  assert.equal(service?.testimonialsHeading, "Selected perspectives");
+  assert.equal(service?.testimonials[0].person, "Research client");
+  assert.equal(service?.relatedWorkEnabled, true);
+  assert.equal(service?.relatedWorkHeading, "Selected projects");
+  assert.equal(service?.ctaHeading, "Discuss your research");
   assert.equal(project?.gallery[0].url, "https://api.example.com/media/work.jpg");
   assert.equal(project?.services[0].slug, "photography");
   assert.equal(project?.clientDisplayName, "Research Institute");
@@ -446,6 +484,36 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(project?.outcome, "A reusable visual library.");
   assert.equal(project?.projectUrl, "https://project.example.com");
   assert.deepEqual(project?.cta, { label: "Discuss a project", url: "/contact" });
+});
+
+test("service sections preserve intentional disabled and empty CMS states", () => {
+  const service = parseServicePage(
+    {
+      id: 12,
+      title: "Video",
+      meta: {
+        ...meta,
+        type: "public_content.ServicePage",
+        slug: "video",
+      },
+      testimonials_enabled: false,
+      testimonials_heading: "Client voices",
+      testimonials: [],
+      related_work_enabled: false,
+      related_work_heading: "Research stories",
+      related_case_studies: [],
+      cta_heading: "Start a project",
+    },
+    apiUrl,
+  );
+
+  assert.equal(service?.testimonialsEnabled, false);
+  assert.equal(service?.testimonialsHeading, "Client voices");
+  assert.deepEqual(service?.testimonials, []);
+  assert.equal(service?.relatedWorkEnabled, false);
+  assert.equal(service?.relatedWorkHeading, "Research stories");
+  assert.deepEqual(service?.relatedCaseStudies, []);
+  assert.equal(service?.ctaHeading, "Start a project");
 });
 
 test("case-study editorial additions stay optional and reject unsafe links", () => {

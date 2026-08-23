@@ -8,10 +8,8 @@ import Testimonials from "@/app/components/Testimonials";
 import WorkGrid from "@/app/components/WorkGrid";
 import { findFallbackService } from "@/data/public-fallbacks";
 import {
-  getCaseStudyPages,
   getServicePageResult,
   getSiteSettings,
-  getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
 
@@ -36,21 +34,13 @@ export async function generateMetadata({ params }: ServiceRouteProps): Promise<M
 
 export default async function ServicePage({ params }: ServiceRouteProps) {
   const { slug } = await params;
-  const [serviceResult, allProjects, allTestimonials, settings] = await Promise.all([
+  const [serviceResult, settings] = await Promise.all([
     getServicePageResult(slug),
-    getCaseStudyPages(),
-    getTestimonials(),
     getSiteSettings(),
   ]);
   const page = serviceResult.page
     ?? (serviceResult.apiAvailable ? null : findFallbackService(slug));
   if (!page) notFound();
-
-  const relatedIds = new Set(page.relatedCaseStudies.map((project) => project.id));
-  const relatedProjects = allProjects.filter((project) => relatedIds.has(project.id));
-  const testimonials = allTestimonials.filter(
-    (testimonial) => testimonial.relatedService?.id === page.id,
-  );
 
   return (
     <PublicShell>
@@ -106,18 +96,27 @@ export default async function ServicePage({ params }: ServiceRouteProps) {
         </section>
       )}
 
-      <Testimonials testimonials={testimonials} />
+      {page.testimonialsEnabled && (
+        <Testimonials
+          testimonials={page.testimonials}
+          heading={page.testimonialsHeading}
+        />
+      )}
 
-      {relatedProjects.length > 0 && (
+      {page.relatedWorkEnabled && page.relatedCaseStudies.length > 0 && (
         <section className="public-list-section related-work-section">
-          <div className="section-label">Related work <span /></div>
-          <WorkGrid projects={relatedProjects} variant="related" headingLevel="h2" />
+          <div className="section-label">{page.relatedWorkHeading} <span /></div>
+          <WorkGrid
+            projects={page.relatedCaseStudies}
+            variant="related"
+            headingLevel="h2"
+          />
         </section>
       )}
 
       {page.cta.label && page.cta.url && (
         <section className="public-cta">
-          <h2>Have a project in mind?</h2>
+          <h2>{page.ctaHeading}</h2>
           <a className="button button-dark" href={page.cta.url}>{page.cta.label}</a>
         </section>
       )}
