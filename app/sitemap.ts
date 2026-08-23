@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next";
 import { fallbackCaseStudies, fallbackServices } from "@/data/public-fallbacks";
 import {
   getCaseStudyPages,
-  getServicePages,
+  getServicePagesResult,
   getStandardPages,
   getUpdatesIndexPage,
 } from "@/lib/cms";
+import { resolveCmsCollection } from "@/lib/public-content";
 import { publicSiteUrl } from "@/lib/public-url";
 
 type SitemapEntry = MetadataRoute.Sitemap[number];
@@ -19,13 +20,13 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [cmsServices, cmsCaseStudies, standardPages, updates] = await Promise.all([
-    getServicePages(),
+  const [serviceResult, cmsCaseStudies, standardPages, updates] = await Promise.all([
+    getServicePagesResult(),
     getCaseStudyPages(),
     getStandardPages(),
     getUpdatesIndexPage(),
   ]);
-  const services = cmsServices.length > 0 ? cmsServices : fallbackServices;
+  const services = resolveCmsCollection(serviceResult, fallbackServices);
   const caseStudies = cmsCaseStudies.length > 0 ? cmsCaseStudies : fallbackCaseStudies;
 
   const entries: SitemapEntry[] = [

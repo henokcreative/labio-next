@@ -31,6 +31,7 @@ import {
   resolveCollaborators,
   resolveHomeCollaborators,
   resolveHomeLatestUpdates,
+  resolveCmsCollection,
   resolveHomeTestimonials,
   resolveSelectedHomeItems,
   resolveStandardPage,
@@ -876,6 +877,24 @@ test("empty homepage service and work selections do not expand to available item
       available,
     ),
     available,
+  );
+});
+
+test("published CMS service collections remain authoritative when empty", () => {
+  const fallback = [{ id: -1, title: "Legacy service" }];
+  const published = [{ id: 7, title: "Published service" }];
+
+  assert.deepEqual(
+    resolveCmsCollection({ items: published, apiAvailable: true }, fallback),
+    published,
+  );
+  assert.deepEqual(
+    resolveCmsCollection({ items: [], apiAvailable: true }, fallback),
+    [],
+  );
+  assert.deepEqual(
+    resolveCmsCollection({ items: [], apiAvailable: false }, fallback),
+    fallback,
   );
 });
 

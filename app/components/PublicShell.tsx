@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import { fallbackServices } from "@/data/public-fallbacks";
-import { getServicePages, getSiteSettings } from "@/lib/cms";
+import { getServicePagesResult, getSiteSettings } from "@/lib/cms";
+import { resolveCmsCollection } from "@/lib/public-content";
 import { resolvePublicNavigation } from "@/lib/public-navigation";
 import PublicNavigation from "./PublicNavigation";
 
 export default async function PublicShell({ children }: { children: ReactNode }) {
-  const [cmsServices, settings] = await Promise.all([
-    getServicePages(),
+  const [serviceResult, settings] = await Promise.all([
+    getServicePagesResult(),
     getSiteSettings(),
   ]);
-  const sourceServices = cmsServices.length > 0 ? cmsServices : fallbackServices;
+  const sourceServices = resolveCmsCollection(serviceResult, fallbackServices);
   const services = sourceServices.map((service) => ({
     id: service.id,
     title: service.title,

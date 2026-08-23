@@ -9,7 +9,7 @@ import WorkGrid from "@/app/components/WorkGrid";
 import { findFallbackService } from "@/data/public-fallbacks";
 import {
   getCaseStudyPages,
-  getServicePage,
+  getServicePageResult,
   getSiteSettings,
   getTestimonials,
 } from "@/lib/cms";
@@ -19,11 +19,12 @@ type ServiceRouteProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: ServiceRouteProps): Promise<Metadata> {
   const { slug } = await params;
-  const [page, settings] = await Promise.all([
-    getServicePage(slug),
+  const [serviceResult, settings] = await Promise.all([
+    getServicePageResult(slug),
     getSiteSettings(),
   ]);
-  const resolved = page ?? findFallbackService(slug);
+  const resolved = serviceResult.page
+    ?? (serviceResult.apiAvailable ? null : findFallbackService(slug));
   return pageMetadata(
     resolved,
     "Service — LaBio Media",
@@ -35,13 +36,14 @@ export async function generateMetadata({ params }: ServiceRouteProps): Promise<M
 
 export default async function ServicePage({ params }: ServiceRouteProps) {
   const { slug } = await params;
-  const [cmsPage, allProjects, allTestimonials, settings] = await Promise.all([
-    getServicePage(slug),
+  const [serviceResult, allProjects, allTestimonials, settings] = await Promise.all([
+    getServicePageResult(slug),
     getCaseStudyPages(),
     getTestimonials(),
     getSiteSettings(),
   ]);
-  const page = cmsPage ?? findFallbackService(slug);
+  const page = serviceResult.page
+    ?? (serviceResult.apiAvailable ? null : findFallbackService(slug));
   if (!page) notFound();
 
   const relatedIds = new Set(page.relatedCaseStudies.map((project) => project.id));

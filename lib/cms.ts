@@ -40,6 +40,11 @@ import type {
 const CMS_REVALIDATE_SECONDS = 300;
 const CMS_REQUEST_TIMEOUT_MS = 5000;
 
+export type CmsCollectionResult<T> = {
+  items: T[];
+  apiAvailable: boolean;
+};
+
 function getCmsApiBaseUrl(): string | null {
   const configured = process.env.CMS_API_URL || process.env.NEXT_PUBLIC_API_URL;
   if (!configured) return null;
@@ -78,15 +83,16 @@ async function cmsRequest(
   }
 }
 
-async function getPageItems<T>(
+async function getPageItemsResult<T>(
   type: string,
   parser: (value: unknown, baseUrl: string) => T | null,
   slug?: string,
-): Promise<T[]> {
+): Promise<CmsCollectionResult<T>> {
   const baseUrl = getCmsApiBaseUrl();
-  if (!baseUrl) return [];
+  if (!baseUrl) return { items: [], apiAvailable: false };
 
   const items: T[] = [];
+  let apiAvailable = false;
   const pageSize = 20;
   for (let offset = 0; offset < 1000; offset += pageSize) {
     const raw = await cmsRequest("api/cms/v2/pages/", {
@@ -97,6 +103,7 @@ async function getPageItems<T>(
       ...(slug ? { slug } : {}),
     });
     if (raw === null) break;
+    apiAvailable = true;
 
     const listing =
       raw !== null && typeof raw === "object" && !Array.isArray(raw)
@@ -118,7 +125,15 @@ async function getPageItems<T>(
     if (totalCount !== null && offset + rawItems.length >= totalCount) break;
   }
 
-  return items;
+  return { items, apiAvailable };
+}
+
+async function getPageItems<T>(
+  type: string,
+  parser: (value: unknown, baseUrl: string) => T | null,
+  slug?: string,
+): Promise<T[]> {
+  return (await getPageItemsResult(type, parser, slug)).items;
 }
 
 export const getHomePage = cache(async (): Promise<CmsHomePage | null> => {
@@ -136,15 +151,35 @@ export const getServiceIndexPage = cache(
   },
 );
 
+export const getServicePagesResult = cache(
+  async (): Promise<CmsCollectionResult<CmsServicePage>> => {
+    return getPageItemsResult("public_content.ServicePage", parseServicePage);
+  },
+);
+
 export const getServicePages = cache(async (): Promise<CmsServicePage[]> => {
-  return getPageItems("public_content.ServicePage", parseServicePage);
+  return (await getServicePagesResult()).items;
 });
+
+export const getServicePageResult = cache(
+  async (
+    slug: string,
+  ): Promise<{ page: CmsServicePage | null; apiAvailable: boolean }> => {
+    const result = await getPageItemsResult(
+      "public_content.ServicePage",
+      parseServicePage,
+      slug,
+    );
+    return {
+      page: result.items[0] ?? null,
+      apiAvailable: result.apiAvailable,
+    };
+  },
+);
 
 export const getServicePage = cache(
   async (slug: string): Promise<CmsServicePage | null> => {
-    return (
-      await getPageItems("public_content.ServicePage", parseServicePage, slug)
-    )[0] ?? null;
+    return (await getServicePageResult(slug)).page;
   },
 );
 

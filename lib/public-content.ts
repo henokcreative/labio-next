@@ -53,6 +53,13 @@ export function resolveSelectedHomeItems<T extends { id: number }>(
     .filter((item): item is T => Boolean(item));
 }
 
+export function resolveCmsCollection<T>(
+  result: { items: T[]; apiAvailable: boolean },
+  fallbackItems: T[],
+): T[] {
+  return result.apiAvailable ? result.items : fallbackItems;
+}
+
 export function resolveHomeTestimonials(
   cmsHome: CmsHomePage | null,
   cmsTestimonials: CmsTestimonial[],
