@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 import PortalShell from "@/app/components/PortalShell";
 import { apiFetch } from "@/lib/api";
 import { conversationHref, projectFileHref } from "@/lib/portal-navigation";
-import type { Approval, Dashboard, PortalMessage } from "@/lib/portal-types";
+import type {
+  Approval,
+  Dashboard,
+  PortalMessage,
+  ProjectFile,
+} from "@/lib/portal-types";
+import { downloadProtectedFile } from "@/lib/protected-file-download";
 
 function approvalHref(approval: Approval): string {
   return projectFileHref(approval.project, approval.file);
@@ -42,13 +48,22 @@ function StatCard({
   label,
   value,
   href,
+  onClick,
+  actionLabel,
+  actionIndicator = "→",
+  disabled = false,
   icon,
 }: {
   label: string;
   value: number;
   href?: string;
+  onClick?: () => void;
+  actionLabel?: string;
+  actionIndicator?: string;
+  disabled?: boolean;
   icon: StatIcon;
 }) {
+  const isActionable = Boolean(href || onClick);
   const content = (
     <>
       <DashboardIcon icon={icon} />
@@ -56,16 +71,33 @@ function StatCard({
         <span>{label}</span>
         <strong>{value}</strong>
       </span>
+      {isActionable && (
+        <span className="portal-card-action-indicator" aria-hidden="true">
+          {actionIndicator}
+        </span>
+      )}
     </>
   );
 
-  return href ? (
+  if (href) return (
     <Link className="portal-card portal-card-summary portal-card-link" href={href}>
       {content}
     </Link>
-  ) : (
-    <div className="portal-card portal-card-summary">{content}</div>
   );
+
+  if (onClick) return (
+    <button
+      type="button"
+      className="portal-card portal-card-summary portal-card-link portal-card-action"
+      onClick={onClick}
+      aria-label={actionLabel}
+      disabled={disabled}
+    >
+      {content}
+    </button>
+  );
+
+  return <div className="portal-card portal-card-summary">{content}</div>;
 }
 
 function LatestMessages({ messages }: { messages: PortalMessage[] }) {
@@ -103,16 +135,37 @@ function LatestMessages({ messages }: { messages: PortalMessage[] }) {
   );
 }
 
-function SummaryList({ title, items }: { title: string; items: string[] }) {
+function DeliveredFiles({
+  files,
+  downloadingFileId,
+  onDownload,
+}: {
+  files: ProjectFile[];
+  downloadingFileId: number | null;
+  onDownload: (file: ProjectFile) => void;
+}) {
   return (
     <section className="portal-section dashboard-list-section">
-      <h2>{title}</h2>
-      {items.length ? (
+      <h2>Latest delivered files</h2>
+      {files.length ? (
         <ul className="dashboard-summary-list">
-          {items.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}
+          {files.map((file) => (
+            <li className="dashboard-delivery-item" key={file.id}>
+              <button
+                type="button"
+                className="dashboard-delivery-link"
+                onClick={() => onDownload(file)}
+                disabled={downloadingFileId === file.id}
+                aria-label={`Download ${file.display_name || file.filename}`}
+              >
+                <span>{file.display_name || file.filename}</span>
+                <span aria-hidden="true">↓</span>
+              </button>
+            </li>
+          ))}
         </ul>
       ) : (
-        <p className="portal-empty-state">Nothing to show.</p>
+        <p className="portal-empty-state">No delivered files yet.</p>
       )}
     </section>
   );
@@ -146,12 +199,25 @@ function PendingApprovals({ approvals }: { approvals: Approval[] }) {
 export default function ClientDashboard() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
+  const [downloadingFileId, setDownloadingFileId] = useState<number | null>(null);
 
   useEffect(() => {
     apiFetch<Dashboard>("/api/auth/dashboard/")
       .then(setData)
       .catch((nextError: Error) => setError(nextError.message));
   }, []);
+
+  async function handleDeliveredFileDownload(file: ProjectFile) {
+    if (downloadingFileId !== null) return;
+    setDownloadingFileId(file.id);
+    try {
+      await downloadProtectedFile(file.download_url);
+    } catch (nextError) {
+      setError((nextError as Error).message);
+    } finally {
+      setDownloadingFileId(null);
+    }
+  }
 
   return (
     <PortalShell>
@@ -189,6 +255,16 @@ export default function ClientDashboard() {
             <StatCard
               label="Delivered files"
               value={data.delivered_file_count ?? data.latest_files.length}
+              onClick={data.latest_files[0]
+                ? () => void handleDeliveredFileDownload(data.latest_files[0])
+                : undefined}
+              actionLabel={data.latest_files[0]
+                ? `Download latest delivered file: ${
+                    data.latest_files[0].display_name || data.latest_files[0].filename
+                  }`
+                : undefined}
+              actionIndicator="↓"
+              disabled={downloadingFileId !== null}
               icon="delivery"
             />
           </div>
@@ -221,9 +297,10 @@ export default function ClientDashboard() {
           <div className="dashboard-detail-grid">
             <LatestMessages messages={data.latest_messages} />
             <PendingApprovals approvals={data.pending_approvals} />
-            <SummaryList
-              title="Latest delivered files"
-              items={data.latest_files.map((file) => file.filename)}
+            <DeliveredFiles
+              files={data.latest_files}
+              downloadingFileId={downloadingFileId}
+              onDownload={(file) => void handleDeliveredFileDownload(file)}
             />
           </div>
         </section>

@@ -11,7 +11,7 @@
     "test:theme": "tsc lib/public-theme.ts lib/public-theme.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/theme-tests && node --test .cache/theme-tests/public-theme.test.js",
     "test:consent": "tsc lib/public-consent.ts lib/public-consent.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/consent-tests && node --test .cache/consent-tests/public-consent.test.js",
     "test:seo": "tsc lib/cms-types.ts lib/public-url.ts lib/public-metadata.ts lib/public-schema.ts lib/public-seo.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/seo-tests && node --test .cache/seo-tests/public-seo.test.js",
-    "test:portal": "tsc lib/portal-navigation.ts lib/portal-navigation.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/portal-tests && node --test .cache/portal-tests/portal-navigation.test.js"
+    "test:portal": "tsc lib/api.ts lib/portal-navigation.ts lib/portal-navigation.test.ts lib/protected-file-download.ts lib/protected-file-download.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/portal-tests && node --test .cache/portal-tests/portal-navigation.test.js .cache/portal-tests/protected-file-download.test.js"
   },
   "dependencies": {
     "next": "16.3.0",
