@@ -387,7 +387,6 @@ export function parseServicePage(
     ...page,
     kind: "service",
     summary: asString(raw.summary).trim(),
-    heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     body: parseStreamField(raw.body, apiBaseUrl),
     capabilities: parseStructuredList(raw.capabilities, "capability"),
     process: parseStructuredList<CmsProcessStep>(raw.process, "step"),

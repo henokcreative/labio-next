@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import CmsImage from "@/app/components/CmsImage";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
@@ -49,16 +48,6 @@ export default async function ServicePage({ params }: ServiceRouteProps) {
         <h1>{page.title}</h1>
         <p className="public-page-lead">{page.summary}</p>
       </header>
-
-      {page.heroImage && (
-        <div className="public-hero-image">
-          <CmsImage
-            image={page.heroImage}
-            priority
-            sizes="(max-width: 900px) 100vw, calc(100vw - 280px)"
-          />
-        </div>
-      )}
 
       {page.body.length > 0 && (
         <section className="public-content-section service-editorial-body">

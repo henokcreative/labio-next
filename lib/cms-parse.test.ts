@@ -395,6 +395,12 @@ test("service and work payloads retain only controlled route data", () => {
       title: "Photography",
       meta: { ...meta, type: "public_content.ServicePage", slug: "photography" },
       summary: "Research photography",
+      hero_image: {
+        url: "/media/obsolete-service-hero.jpg",
+        width: 1600,
+        height: 900,
+        alt: "Obsolete service hero",
+      },
       capabilities: [
         { type: "capability", value: { title: "Portraits", description: "On location" } },
         { type: "unknown", value: { title: "Ignored" } },
@@ -463,6 +469,10 @@ test("service and work payloads retain only controlled route data", () => {
   );
 
   assert.equal(service?.capabilities.length, 1);
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(service, "heroImage"),
+    false,
+  );
   assert.equal(service?.relatedCaseStudies[0].slug, "a-study");
   assert.equal(
     service?.relatedCaseStudies[0].heroImage?.url,

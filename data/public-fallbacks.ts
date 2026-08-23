@@ -68,10 +68,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Bespoke websites and digital experiences for research groups, organisations and scientific projects.",
-    heroImage: localImage(
-      "/images/work/webdesignDev/thumb-bioscience.png",
-      "A LaBio Media website project",
-    ),
     body: [],
     capabilities: [
       { title: "Web design", description: "Clear, editorial digital systems." },
@@ -96,10 +92,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Research films, interviews and visual storytelling that make complex ideas easier to understand.",
-    heroImage: localImage(
-      "/images/work/videos/thumb-inflames.JPG",
-      "Research video production",
-    ),
     body: [],
     capabilities: [
       { title: "Research films", description: "Stories grounded in scientific context." },
@@ -124,10 +116,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "People, laboratories, events and environments captured with purpose and attention to detail.",
-    heroImage: localImage(
-      "/images/work/photos/pia_lab.jpg",
-      "Photography in a research laboratory",
-    ),
     body: [],
     capabilities: [
       { title: "People", description: "Natural portraits in real working environments." },
@@ -152,10 +140,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Visual identities, publications, infographics and digital materials that make complex information clear.",
-    heroImage: localImage(
-      "/images/work/webprintdesign/Euro BioImaging Poster EMBL_2.png",
-      "Scientific communication design",
-    ),
     body: [],
     capabilities: [
       { title: "Visual identity", description: "Distinct systems with scientific credibility." },

@@ -153,7 +153,6 @@ export type CmsCaseStudySummary = {
 export type CmsServicePage = CmsPageBase & {
   kind: "service";
   summary: string;
-  heroImage: CmsImage | null;
   body: CmsStreamBlock[];
   capabilities: CmsCapability[];
   process: CmsProcessStep[];
