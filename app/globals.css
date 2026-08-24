@@ -1604,8 +1604,8 @@ a {
 .service-list {
   display: flex;
   flex-wrap: wrap;
-
   gap: 12px;
+  height: fit-content;
 }
 
 .service-list div {
