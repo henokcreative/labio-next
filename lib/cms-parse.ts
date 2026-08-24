@@ -441,7 +441,7 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
       ? asBoolean(raw.testimonials_enabled)
       : true,
     testimonialsHeading: asString(raw.testimonials_heading).trim(),
-    testimonials: parseTestimonials(raw.testimonials),
+    testimonials: parseTestimonials(raw.testimonials, apiBaseUrl),
     aboutEnabled: asBoolean(raw.about_enabled),
     aboutEyebrow: asString(raw.about_eyebrow).trim(),
     aboutHeading: asString(raw.about_heading).trim(),
@@ -498,7 +498,7 @@ export function parseServicePage(
     ) ? asBoolean(raw.testimonials_enabled) : true,
     testimonialsHeading:
       asString(raw.testimonials_heading).trim() || "Client perspectives",
-    testimonials: parseTestimonials(raw.testimonials),
+    testimonials: parseTestimonials(raw.testimonials, apiBaseUrl),
     relatedWorkEnabled: Object.prototype.hasOwnProperty.call(
       raw,
       "related_work_enabled",
@@ -588,7 +588,7 @@ export function parseAboutPage(value: unknown, apiBaseUrl: string): CmsAboutPage
     testimonialsEnabled: asBoolean(raw.testimonials_enabled),
     testimonialsHeading:
       asString(raw.testimonials_heading).trim() || "Client perspectives",
-    testimonials: parseTestimonials(raw.testimonials),
+    testimonials: parseTestimonials(raw.testimonials, apiBaseUrl),
   };
 }
 
@@ -859,7 +859,10 @@ export function parseCollaborators(
   });
 }
 
-export function parseTestimonials(value: unknown): CmsTestimonial[] {
+export function parseTestimonials(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsTestimonial[] {
   return asArray(value).flatMap((item) => {
     const record = asRecord(item);
     if (!record) return [];
@@ -871,6 +874,7 @@ export function parseTestimonials(value: unknown): CmsTestimonial[] {
       id,
       quote,
       person,
+      portrait: parseCmsImage(record.portrait, apiBaseUrl),
       role: asString(record.role).trim(),
       organization: asString(record.organization).trim(),
       relatedService: parsePageSummary(record.related_service),

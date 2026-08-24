@@ -367,6 +367,7 @@ export type CmsTestimonial = {
   id: number;
   quote: string;
   person: string;
+  portrait: CmsImage | null;
   role: string;
   organization: string;
   relatedService: CmsPageSummary | null;

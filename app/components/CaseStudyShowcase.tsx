@@ -21,7 +21,7 @@ function ImageFigure({
 }) {
   return (
     <figure className="showcase-image-figure">
-      <CmsImage image={image} sizes={sizes} />
+      <CmsImage image={image} sizes={sizes} loading="eager" />
       {image.caption && <figcaption>{image.caption}</figcaption>}
     </figure>
   );
@@ -31,7 +31,11 @@ function WebsitePreview({ item }: { item: CmsWebsitePreview }) {
   const content = (
     <>
       <div className="showcase-website-media">
-        <CmsImage image={item.image} sizes="(max-width: 700px) 100vw, 40vw" />
+        <CmsImage
+          image={item.image}
+          sizes="(max-width: 700px) 100vw, 40vw"
+          loading="eager"
+        />
       </div>
       <div className="showcase-website-copy">
         <h3>{item.label}{item.url && <span aria-hidden="true"> ↗</span>}</h3>
@@ -172,6 +176,7 @@ export default function CaseStudyShowcase({
                     <CmsImage
                       image={block.value.image}
                       sizes="(max-width: 900px) 100vw, calc(100vw - 340px)"
+                      loading="eager"
                     />
                     {block.value.caption && <figcaption>{block.value.caption}</figcaption>}
                   </figure>

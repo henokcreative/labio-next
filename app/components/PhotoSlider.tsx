@@ -56,6 +56,7 @@ export default function PhotoSlider({
             <CmsImage
               image={currentImage}
               sizes="(max-width: 900px) 100vw, calc(100vw - 360px)"
+              loading="eager"
             />
             <div className="showcase-slider-controls">
               <button type="button" onClick={() => move(-1)} aria-label="Previous image">

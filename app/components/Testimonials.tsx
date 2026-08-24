@@ -1,4 +1,5 @@
 import type { CmsTestimonial } from "@/lib/cms-types";
+import CmsImage from "./CmsImage";
 
 export default function Testimonials({
   testimonials,
@@ -17,15 +18,28 @@ export default function Testimonials({
       <div className="testimonials-list">
         {testimonials.map((testimonial) => (
           <figure className="testimonial" key={testimonial.id}>
-            <blockquote>{testimonial.quote}</blockquote>
-            <figcaption>
-              <strong>{testimonial.person}</strong>
-              {(testimonial.role || testimonial.organization) && (
-                <span>
-                  {[testimonial.role, testimonial.organization].filter(Boolean).join(", ")}
-                </span>
+            <div className={testimonial.portrait
+              ? "testimonial-composition has-portrait"
+              : "testimonial-composition"}
+            >
+              {testimonial.portrait && (
+                <div className="testimonial-portrait">
+                  <CmsImage image={testimonial.portrait} sizes="72px" />
+                </div>
               )}
-            </figcaption>
+              <div className="testimonial-copy">
+                <span className="testimonial-quote-mark" aria-hidden="true">“</span>
+                <blockquote>{testimonial.quote}</blockquote>
+                <figcaption>
+                  <strong>{testimonial.person}</strong>
+                  {(testimonial.role || testimonial.organization) && (
+                    <span>
+                      {[testimonial.role, testimonial.organization].filter(Boolean).join(", ")}
+                    </span>
+                  )}
+                </figcaption>
+              </div>
+            </div>
           </figure>
         ))}
       </div>

@@ -4764,7 +4764,7 @@ html[data-public-theme="dark"] .consent-layer {
 
 .testimonials-list {
   display: block;
-  max-width: 1040px;
+  max-width: 960px;
 }
 
 .testimonial,
@@ -4777,17 +4777,67 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .testimonial:nth-child(even) {
-  padding-left: clamp(0px, 8vw, 120px);
+  padding-left: clamp(0px, 6vw, 88px);
+}
+
+.testimonial-composition {
+  display: grid;
+  max-width: 860px;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 38px);
+  align-items: start;
+}
+
+.testimonial-composition:not(.has-portrait) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.testimonial-portrait {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.testimonial-portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonial-copy {
+  position: relative;
+  max-width: 760px;
+}
+
+.testimonial-quote-mark {
+  position: absolute;
+  z-index: 0;
+  top: -30px;
+  left: -18px;
+  color: rgb(143 20 20 / 14%);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 88px;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .testimonial blockquote {
-  max-width: 900px;
-  font-size: clamp(28px, 3.5vw, 48px);
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin-bottom: 26px;
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
 }
 
 .testimonial figcaption {
-  flex-flow: row wrap;
-  gap: 6px 12px;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .public-list-section {
@@ -5478,7 +5528,23 @@ html[data-public-theme="dark"] .consent-layer {
   }
 
   .testimonial blockquote {
-    font-size: clamp(27px, 8vw, 36px);
+    font-size: clamp(20px, 5.8vw, 24px);
+  }
+
+  .testimonial-composition {
+    display: block;
+  }
+
+  .testimonial-portrait {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 24px;
+  }
+
+  .testimonial-quote-mark {
+    top: -27px;
+    left: -8px;
+    font-size: 78px;
   }
 
   .about-page-header h1 {
@@ -5756,6 +5822,10 @@ html[data-public-theme="dark"] .site-shell .collaborator-item:hover img,
 html[data-public-theme="dark"] .site-shell .collaborator-item:focus-visible img {
   opacity: 1;
   filter: none;
+}
+
+html[data-public-theme="dark"] .site-shell .testimonial-quote-mark {
+  color: rgb(223 70 70 / 16%);
 }
 
 html[data-public-theme="dark"] .site-shell :where(

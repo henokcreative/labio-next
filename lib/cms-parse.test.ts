@@ -940,7 +940,7 @@ test("updates presentation helpers format editorial dates and labels", () => {
 
 test("invalid collaborators and testimonials are omitted defensively", () => {
   assert.deepEqual(parseCollaborators([{ id: 1, organization_name: "No logo" }], apiUrl), []);
-  assert.deepEqual(parseTestimonials([{ id: 1, quote: "Missing person" }]), []);
+  assert.deepEqual(parseTestimonials([{ id: 1, quote: "Missing person" }], apiUrl), []);
 });
 
 const fallbackAboutPage: CmsAboutPage = {
@@ -990,6 +990,12 @@ test("About parser preserves the editorial portrait and selected testimonials", 
           id: 8,
           quote: "Thoughtful and clear.",
           person: "Research partner",
+          portrait: {
+            url: "/media/testimonial-portrait.jpg",
+            width: 144,
+            height: 144,
+            alt: "Portrait of Research partner",
+          },
           role: "Director",
           organization: "Institute",
         },
@@ -1005,6 +1011,14 @@ test("About parser preserves the editorial portrait and selected testimonials", 
   assert.equal(page?.testimonialsEnabled, true);
   assert.equal(page?.testimonialsHeading, "Selected perspectives");
   assert.equal(page?.testimonials[0].person, "Research partner");
+  assert.equal(
+    page?.testimonials[0].portrait?.url,
+    "https://api.example.com/media/testimonial-portrait.jpg",
+  );
+  assert.equal(
+    page?.testimonials[0].portrait?.alt,
+    "Portrait of Research partner",
+  );
 });
 
 test("About migration content prefers substantive CMS data and falls back when empty", () => {
@@ -1078,7 +1092,7 @@ test("homepage collaborator configuration is authoritative, including an empty s
 test("homepage testimonial configuration is authoritative, including an empty selection", () => {
   const legacyTestimonials = parseTestimonials([
     { id: 5, quote: "Legacy CMS testimonial", person: "Legacy client" },
-  ]);
+  ], apiUrl);
   const legacyHome = parseHomePage(
     {
       id: 1,
