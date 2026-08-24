@@ -6,6 +6,7 @@ type CmsImageProps = {
   className?: string;
   priority?: boolean;
   sizes?: string;
+  loading?: "eager" | "lazy";
 };
 
 export default function CmsImage({
@@ -13,6 +14,7 @@ export default function CmsImage({
   className,
   priority = false,
   sizes,
+  loading,
 }: CmsImageProps) {
   return (
     <Image
@@ -23,6 +25,7 @@ export default function CmsImage({
       className={className}
       priority={priority}
       sizes={sizes}
+      loading={loading}
     />
   );
 }

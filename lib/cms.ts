@@ -281,7 +281,12 @@ export const getCollaborators = cache(async (): Promise<CmsCollaborator[]> => {
 });
 
 export const getTestimonials = cache(async (): Promise<CmsTestimonial[]> => {
-  return parseTestimonials(await cmsRequest("api/cms/v2/testimonials/"));
+  const baseUrl = getCmsApiBaseUrl();
+  if (!baseUrl) return [];
+  return parseTestimonials(
+    await cmsRequest("api/cms/v2/testimonials/"),
+    baseUrl,
+  );
 });
 
 export const getSiteSettings = cache(async (): Promise<CmsSiteSettings | null> => {

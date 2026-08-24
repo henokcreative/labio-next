@@ -159,6 +159,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
                   <div className="project-gallery-image">
                     <CmsImage
                       image={image}
+                      loading="eager"
                       sizes={index % 3 === 0
                         ? "(max-width: 650px) 100vw, calc(100vw - 280px)"
                         : "(max-width: 650px) 100vw, 50vw"}
