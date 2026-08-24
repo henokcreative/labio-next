@@ -18,6 +18,7 @@ import {
 } from "./cms-parse";
 import type {
   CmsAboutPage,
+  CmsCaseStudyShowcaseBlock,
   CmsCollaborator,
   CmsStandardPage,
 } from "./cms-types";
@@ -48,7 +49,8 @@ import {
 import {
   groupCaseStudyShowcaseBlocks,
   nextSlideIndex,
-  shouldUseLegacyCaseStudyMedia,
+  shouldUseLegacyCaseStudyEmbed,
+  shouldUseLegacyCaseStudyGallery,
 } from "./case-study-showcase";
 
 
@@ -690,7 +692,8 @@ test("case-study showcase parsing preserves every R2-backed image module and saf
       : "unexpected",
     "",
   );
-  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), false);
+  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), false);
 });
 
 test("empty showcase retains legacy media and slider controls wrap", () => {
@@ -712,12 +715,78 @@ test("empty showcase retains legacy media and slider controls wrap", () => {
   );
 
   assert.deepEqual(project?.showcase, []);
-  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), true);
+  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), true);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), true);
   assert.equal(project?.gallery.length, 1);
   assert.equal(project?.embedUrl, "https://www.youtube.com/watch?v=abc123");
   assert.equal(nextSlideIndex(0, 3, -1), 2);
   assert.equal(nextSlideIndex(2, 3, 1), 0);
   assert.equal(nextSlideIndex(0, 0, 1), 0);
+});
+
+test("empty showcase keeps the legacy gallery", () => {
+  assert.equal(shouldUseLegacyCaseStudyGallery([]), true);
+});
+
+const caseStudyMediaTestImage = {
+  url: "https://media.example.com/showcase.jpg",
+  width: 1200,
+  height: 800,
+  alt: "Showcase image",
+  caption: "",
+};
+
+test("video-only showcase keeps the legacy gallery", () => {
+  const showcase: CmsCaseStudyShowcaseBlock[] = [{
+    type: "video",
+    value: { heading: "Film", url: "https://vimeo.com/123", caption: "" },
+  }];
+
+  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), true);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), false);
+});
+
+test("image showcase replaces the legacy gallery", () => {
+  const showcase: CmsCaseStudyShowcaseBlock[] = [{
+    type: "masonry_gallery",
+    value: {
+      heading: "Images",
+      images: [caseStudyMediaTestImage, caseStudyMediaTestImage],
+    },
+  }];
+
+  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), true);
+});
+
+test("image-only showcase keeps the legacy embed", () => {
+  const showcase: CmsCaseStudyShowcaseBlock[] = [{
+    type: "wide_image",
+    value: {
+      heading: "Image",
+      image: caseStudyMediaTestImage,
+      caption: "",
+    },
+  }];
+
+  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), true);
+});
+
+test("mixed image and video showcase suppresses equivalent legacy media", () => {
+  const showcase: CmsCaseStudyShowcaseBlock[] = [
+    {
+      type: "image_grid",
+      value: { heading: "Images", columns: 2, images: [caseStudyMediaTestImage] },
+    },
+    {
+      type: "video",
+      value: { heading: "Film", url: "https://vimeo.com/123", caption: "" },
+    },
+  ];
+
+  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), false);
 });
 
 test("updates index preserves backend article and event ordering", () => {
