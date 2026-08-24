@@ -3131,6 +3131,20 @@ html[data-public-theme="dark"] .consent-layer {
   line-height: 1.65;
 }
 
+.public-page-header .cms-stream.public-page-intro {
+  margin: 34px 0 0;
+}
+
+.public-page-header .public-page-intro > :first-child,
+.public-page-header .public-page-intro .cms-rich-text > :first-child {
+  margin-top: 0;
+}
+
+.public-page-header .public-page-intro > :last-child,
+.public-page-header .public-page-intro .cms-rich-text > :last-child {
+  margin-bottom: 0;
+}
+
 .public-list-section {
   padding: 70px var(--content-padding) 110px;
 }
@@ -4866,6 +4880,7 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .showcase-slider-media {
+  position: relative;
   display: grid;
   min-height: min(62vw, 620px);
   place-items: center;
@@ -4879,15 +4894,17 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .showcase-slider-controls {
-  display: grid;
-  grid-template-columns: 42px 1fr 42px;
-  gap: 16px;
+  position: absolute;
+  inset: 0;
+  display: flex;
   align-items: center;
-  margin-top: 20px;
+  justify-content: space-between;
+  padding: 0 clamp(12px, 2vw, 24px);
+  pointer-events: none;
 }
 
-.showcase-slider-controls p {
-  margin: 0;
+.showcase-slider-counter {
+  margin: 16px 0 0;
   color: #666666;
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -4898,18 +4915,22 @@ html[data-public-theme="dark"] .consent-layer {
   width: 42px;
   height: 42px;
   padding: 0;
-  border: 1px solid #d8d8d8;
+  border: 1px solid rgb(255 255 255 / 55%);
   border-radius: 50%;
-  background: transparent;
-  color: #111111;
+  background: rgb(17 17 17 / 72%);
+  box-shadow: 0 2px 14px rgb(0 0 0 / 18%);
+  color: #ffffff;
   cursor: pointer;
-  transition: border-color 180ms ease, color 180ms ease;
+  pointer-events: auto;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .showcase-slider-controls button:hover,
 .showcase-slider-controls button:focus-visible {
-  border-color: var(--color-primary);
-  color: var(--color-primary-dark);
+  border-color: #ffffff;
+  background: rgb(17 17 17 / 90%);
+  color: #ffffff;
+  transform: scale(1.04);
 }
 
 .showcase-slider-controls button:focus-visible,
@@ -4976,7 +4997,7 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .showcase-video-heading {
-  margin: 0 0 16px;
+  margin: 18px 0 0;
   color: #111111;
   font-size: clamp(20px, 2vw, 28px);
   font-weight: 400;
@@ -4991,6 +5012,67 @@ html[data-public-theme="dark"] .consent-layer {
 .showcase-video-item .cms-embed,
 .showcase-video-item .cms-embed-consent {
   width: 100%;
+}
+
+.showcase-video-poster {
+  display: grid;
+  min-height: 0;
+  padding: clamp(24px, 4vw, 48px);
+  place-items: center;
+  background:
+    radial-gradient(circle at 20% 15%, rgb(143 20 20 / 34%), transparent 42%),
+    linear-gradient(145deg, #1d1d1d, #090909);
+  color: #ffffff;
+}
+
+.showcase-video-poster-content {
+  display: grid;
+  gap: 14px;
+  place-items: center;
+  text-align: center;
+}
+
+.showcase-video-brand {
+  font-size: 13px;
+}
+
+.showcase-video-play {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  margin-top: 4px;
+  padding: 0 0 0 3px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 62%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 7%);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.showcase-video-play:hover,
+.showcase-video-play:focus-visible {
+  border-color: #ffffff;
+  background: rgb(255 255 255 / 14%);
+  transform: scale(1.04);
+}
+
+.showcase-video-play:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.showcase-video-poster p,
+.showcase-video-poster a {
+  margin: 0;
+  color: rgb(255 255 255 / 72%);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.showcase-video-poster a {
+  text-underline-offset: 3px;
 }
 
 .showcase-website-grid {
@@ -5092,6 +5174,15 @@ html[data-public-theme="dark"] .consent-layer {
 
   .showcase-slider-media {
     min-height: 72vw;
+  }
+
+  .showcase-slider-controls {
+    padding: 0 10px;
+  }
+
+  .showcase-slider-controls button {
+    width: 38px;
+    height: 38px;
   }
 }
 
@@ -5582,7 +5673,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .showcase-image-figure figcaption,
   .showcase-slider-figure figcaption,
   .showcase-caption,
-  .showcase-slider-controls p,
+  .showcase-slider-counter,
   .showcase-website-copy p,
   .cms-quote cite,
   .cms-embed-fallback,
