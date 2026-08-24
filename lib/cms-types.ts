@@ -171,6 +171,47 @@ export type CmsPortfolioIndexPage = CmsPageBase & {
   intro: CmsStreamBlock[];
 };
 
+type CmsShowcaseBlockBase = {
+  id?: string;
+};
+
+export type CmsWebsitePreview = {
+  image: CmsImage;
+  label: string;
+  url: string;
+  caption: string;
+};
+
+export type CmsCaseStudyShowcaseBlock =
+  | (CmsShowcaseBlockBase & {
+      type: "photo_slider" | "masonry_gallery";
+      value: { heading: string; images: CmsImage[] };
+    })
+  | (CmsShowcaseBlockBase & {
+      type: "image_grid";
+      value: { heading: string; columns: 2 | 3; images: CmsImage[] };
+    })
+  | (CmsShowcaseBlockBase & {
+      type: "image_pair";
+      value: {
+        heading: string;
+        firstImage: CmsImage;
+        secondImage: CmsImage;
+      };
+    })
+  | (CmsShowcaseBlockBase & {
+      type: "video";
+      value: { heading: string; url: string; caption: string };
+    })
+  | (CmsShowcaseBlockBase & {
+      type: "website_preview_grid";
+      value: { heading: string; items: CmsWebsitePreview[] };
+    })
+  | (CmsShowcaseBlockBase & {
+      type: "wide_image";
+      value: { heading: string; image: CmsImage; caption: string };
+    });
+
 export type CmsCaseStudyPage = CmsPageBase & {
   kind: "case-study";
   clientDisplayName: string;
@@ -184,6 +225,7 @@ export type CmsCaseStudyPage = CmsPageBase & {
   projectUrl: string;
   cta: CmsLink;
   body: CmsStreamBlock[];
+  showcase: CmsCaseStudyShowcaseBlock[];
   heroImage: CmsImage | null;
   gallery: CmsImage[];
   embedUrl: string;

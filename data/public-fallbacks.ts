@@ -187,6 +187,7 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
       },
       { type: "rich_text", value: `<p>${project.approach}</p>` },
     ],
+    showcase: [],
     heroImage: localImage(project.hero, project.title),
     gallery: project.images.map((image) => localImage(image.src, image.alt)),
     embedUrl: "",

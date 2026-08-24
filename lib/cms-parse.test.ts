@@ -45,6 +45,10 @@ import {
   FALLBACK_PUBLIC_NAVIGATION,
   resolvePublicNavigation,
 } from "./public-navigation";
+import {
+  nextSlideIndex,
+  shouldUseLegacyCaseStudyMedia,
+} from "./case-study-showcase";
 
 
 const apiUrl = "https://api.example.com";
@@ -548,6 +552,139 @@ test("case-study editorial additions stay optional and reject unsafe links", () 
   assert.equal(project?.outcome, "");
   assert.equal(project?.projectUrl, "");
   assert.deepEqual(project?.cta, { label: "Unsafe CTA", url: "" });
+});
+
+test("case-study showcase parsing preserves controlled modules and safe URLs", () => {
+  const image = {
+    url: "/media/showcase.jpg",
+    width: 1200,
+    height: 800,
+    alt: "Showcase image",
+    caption: "Editorial caption",
+  };
+  const project = parseCaseStudyPage(
+    {
+      id: 30,
+      title: "Visual project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "visual-project" },
+      showcase: [
+        {
+          id: "slider-1",
+          type: "photo_slider",
+          value: { heading: "Photography", images: [image, image] },
+        },
+        {
+          type: "masonry_gallery",
+          value: { heading: "Details", images: [image, image] },
+        },
+        {
+          type: "image_grid",
+          value: { heading: "Applications", columns: "2", images: [image] },
+        },
+        {
+          type: "image_pair",
+          value: { heading: "Pair", first_image: image, second_image: image },
+        },
+        {
+          type: "video",
+          value: {
+            heading: "Film",
+            url: "https://vimeo.com/123456",
+            caption: "Consent-aware media",
+          },
+        },
+        {
+          type: "website_preview_grid",
+          value: {
+            heading: "Website views",
+            items: [
+              {
+                image,
+                label: "Homepage",
+                url: "https://project.example.com",
+                caption: "Desktop view",
+              },
+              {
+                image,
+                label: "Unsafe destination",
+                url: "javascript:alert(1)",
+              },
+            ],
+          },
+        },
+        {
+          type: "wide_image",
+          value: { heading: "Final image", image, caption: "Wide view" },
+        },
+        {
+          type: "photo_slider",
+          value: { heading: "Invalid slider", images: [image] },
+        },
+        { type: "unknown_showcase", value: { image } },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(
+    project?.showcase.map((block) => block.type),
+    [
+      "photo_slider",
+      "masonry_gallery",
+      "image_grid",
+      "image_pair",
+      "video",
+      "website_preview_grid",
+      "wide_image",
+    ],
+  );
+  assert.equal(project?.showcase[0].id, "slider-1");
+  assert.equal(
+    project?.showcase[0].type === "photo_slider"
+      ? project.showcase[0].value.images[0].url
+      : "",
+    "https://api.example.com/media/showcase.jpg",
+  );
+  assert.equal(
+    project?.showcase[2].type === "image_grid"
+      ? project.showcase[2].value.columns
+      : 0,
+    2,
+  );
+  assert.equal(
+    project?.showcase[5].type === "website_preview_grid"
+      ? project.showcase[5].value.items[1].url
+      : "unexpected",
+    "",
+  );
+  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), false);
+});
+
+test("empty showcase retains legacy media and slider controls wrap", () => {
+  const project = parseCaseStudyPage(
+    {
+      id: 31,
+      title: "Legacy project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "legacy-project" },
+      showcase: [],
+      embed_url: "https://www.youtube.com/watch?v=abc123",
+      gallery: [
+        {
+          type: "image",
+          value: { url: "/media/legacy.jpg", width: 900, height: 600, alt: "Legacy" },
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(project?.showcase, []);
+  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), true);
+  assert.equal(project?.gallery.length, 1);
+  assert.equal(project?.embedUrl, "https://www.youtube.com/watch?v=abc123");
+  assert.equal(nextSlideIndex(0, 3, -1), 2);
+  assert.equal(nextSlideIndex(2, 3, 1), 0);
+  assert.equal(nextSlideIndex(0, 0, 1), 0);
 });
 
 test("updates index preserves backend article and event ordering", () => {
