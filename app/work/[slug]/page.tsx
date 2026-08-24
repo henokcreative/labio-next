@@ -95,16 +95,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </div>
         </header>
 
-        {project.heroImage && (
-          <section className="project-hero">
-            <CmsImage
-              image={project.heroImage}
-              priority
-              sizes="(max-width: 900px) 100vw, calc(100vw - 280px)"
-            />
-          </section>
-        )}
-
         {hasNarrative && (
           <section className="case-study-narrative" aria-label="Case study">
             {project.challenge && (
