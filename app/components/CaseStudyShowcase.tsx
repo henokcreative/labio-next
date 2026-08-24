@@ -2,7 +2,7 @@ import CmsImage from "./CmsImage";
 import PhotoSlider from "./PhotoSlider";
 import StreamFieldRenderer from "./StreamFieldRenderer";
 import type {
-  CmsCaseStudyShowcaseBlock,
+  CmsMediaShowcaseBlock,
   CmsImage as CmsImageData,
   CmsWebsitePreview,
 } from "@/lib/cms-types";
@@ -51,15 +51,20 @@ function WebsitePreview({ item }: { item: CmsWebsitePreview }) {
 
 export default function CaseStudyShowcase({
   blocks,
+  variant = "case-study",
 }: {
-  blocks: CmsCaseStudyShowcaseBlock[];
+  blocks: CmsMediaShowcaseBlock[];
+  variant?: "case-study" | "update";
 }) {
   if (blocks.length === 0) return null;
 
   const groups = groupCaseStudyShowcaseBlocks(blocks);
 
   return (
-    <div className="case-study-showcase">
+    <div className={variant === "update"
+      ? "case-study-showcase update-media-showcase"
+      : "case-study-showcase"}
+    >
       {groups.map((group, index) => {
         if (group.type === "video_grid") {
           const countClass = `showcase-video-count-${Math.min(group.blocks.length, 3)}`;

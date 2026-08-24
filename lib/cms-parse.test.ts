@@ -814,6 +814,12 @@ test("updates index preserves backend article and event ordering", () => {
 });
 
 test("article detail parser reuses controlled image and StreamField data", () => {
+  const showcaseImage = {
+    url: "https://media.labiomedia.com/labio-cms-media-production/cms/images/update.jpg",
+    width: 1400,
+    height: 900,
+    alt: "Update gallery image",
+  };
   const page = parseArticlePage(
     {
       id: 30,
@@ -834,6 +840,27 @@ test("article detail parser reuses controlled image and StreamField data", () =>
       publication_date: "2026-08-20",
       featured: true,
       body: [{ type: "rich_text", value: "<p>Published body.</p>" }],
+      showcase: [
+        {
+          type: "masonry_gallery",
+          value: {
+            heading: "From the studio",
+            images: [showcaseImage, showcaseImage],
+          },
+        },
+        {
+          type: "video",
+          value: { heading: "Film one", url: "https://vimeo.com/1", caption: "" },
+        },
+        {
+          type: "video",
+          value: { heading: "Film two", url: "https://vimeo.com/2", caption: "" },
+        },
+        {
+          type: "wide_image",
+          value: { heading: "Result", image: showcaseImage, caption: "" },
+        },
+      ],
     },
     apiUrl,
   );
@@ -842,6 +869,19 @@ test("article detail parser reuses controlled image and StreamField data", () =>
   assert.equal(page?.articleTypeLabel, "Insight");
   assert.equal(page?.featuredImage?.alt, "Research team");
   assert.equal(page?.body[0].type, "rich_text");
+  assert.deepEqual(
+    page?.showcase.map((block) => block.type),
+    ["masonry_gallery", "video", "video", "wide_image"],
+  );
+  assert.equal(
+    page?.showcase[0].type === "masonry_gallery"
+      ? page.showcase[0].value.images[0].url
+      : "",
+    showcaseImage.url,
+  );
+  const groups = groupCaseStudyShowcaseBlocks(page?.showcase ?? []);
+  assert.equal(groups[1].type, "video_grid");
+  assert.equal(groups[1].type === "video_grid" && groups[1].blocks.length, 2);
 });
 
 test("event detail parser keeps optional schedule data and sanitizes registration links", () => {
@@ -873,6 +913,7 @@ test("event detail parser keeps optional schedule data and sanitizes registratio
   assert.equal(page?.location, "Turku, Finland");
   assert.equal(page?.registrationUrl, "");
   assert.equal(page?.body[0].type, "heading");
+  assert.deepEqual(page?.showcase, []);
 });
 
 test("updates presentation helpers format editorial dates and labels", () => {

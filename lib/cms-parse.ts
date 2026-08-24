@@ -4,7 +4,7 @@ import type {
   CmsArticleSummary,
   CmsArticleType,
   CmsCapability,
-  CmsCaseStudyShowcaseBlock,
+  CmsMediaShowcaseBlock,
   CmsCaseStudySummary,
   CmsCaseStudyPage,
   CmsCollaborator,
@@ -218,12 +218,12 @@ function parseShowcaseImages(
   });
 }
 
-function parseCaseStudyShowcase(
+function parseMediaShowcase(
   value: unknown,
   apiBaseUrl: string,
-): CmsCaseStudyShowcaseBlock[] {
-  return asArray(value).flatMap<CmsCaseStudyShowcaseBlock>(
-    (blockValue): CmsCaseStudyShowcaseBlock[] => {
+): CmsMediaShowcaseBlock[] {
+  return asArray(value).flatMap<CmsMediaShowcaseBlock>(
+    (blockValue): CmsMediaShowcaseBlock[] => {
       const block = asRecord(blockValue);
       const blockContent = asRecord(block?.value);
       const type = asString(block?.type);
@@ -559,7 +559,7 @@ export function parseCaseStudyPage(
     projectUrl: safeHref(raw.project_url),
     cta: parseLink(raw.cta_label, raw.cta_url),
     body: parseStreamField(raw.body, apiBaseUrl),
-    showcase: parseCaseStudyShowcase(raw.showcase, apiBaseUrl),
+    showcase: parseMediaShowcase(raw.showcase, apiBaseUrl),
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     gallery,
     embedUrl: safeHref(raw.embed_url),
@@ -783,6 +783,7 @@ export function parseArticlePage(
     publicationDate,
     featured: asBoolean(raw.featured),
     body: parseStreamField(raw.body, apiBaseUrl),
+    showcase: parseMediaShowcase(raw.showcase, apiBaseUrl),
   };
 }
 
@@ -813,6 +814,7 @@ export function parseEventPage(
     registrationUrl: safeHref(raw.registration_url),
     featured: asBoolean(raw.featured),
     body: parseStreamField(raw.body, apiBaseUrl),
+    showcase: parseMediaShowcase(raw.showcase, apiBaseUrl),
   };
 }
 

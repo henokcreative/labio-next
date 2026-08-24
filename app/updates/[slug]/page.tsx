@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import CmsImage from "@/app/components/CmsImage";
+import CaseStudyShowcase from "@/app/components/CaseStudyShowcase";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
@@ -151,22 +151,16 @@ export default async function UpdateDetailPage({ params }: UpdateRouteProps) {
           <p>{page.summary}</p>
         </header>
 
-        {page.featuredImage && (
-          <div className="update-detail-image">
-            <CmsImage
-              image={page.featuredImage}
-              priority
-              sizes="(max-width: 900px) 100vw, calc(100vw - 280px)"
-            />
-          </div>
-        )}
-
         {page.kind === "event" && <EventInformation event={page} />}
 
         {page.body.length > 0 && (
           <section className="public-content-section update-detail-body">
             <StreamFieldRenderer blocks={page.body} />
           </section>
+        )}
+
+        {page.showcase.length > 0 && (
+          <CaseStudyShowcase blocks={page.showcase} variant="update" />
         )}
 
         <nav className="update-detail-next" aria-label="Updates navigation">

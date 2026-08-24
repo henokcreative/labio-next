@@ -182,7 +182,7 @@ export type CmsWebsitePreview = {
   caption: string;
 };
 
-export type CmsCaseStudyShowcaseBlock =
+export type CmsMediaShowcaseBlock =
   | (CmsShowcaseBlockBase & {
       type: "photo_slider" | "masonry_gallery";
       value: { heading: string; images: CmsImage[] };
@@ -211,6 +211,8 @@ export type CmsCaseStudyShowcaseBlock =
       type: "wide_image";
       value: { heading: string; image: CmsImage; caption: string };
     });
+
+export type CmsCaseStudyShowcaseBlock = CmsMediaShowcaseBlock;
 
 export type CmsCaseStudyPage = CmsPageBase & {
   kind: "case-study";
@@ -332,6 +334,7 @@ export type CmsArticlePage = CmsPageBase & {
   publicationDate: string;
   featured: boolean;
   body: CmsStreamBlock[];
+  showcase: CmsMediaShowcaseBlock[];
 };
 
 export type CmsEventPage = CmsPageBase & {
@@ -346,6 +349,7 @@ export type CmsEventPage = CmsPageBase & {
   registrationUrl: string;
   featured: boolean;
   body: CmsStreamBlock[];
+  showcase: CmsMediaShowcaseBlock[];
 };
 
 export type CmsUpdatePage = CmsArticlePage | CmsEventPage;
