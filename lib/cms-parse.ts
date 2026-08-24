@@ -4,6 +4,8 @@ import type {
   CmsArticleSummary,
   CmsArticleType,
   CmsCapability,
+  CmsCaseStudyShowcaseBlock,
+  CmsCaseStudySummary,
   CmsCaseStudyPage,
   CmsCollaborator,
   CmsContactPage,
@@ -175,6 +177,28 @@ function parseSummaries(value: unknown): CmsPageSummary[] {
     .filter((item): item is CmsPageSummary => item !== null);
 }
 
+function parseCaseStudySummaries(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsCaseStudySummary[] {
+  return asArray(value).flatMap((item) => {
+    const record = asRecord(item);
+    if (!record) return [];
+    const id = asNumber(record.id);
+    const title = asString(record.title).trim();
+    const slug = asString(record.slug).trim();
+    if (id === null || !title || !slug) return [];
+    return [{
+      id,
+      title,
+      slug,
+      summary: asString(record.summary).trim(),
+      category: asString(record.category).trim(),
+      heroImage: parseCmsImage(record.hero_image, apiBaseUrl),
+    }];
+  });
+}
+
 function parseStringBlocks(value: unknown, blockType: string): string[] {
   return asArray(value).flatMap((blockValue) => {
     const block = asRecord(blockValue);
@@ -182,6 +206,107 @@ function parseStringBlocks(value: unknown, blockType: string): string[] {
     const text = asString(block.value).trim();
     return text ? [text] : [];
   });
+}
+
+function parseShowcaseImages(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsImage[] {
+  return asArray(value).flatMap((item) => {
+    const image = parseCmsImage(item, apiBaseUrl);
+    return image ? [image] : [];
+  });
+}
+
+function parseCaseStudyShowcase(
+  value: unknown,
+  apiBaseUrl: string,
+): CmsCaseStudyShowcaseBlock[] {
+  return asArray(value).flatMap<CmsCaseStudyShowcaseBlock>(
+    (blockValue): CmsCaseStudyShowcaseBlock[] => {
+      const block = asRecord(blockValue);
+      const blockContent = asRecord(block?.value);
+      const type = asString(block?.type);
+      if (!block || !blockContent) return [];
+      const id = asString(block.id).trim();
+      const base = id ? { id } : {};
+      const heading = asString(blockContent.heading).trim();
+
+      if (type === "photo_slider" || type === "masonry_gallery") {
+        const images = parseShowcaseImages(blockContent.images, apiBaseUrl);
+        return images.length >= 2
+          ? [{ ...base, type, value: { heading, images } }]
+          : [];
+      }
+      if (type === "image_grid") {
+        const images = parseShowcaseImages(blockContent.images, apiBaseUrl);
+        if (images.length === 0) return [];
+        return [{
+          ...base,
+          type,
+          value: {
+            heading,
+            columns: asString(blockContent.columns) === "2" ? 2 : 3,
+            images,
+          },
+        }];
+      }
+      if (type === "image_pair") {
+        const firstImage = parseCmsImage(blockContent.first_image, apiBaseUrl);
+        const secondImage = parseCmsImage(blockContent.second_image, apiBaseUrl);
+        return firstImage && secondImage
+          ? [{ ...base, type, value: { heading, firstImage, secondImage } }]
+          : [];
+      }
+      if (type === "video") {
+        const url = safeHref(blockContent.url);
+        return url.startsWith("http://") || url.startsWith("https://")
+          ? [{
+              ...base,
+              type,
+              value: {
+                heading,
+                url,
+                caption: asString(blockContent.caption).trim(),
+              },
+            }]
+          : [];
+      }
+      if (type === "website_preview_grid") {
+        const items = asArray(blockContent.items).flatMap((itemValue) => {
+          const item = asRecord(itemValue);
+          if (!item) return [];
+          const image = parseCmsImage(item.image, apiBaseUrl);
+          const label = asString(item.label).trim();
+          if (!image || !label) return [];
+          return [{
+            image,
+            label,
+            url: safeHref(item.url),
+            caption: asString(item.caption).trim(),
+          }];
+        });
+        return items.length > 0
+          ? [{ ...base, type, value: { heading, items } }]
+          : [];
+      }
+      if (type === "wide_image") {
+        const image = parseCmsImage(blockContent.image, apiBaseUrl);
+        return image
+          ? [{
+              ...base,
+              type,
+              value: {
+                heading,
+                image,
+                caption: asString(blockContent.caption).trim(),
+              },
+            }]
+          : [];
+      }
+      return [];
+    },
+  );
 }
 
 export function parseStreamField(
@@ -364,12 +489,29 @@ export function parseServicePage(
     ...page,
     kind: "service",
     summary: asString(raw.summary).trim(),
-    heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     body: parseStreamField(raw.body, apiBaseUrl),
     capabilities: parseStructuredList(raw.capabilities, "capability"),
     process: parseStructuredList<CmsProcessStep>(raw.process, "step"),
+    testimonialsEnabled: Object.prototype.hasOwnProperty.call(
+      raw,
+      "testimonials_enabled",
+    ) ? asBoolean(raw.testimonials_enabled) : true,
+    testimonialsHeading:
+      asString(raw.testimonials_heading).trim() || "Client perspectives",
+    testimonials: parseTestimonials(raw.testimonials),
+    relatedWorkEnabled: Object.prototype.hasOwnProperty.call(
+      raw,
+      "related_work_enabled",
+    ) ? asBoolean(raw.related_work_enabled) : true,
+    relatedWorkHeading:
+      asString(raw.related_work_heading).trim() || "Related work",
+    ctaHeading:
+      asString(raw.cta_heading).trim() || "Have a project in mind?",
     cta: parseLink(raw.cta_label, raw.cta_url),
-    relatedCaseStudies: parseSummaries(raw.related_case_studies),
+    relatedCaseStudies: parseCaseStudySummaries(
+      raw.related_case_studies,
+      apiBaseUrl,
+    ),
   };
 }
 
@@ -417,6 +559,7 @@ export function parseCaseStudyPage(
     projectUrl: safeHref(raw.project_url),
     cta: parseLink(raw.cta_label, raw.cta_url),
     body: parseStreamField(raw.body, apiBaseUrl),
+    showcase: parseCaseStudyShowcase(raw.showcase, apiBaseUrl),
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     gallery,
     embedUrl: safeHref(raw.embed_url),

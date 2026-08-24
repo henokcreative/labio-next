@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CaseStudyShowcase from "@/app/components/CaseStudyShowcase";
 import CmsImage from "@/app/components/CmsImage";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
@@ -13,6 +14,7 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
+import { shouldUseLegacyCaseStudyMedia } from "@/lib/case-study-showcase";
 
 type WorkRouteProps = { params: Promise<{ slug: string }> };
 
@@ -54,6 +56,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
       || project.deliverables.length
       || project.outcome,
   );
+  const useLegacyMedia = shouldUseLegacyCaseStudyMedia(project.showcase);
 
   return (
     <PublicShell>
@@ -144,13 +147,17 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </section>
         )}
 
-        {project.embedUrl && (
+        {project.showcase.length > 0 && (
+          <CaseStudyShowcase blocks={project.showcase} />
+        )}
+
+        {useLegacyMedia && project.embedUrl && (
           <section className="public-content-section">
             <StreamFieldRenderer blocks={[{ type: "embed", value: project.embedUrl }]} />
           </section>
         )}
 
-        {project.gallery.length > 0 && (
+        {useLegacyMedia && project.gallery.length > 0 && (
           <section className="project-gallery">
             <div className="section-label">Selected work <span /></div>
             <div className="project-gallery-grid">

@@ -20,7 +20,7 @@ import {
   getCaseStudyPages,
   getCollaborators,
   getHomePage,
-  getServicePages,
+  getServicePagesResult,
   getSiteSettings,
   getTestimonials,
 } from "@/lib/cms";
@@ -29,6 +29,7 @@ import { organizationSchema } from "@/lib/public-schema";
 import {
   resolveHomeCollaborators,
   resolveHomeTestimonials,
+  resolveCmsCollection,
   resolveSelectedHomeItems,
 } from "@/lib/public-content";
 
@@ -44,10 +45,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [cmsHome, cmsServices, cmsProjects, collaborators, testimonials, settings] =
+  const [cmsHome, serviceResult, cmsProjects, collaborators, testimonials, settings] =
     await Promise.all([
       getHomePage(),
-      getServicePages(),
+      getServicePagesResult(),
       getCaseStudyPages(),
       getCollaborators(),
       getTestimonials(),
@@ -55,12 +56,11 @@ export default async function Home() {
     ]);
 
   const home = cmsHome ?? fallbackHome;
-  const services = cmsServices.length > 0 ? cmsServices : fallbackServices;
+  const services = resolveCmsCollection(serviceResult, fallbackServices);
   const projects = cmsProjects.length > 0 ? cmsProjects : fallbackCaseStudies;
-  const featuredServices = resolveSelectedHomeItems(
-    home.featuredServices,
-    services,
-  );
+  const featuredServices = serviceResult.apiAvailable
+    ? resolveSelectedHomeItems(cmsHome?.featuredServices ?? [], services)
+    : resolveSelectedHomeItems(fallbackHome.featuredServices, fallbackServices);
   const selectedWork = resolveSelectedHomeItems(home.selectedWork, projects);
   const displayedCollaborators = resolveHomeCollaborators(
     cmsHome,

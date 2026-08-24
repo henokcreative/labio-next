@@ -68,10 +68,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Bespoke websites and digital experiences for research groups, organisations and scientific projects.",
-    heroImage: localImage(
-      "/images/work/webdesignDev/thumb-bioscience.png",
-      "A LaBio Media website project",
-    ),
     body: [],
     capabilities: [
       { title: "Web design", description: "Clear, editorial digital systems." },
@@ -79,6 +75,12 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Digital strategy", description: "Structure built around audiences and goals." },
     ],
     process: [],
+    testimonialsEnabled: false,
+    testimonialsHeading: "Client perspectives",
+    testimonials: [],
+    relatedWorkEnabled: false,
+    relatedWorkHeading: "Related work",
+    ctaHeading: "Have a project in mind?",
     cta: { label: "Discuss a web project", url: "/contact" },
     relatedCaseStudies: [],
   },
@@ -90,10 +92,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Research films, interviews and visual storytelling that make complex ideas easier to understand.",
-    heroImage: localImage(
-      "/images/work/videos/thumb-inflames.JPG",
-      "Research video production",
-    ),
     body: [],
     capabilities: [
       { title: "Research films", description: "Stories grounded in scientific context." },
@@ -101,6 +99,12 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Editing", description: "A clear narrative from complex material." },
     ],
     process: [],
+    testimonialsEnabled: false,
+    testimonialsHeading: "Client perspectives",
+    testimonials: [],
+    relatedWorkEnabled: false,
+    relatedWorkHeading: "Related work",
+    ctaHeading: "Have a project in mind?",
     cta: { label: "Discuss a video project", url: "/contact" },
     relatedCaseStudies: [],
   },
@@ -112,10 +116,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "People, laboratories, events and environments captured with purpose and attention to detail.",
-    heroImage: localImage(
-      "/images/work/photos/pia_lab.jpg",
-      "Photography in a research laboratory",
-    ),
     body: [],
     capabilities: [
       { title: "People", description: "Natural portraits in real working environments." },
@@ -123,6 +123,12 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Events", description: "Purposeful coverage and visual documentation." },
     ],
     process: [],
+    testimonialsEnabled: false,
+    testimonialsHeading: "Client perspectives",
+    testimonials: [],
+    relatedWorkEnabled: false,
+    relatedWorkHeading: "Related work",
+    ctaHeading: "Have a project in mind?",
     cta: { label: "Discuss photography", url: "/contact" },
     relatedCaseStudies: [],
   },
@@ -134,10 +140,6 @@ export const fallbackServices: CmsServicePage[] = [
     socialImage: null,
     summary:
       "Visual identities, publications, infographics and digital materials that make complex information clear.",
-    heroImage: localImage(
-      "/images/work/webprintdesign/Euro BioImaging Poster EMBL_2.png",
-      "Scientific communication design",
-    ),
     body: [],
     capabilities: [
       { title: "Visual identity", description: "Distinct systems with scientific credibility." },
@@ -145,6 +147,12 @@ export const fallbackServices: CmsServicePage[] = [
       { title: "Infographics", description: "Complex ideas made easier to understand." },
     ],
     process: [],
+    testimonialsEnabled: false,
+    testimonialsHeading: "Client perspectives",
+    testimonials: [],
+    relatedWorkEnabled: false,
+    relatedWorkHeading: "Related work",
+    ctaHeading: "Have a project in mind?",
     cta: { label: "Discuss a design project", url: "/contact" },
     relatedCaseStudies: [],
   },
@@ -179,6 +187,7 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
       },
       { type: "rich_text", value: `<p>${project.approach}</p>` },
     ],
+    showcase: [],
     heroImage: localImage(project.hero, project.title),
     gallery: project.images.map((image) => localImage(image.src, image.alt)),
     embedUrl: "",

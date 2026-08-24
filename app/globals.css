@@ -4803,6 +4803,248 @@ html[data-public-theme="dark"] .consent-layer {
   transform: scale(1.015);
 }
 
+/* Case-study visual showcase */
+
+.case-study-showcase-block {
+  padding: clamp(72px, 8vw, 112px) var(--content-padding);
+  border-bottom: 1px solid #eeeeee;
+}
+
+.case-study-showcase-inner {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+}
+
+.showcase-heading {
+  max-width: 760px;
+  margin: 0 0 clamp(28px, 4vw, 48px);
+  color: #111111;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.showcase-image-figure,
+.showcase-slider-figure {
+  margin: 0;
+}
+
+.showcase-image-figure img,
+.showcase-slider-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.showcase-image-figure figcaption,
+.showcase-slider-figure figcaption,
+.showcase-caption {
+  margin: 10px 0 0;
+  color: #666666;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.showcase-photo-slider:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -4px;
+}
+
+.showcase-slider-media {
+  display: grid;
+  min-height: min(62vw, 620px);
+  place-items: center;
+  overflow: hidden;
+  background: #f2f2f2;
+}
+
+.showcase-slider-media img {
+  max-height: 680px;
+  object-fit: contain;
+}
+
+.showcase-slider-controls {
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  gap: 16px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.showcase-slider-controls p {
+  margin: 0;
+  color: #666666;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.showcase-slider-controls button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid #d8d8d8;
+  border-radius: 50%;
+  background: transparent;
+  color: #111111;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.showcase-slider-controls button:hover,
+.showcase-slider-controls button:focus-visible {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.showcase-slider-controls button:focus-visible,
+.showcase-website-grid a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.showcase-masonry {
+  columns: 3 260px;
+  column-gap: clamp(16px, 2vw, 24px);
+}
+
+.showcase-masonry .showcase-image-figure {
+  margin-bottom: clamp(16px, 2vw, 24px);
+  break-inside: avoid;
+}
+
+.showcase-masonry img {
+  max-height: 680px;
+  object-fit: contain;
+}
+
+.showcase-image-grid,
+.showcase-image-pair {
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+  align-items: start;
+}
+
+.showcase-columns-2,
+.showcase-image-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.showcase-columns-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.showcase-image-grid img,
+.showcase-image-pair img {
+  max-height: 620px;
+  object-fit: contain;
+}
+
+.showcase-video .case-study-showcase-inner {
+  max-width: 960px;
+}
+
+.showcase-video .cms-stream {
+  margin: 0;
+}
+
+.showcase-video .cms-embed,
+.showcase-video .cms-embed-consent {
+  width: 100%;
+  max-width: 960px;
+}
+
+.showcase-website-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(18px, 2.5vw, 30px);
+}
+
+.showcase-website-grid a,
+.showcase-website-grid article {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.showcase-website-media {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid #e3e3e3;
+  background: #f2f2f2;
+}
+
+.showcase-website-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 280ms ease;
+}
+
+.showcase-website-grid a:hover .showcase-website-media img,
+.showcase-website-grid a:focus-visible .showcase-website-media img {
+  transform: scale(1.015);
+}
+
+.showcase-website-copy {
+  padding-top: 16px;
+}
+
+.showcase-website-copy h3,
+.showcase-website-copy p {
+  margin: 0;
+}
+
+.showcase-website-copy h3 {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.showcase-website-copy p {
+  margin-top: 7px;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.showcase-wide-image img {
+  max-height: 760px;
+  object-fit: contain;
+}
+
+@media (max-width: 760px) {
+  .case-study-showcase-block {
+    padding: 64px 24px;
+  }
+
+  .showcase-masonry {
+    columns: 2 220px;
+  }
+
+  .showcase-columns-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .showcase-masonry {
+    columns: 1;
+  }
+
+  .showcase-columns-2,
+  .showcase-columns-3,
+  .showcase-image-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase-slider-media {
+    min-height: 72vw;
+  }
+}
+
 .contact-route-header h1 {
   max-width: 11ch;
 }
@@ -5226,6 +5468,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .project-hero,
   .project-information,
   .project-services,
+  .case-study-showcase-block,
   .service-list div,
   .project-gallery,
   .public-page-header,
@@ -5253,7 +5496,9 @@ html[data-public-theme="dark"] .site-shell :where(
   .about-image,
   .public-hero-image,
   .about-page-image,
-  .project-gallery-image
+  .project-gallery-image,
+  .showcase-slider-media,
+  .showcase-website-media
 ) {
   background: var(--public-surface-subtle);
 }
@@ -5279,6 +5524,11 @@ html[data-public-theme="dark"] .site-shell :where(
   .cms-rich-text,
   .cms-content-image figcaption,
   .project-gallery-item figcaption,
+  .showcase-image-figure figcaption,
+  .showcase-slider-figure figcaption,
+  .showcase-caption,
+  .showcase-slider-controls p,
+  .showcase-website-copy p,
   .cms-quote cite,
   .cms-embed-fallback,
   .cms-empty,
@@ -5308,9 +5558,19 @@ html[data-public-theme="dark"] .site-shell :where(
   .service-link,
   .project-heading h1,
   .project-intro h2,
-  .project-next a
+  .project-next a,
+  .showcase-heading,
+  .showcase-website-copy h3,
+  .showcase-slider-controls button
 ) {
   color: var(--color-text);
+}
+
+html[data-public-theme="dark"] .site-shell :where(
+  .showcase-website-media,
+  .showcase-slider-controls button
+) {
+  border-color: var(--public-border-strong);
 }
 
 html[data-public-theme="dark"] .site-shell .project-client {

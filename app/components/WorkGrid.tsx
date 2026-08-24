@@ -1,6 +1,9 @@
 import Link from "next/link";
 import CmsImage from "./CmsImage";
-import type { CmsCaseStudyPage } from "@/lib/cms-types";
+import type {
+  CmsCaseStudyPage,
+  CmsCaseStudySummary,
+} from "@/lib/cms-types";
 
 type WorkGridVariant = "featured" | "portfolio" | "related";
 
@@ -9,7 +12,7 @@ export default function WorkGrid({
   variant = "portfolio",
   headingLevel = "h3",
 }: {
-  projects: CmsCaseStudyPage[];
+  projects: Array<CmsCaseStudyPage | CmsCaseStudySummary>;
   variant?: WorkGridVariant;
   headingLevel?: "h2" | "h3";
 }) {
@@ -26,7 +29,9 @@ export default function WorkGrid({
     <div className={`work-grid work-grid-${variant}`}>
       {projects.map((project, index) => (
         <Link
-          href={"/work/" + project.meta.slug}
+          href={
+            "/work/" + ("slug" in project ? project.slug : project.meta.slug)
+          }
           className="work-card"
           key={project.id}
         >

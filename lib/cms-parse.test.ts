@@ -31,6 +31,7 @@ import {
   resolveCollaborators,
   resolveHomeCollaborators,
   resolveHomeLatestUpdates,
+  resolveCmsCollection,
   resolveHomeTestimonials,
   resolveSelectedHomeItems,
   resolveStandardPage,
@@ -44,6 +45,10 @@ import {
   FALLBACK_PUBLIC_NAVIGATION,
   resolvePublicNavigation,
 } from "./public-navigation";
+import {
+  nextSlideIndex,
+  shouldUseLegacyCaseStudyMedia,
+} from "./case-study-showcase";
 
 
 const apiUrl = "https://api.example.com";
@@ -394,11 +399,45 @@ test("service and work payloads retain only controlled route data", () => {
       title: "Photography",
       meta: { ...meta, type: "public_content.ServicePage", slug: "photography" },
       summary: "Research photography",
+      hero_image: {
+        url: "/media/obsolete-service-hero.jpg",
+        width: 1600,
+        height: 900,
+        alt: "Obsolete service hero",
+      },
       capabilities: [
         { type: "capability", value: { title: "Portraits", description: "On location" } },
         { type: "unknown", value: { title: "Ignored" } },
       ],
-      related_case_studies: [{ id: 3, title: "A study", slug: "a-study" }],
+      testimonials_enabled: true,
+      testimonials_heading: "Selected perspectives",
+      testimonials: [
+        {
+          id: 8,
+          quote: "Thoughtful work.",
+          person: "Research client",
+          role: "Director",
+          organization: "Institute",
+        },
+      ],
+      related_work_enabled: true,
+      related_work_heading: "Selected projects",
+      cta_heading: "Discuss your research",
+      related_case_studies: [
+        {
+          id: 3,
+          title: "A study",
+          slug: "a-study",
+          summary: "A public case study",
+          category: "Photography",
+          hero_image: {
+            url: "/media/work.jpg",
+            width: 900,
+            height: 600,
+            alt: "Work",
+          },
+        },
+      ],
     },
     apiUrl,
   );
@@ -434,7 +473,21 @@ test("service and work payloads retain only controlled route data", () => {
   );
 
   assert.equal(service?.capabilities.length, 1);
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(service, "heroImage"),
+    false,
+  );
   assert.equal(service?.relatedCaseStudies[0].slug, "a-study");
+  assert.equal(
+    service?.relatedCaseStudies[0].heroImage?.url,
+    "https://api.example.com/media/work.jpg",
+  );
+  assert.equal(service?.testimonialsEnabled, true);
+  assert.equal(service?.testimonialsHeading, "Selected perspectives");
+  assert.equal(service?.testimonials[0].person, "Research client");
+  assert.equal(service?.relatedWorkEnabled, true);
+  assert.equal(service?.relatedWorkHeading, "Selected projects");
+  assert.equal(service?.ctaHeading, "Discuss your research");
   assert.equal(project?.gallery[0].url, "https://api.example.com/media/work.jpg");
   assert.equal(project?.services[0].slug, "photography");
   assert.equal(project?.clientDisplayName, "Research Institute");
@@ -445,6 +498,36 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(project?.outcome, "A reusable visual library.");
   assert.equal(project?.projectUrl, "https://project.example.com");
   assert.deepEqual(project?.cta, { label: "Discuss a project", url: "/contact" });
+});
+
+test("service sections preserve intentional disabled and empty CMS states", () => {
+  const service = parseServicePage(
+    {
+      id: 12,
+      title: "Video",
+      meta: {
+        ...meta,
+        type: "public_content.ServicePage",
+        slug: "video",
+      },
+      testimonials_enabled: false,
+      testimonials_heading: "Client voices",
+      testimonials: [],
+      related_work_enabled: false,
+      related_work_heading: "Research stories",
+      related_case_studies: [],
+      cta_heading: "Start a project",
+    },
+    apiUrl,
+  );
+
+  assert.equal(service?.testimonialsEnabled, false);
+  assert.equal(service?.testimonialsHeading, "Client voices");
+  assert.deepEqual(service?.testimonials, []);
+  assert.equal(service?.relatedWorkEnabled, false);
+  assert.equal(service?.relatedWorkHeading, "Research stories");
+  assert.deepEqual(service?.relatedCaseStudies, []);
+  assert.equal(service?.ctaHeading, "Start a project");
 });
 
 test("case-study editorial additions stay optional and reject unsafe links", () => {
@@ -469,6 +552,139 @@ test("case-study editorial additions stay optional and reject unsafe links", () 
   assert.equal(project?.outcome, "");
   assert.equal(project?.projectUrl, "");
   assert.deepEqual(project?.cta, { label: "Unsafe CTA", url: "" });
+});
+
+test("case-study showcase parsing preserves controlled modules and safe URLs", () => {
+  const image = {
+    url: "/media/showcase.jpg",
+    width: 1200,
+    height: 800,
+    alt: "Showcase image",
+    caption: "Editorial caption",
+  };
+  const project = parseCaseStudyPage(
+    {
+      id: 30,
+      title: "Visual project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "visual-project" },
+      showcase: [
+        {
+          id: "slider-1",
+          type: "photo_slider",
+          value: { heading: "Photography", images: [image, image] },
+        },
+        {
+          type: "masonry_gallery",
+          value: { heading: "Details", images: [image, image] },
+        },
+        {
+          type: "image_grid",
+          value: { heading: "Applications", columns: "2", images: [image] },
+        },
+        {
+          type: "image_pair",
+          value: { heading: "Pair", first_image: image, second_image: image },
+        },
+        {
+          type: "video",
+          value: {
+            heading: "Film",
+            url: "https://vimeo.com/123456",
+            caption: "Consent-aware media",
+          },
+        },
+        {
+          type: "website_preview_grid",
+          value: {
+            heading: "Website views",
+            items: [
+              {
+                image,
+                label: "Homepage",
+                url: "https://project.example.com",
+                caption: "Desktop view",
+              },
+              {
+                image,
+                label: "Unsafe destination",
+                url: "javascript:alert(1)",
+              },
+            ],
+          },
+        },
+        {
+          type: "wide_image",
+          value: { heading: "Final image", image, caption: "Wide view" },
+        },
+        {
+          type: "photo_slider",
+          value: { heading: "Invalid slider", images: [image] },
+        },
+        { type: "unknown_showcase", value: { image } },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(
+    project?.showcase.map((block) => block.type),
+    [
+      "photo_slider",
+      "masonry_gallery",
+      "image_grid",
+      "image_pair",
+      "video",
+      "website_preview_grid",
+      "wide_image",
+    ],
+  );
+  assert.equal(project?.showcase[0].id, "slider-1");
+  assert.equal(
+    project?.showcase[0].type === "photo_slider"
+      ? project.showcase[0].value.images[0].url
+      : "",
+    "https://api.example.com/media/showcase.jpg",
+  );
+  assert.equal(
+    project?.showcase[2].type === "image_grid"
+      ? project.showcase[2].value.columns
+      : 0,
+    2,
+  );
+  assert.equal(
+    project?.showcase[5].type === "website_preview_grid"
+      ? project.showcase[5].value.items[1].url
+      : "unexpected",
+    "",
+  );
+  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), false);
+});
+
+test("empty showcase retains legacy media and slider controls wrap", () => {
+  const project = parseCaseStudyPage(
+    {
+      id: 31,
+      title: "Legacy project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "legacy-project" },
+      showcase: [],
+      embed_url: "https://www.youtube.com/watch?v=abc123",
+      gallery: [
+        {
+          type: "image",
+          value: { url: "/media/legacy.jpg", width: 900, height: 600, alt: "Legacy" },
+        },
+      ],
+    },
+    apiUrl,
+  );
+
+  assert.deepEqual(project?.showcase, []);
+  assert.equal(shouldUseLegacyCaseStudyMedia(project?.showcase ?? []), true);
+  assert.equal(project?.gallery.length, 1);
+  assert.equal(project?.embedUrl, "https://www.youtube.com/watch?v=abc123");
+  assert.equal(nextSlideIndex(0, 3, -1), 2);
+  assert.equal(nextSlideIndex(2, 3, 1), 0);
+  assert.equal(nextSlideIndex(0, 0, 1), 0);
 });
 
 test("updates index preserves backend article and event ordering", () => {
@@ -876,6 +1092,24 @@ test("empty homepage service and work selections do not expand to available item
       available,
     ),
     available,
+  );
+});
+
+test("published CMS service collections remain authoritative when empty", () => {
+  const fallback = [{ id: -1, title: "Legacy service" }];
+  const published = [{ id: 7, title: "Published service" }];
+
+  assert.deepEqual(
+    resolveCmsCollection({ items: published, apiAvailable: true }, fallback),
+    published,
+  );
+  assert.deepEqual(
+    resolveCmsCollection({ items: [], apiAvailable: true }, fallback),
+    [],
+  );
+  assert.deepEqual(
+    resolveCmsCollection({ items: [], apiAvailable: false }, fallback),
+    fallback,
   );
 });
 
