@@ -6,6 +6,7 @@ import type {
   CmsImage as CmsImageData,
   CmsWebsitePreview,
 } from "@/lib/cms-types";
+import { groupCaseStudyShowcaseBlocks } from "@/lib/case-study-showcase";
 
 function Heading({ children }: { children: string }) {
   return children ? <h2 className="showcase-heading">{children}</h2> : null;
@@ -55,9 +56,40 @@ export default function CaseStudyShowcase({
 }) {
   if (blocks.length === 0) return null;
 
+  const groups = groupCaseStudyShowcaseBlocks(blocks);
+
   return (
     <div className="case-study-showcase">
-      {blocks.map((block, index) => {
+      {groups.map((group, index) => {
+        if (group.type === "video_grid") {
+          const countClass = `showcase-video-count-${Math.min(group.blocks.length, 3)}`;
+          const key = group.blocks[0].id || `video-grid-${index}`;
+
+          return (
+            <section className="case-study-showcase-block showcase-video" key={key}>
+              <div className="case-study-showcase-inner">
+                <div className={`showcase-video-grid ${countClass}`}>
+                  {group.blocks.map((video, videoIndex) => (
+                    <article
+                      className="showcase-video-item"
+                      key={video.id || `${video.value.url}-${videoIndex}`}
+                    >
+                      {video.value.heading && (
+                        <h2 className="showcase-video-heading">{video.value.heading}</h2>
+                      )}
+                      <StreamFieldRenderer blocks={[{ type: "embed", value: video.value.url }]} />
+                      {video.value.caption && (
+                        <p className="showcase-caption">{video.value.caption}</p>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        const block = group.block;
         const key = block.id || `${block.type}-${index}`;
         switch (block.type) {
           case "photo_slider":
@@ -107,16 +139,6 @@ export default function CaseStudyShowcase({
                     <ImageFigure image={block.value.firstImage} sizes="(max-width: 700px) 100vw, 45vw" />
                     <ImageFigure image={block.value.secondImage} sizes="(max-width: 700px) 100vw, 45vw" />
                   </div>
-                </div>
-              </section>
-            );
-          case "video":
-            return (
-              <section className="case-study-showcase-block showcase-video" key={key}>
-                <div className="case-study-showcase-inner">
-                  <Heading>{block.value.heading}</Heading>
-                  <StreamFieldRenderer blocks={[{ type: "embed", value: block.value.url }]} />
-                  {block.value.caption && <p className="showcase-caption">{block.value.caption}</p>}
                 </div>
               </section>
             );

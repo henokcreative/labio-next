@@ -4615,6 +4615,20 @@ html[data-public-theme="dark"] .consent-layer {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.work-grid-portfolio {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.work-grid-related.work-grid-count-1 {
+  width: min(100%, 440px);
+  grid-template-columns: 1fr;
+}
+
+.work-grid-related.work-grid-count-2 {
+  max-width: 900px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .work-card {
   border: 0;
   background: #ffffff;
@@ -4942,17 +4956,41 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .showcase-video .case-study-showcase-inner {
-  max-width: 960px;
+  max-width: 1180px;
 }
 
-.showcase-video .cms-stream {
+.showcase-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 40px);
+  align-items: start;
+}
+
+.showcase-video-count-1 {
+  grid-template-columns: minmax(0, 760px);
+}
+
+.showcase-video-count-2 {
+  max-width: 920px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.showcase-video-heading {
+  margin: 0 0 16px;
+  color: #111111;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+.showcase-video-item .cms-stream {
   margin: 0;
 }
 
-.showcase-video .cms-embed,
-.showcase-video .cms-embed-consent {
+.showcase-video-item .cms-embed,
+.showcase-video-item .cms-embed-consent {
   width: 100%;
-  max-width: 960px;
 }
 
 .showcase-website-grid {
@@ -5027,6 +5065,15 @@ html[data-public-theme="dark"] .consent-layer {
   .showcase-columns-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .showcase-video-grid,
+  .showcase-video-count-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .showcase-video-count-1 {
+    grid-template-columns: minmax(0, 680px);
+  }
 }
 
 @media (max-width: 560px) {
@@ -5036,7 +5083,10 @@ html[data-public-theme="dark"] .consent-layer {
 
   .showcase-columns-2,
   .showcase-columns-3,
-  .showcase-image-pair {
+  .showcase-image-pair,
+  .showcase-video-grid,
+  .showcase-video-count-1,
+  .showcase-video-count-2 {
     grid-template-columns: 1fr;
   }
 
@@ -5295,6 +5345,11 @@ html[data-public-theme="dark"] .consent-layer {
   .work-grid {
     grid-template-columns: 1fr;
     gap: 48px;
+  }
+
+  .work-grid-related.work-grid-count-2 {
+    max-width: none;
+    grid-template-columns: 1fr;
   }
 
   .work-card h2,
@@ -5560,6 +5615,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .project-intro h2,
   .project-next a,
   .showcase-heading,
+  .showcase-video-heading,
   .showcase-website-copy h3,
   .showcase-slider-controls button
 ) {

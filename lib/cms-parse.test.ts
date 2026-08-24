@@ -46,6 +46,7 @@ import {
   resolvePublicNavigation,
 } from "./public-navigation";
 import {
+  groupCaseStudyShowcaseBlocks,
   nextSlideIndex,
   shouldUseLegacyCaseStudyMedia,
 } from "./case-study-showcase";
@@ -1166,4 +1167,45 @@ test("contact parser keeps CMS editorial fields and an intentionally empty body"
   assert.equal(contact.eyebrow, "Start a conversation");
   assert.equal(contact.intro, "Tell us what you need to communicate.");
   assert.deepEqual(contact.body, []);
+});
+
+test("consecutive case-study videos form showcase grids without reordering blocks", () => {
+  const groups = groupCaseStudyShowcaseBlocks([
+    {
+      id: "video-one",
+      type: "video",
+      value: { heading: "Film one", url: "https://vimeo.com/1", caption: "First" },
+    },
+    {
+      id: "video-two",
+      type: "video",
+      value: { heading: "Film two", url: "https://vimeo.com/2", caption: "Second" },
+    },
+    {
+      id: "image",
+      type: "wide_image",
+      value: {
+        heading: "Still",
+        image: {
+          url: "https://media.example.com/still.jpg",
+          width: 1200,
+          height: 800,
+          alt: "A still image",
+        },
+        caption: "",
+      },
+    },
+    {
+      id: "video-three",
+      type: "video",
+      value: { heading: "Film three", url: "https://vimeo.com/3", caption: "Third" },
+    },
+  ]);
+
+  assert.equal(groups.length, 3);
+  assert.equal(groups[0].type, "video_grid");
+  assert.equal(groups[0].type === "video_grid" && groups[0].blocks.length, 2);
+  assert.equal(groups[1].type, "block");
+  assert.equal(groups[2].type, "video_grid");
+  assert.equal(groups[2].type === "video_grid" && groups[2].blocks.length, 1);
 });

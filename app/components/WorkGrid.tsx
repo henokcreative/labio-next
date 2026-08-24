@@ -22,11 +22,12 @@ export default function WorkGrid({
 
   const Heading = headingLevel;
   const sizes = variant === "portfolio"
-    ? "(max-width: 900px) 100vw, 50vw"
+    ? "(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
     : "(max-width: 900px) 100vw, 33vw";
+  const countClass = `work-grid-count-${Math.min(projects.length, 3)}`;
 
   return (
-    <div className={`work-grid work-grid-${variant}`}>
+    <div className={`work-grid work-grid-${variant} ${countClass}`}>
       {projects.map((project, index) => (
         <Link
           href={
