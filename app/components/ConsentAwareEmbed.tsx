@@ -8,15 +8,19 @@ import {
   hasPublicConsent,
   readPublicConsent,
 } from "@/lib/public-consent";
+import BrandName from "./BrandName";
 
 export default function ConsentAwareEmbed({
   embedUrl,
   sourceUrl,
+  presentation = "default",
 }: {
   embedUrl: string;
   sourceUrl: string;
+  presentation?: "default" | "showcase";
 }) {
   const [allowed, setAllowed] = useState(false);
+  const [activated, setActivated] = useState(false);
 
   useEffect(() => {
     function refreshConsent() {
@@ -43,7 +47,7 @@ export default function ConsentAwareEmbed({
     };
   }, []);
 
-  if (allowed) {
+  if (allowed && (presentation === "default" || activated)) {
     return (
       <div className="cms-embed">
         <iframe
@@ -53,6 +57,36 @@ export default function ConsentAwareEmbed({
           allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
           allowFullScreen
         />
+      </div>
+    );
+  }
+
+  if (presentation === "showcase") {
+    return (
+      <div className="cms-embed showcase-video-poster">
+        <div className="showcase-video-poster-content">
+          <BrandName variant="light" className="showcase-video-brand" />
+          <button
+            type="button"
+            className="showcase-video-play"
+            onClick={() => {
+              if (allowed) {
+                setActivated(true);
+                return;
+              }
+              window.dispatchEvent(new Event(PUBLIC_CONSENT_OPEN_EVENT));
+            }}
+            aria-label={allowed ? "Play video" : "Review cookie settings to play video"}
+          >
+            <span aria-hidden="true">▶</span>
+          </button>
+          <p>{allowed ? "Play video" : "External media consent required"}</p>
+          {!allowed && (
+            <a href={sourceUrl} target="_blank" rel="noopener noreferrer">
+              Open media directly
+            </a>
+          )}
+        </div>
       </div>
     );
   }

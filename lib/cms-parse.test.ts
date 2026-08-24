@@ -555,9 +555,11 @@ test("case-study editorial additions stay optional and reject unsafe links", () 
   assert.deepEqual(project?.cta, { label: "Unsafe CTA", url: "" });
 });
 
-test("case-study showcase parsing preserves controlled modules and safe URLs", () => {
+test("case-study showcase parsing preserves every R2-backed image module and safe URLs", () => {
+  const renditionUrl =
+    "https://media.labiomedia.com/labio-cms-media-production/cms/images/showcase.max-1600x1600.jpg";
   const image = {
-    url: "/media/showcase.jpg",
+    url: renditionUrl,
     width: 1200,
     height: 800,
     alt: "Showcase image",
@@ -644,7 +646,37 @@ test("case-study showcase parsing preserves controlled modules and safe URLs", (
     project?.showcase[0].type === "photo_slider"
       ? project.showcase[0].value.images[0].url
       : "",
-    "https://api.example.com/media/showcase.jpg",
+    renditionUrl,
+  );
+  assert.equal(
+    project?.showcase[1].type === "masonry_gallery"
+      ? project.showcase[1].value.images[0].url
+      : "",
+    renditionUrl,
+  );
+  assert.equal(
+    project?.showcase[2].type === "image_grid"
+      ? project.showcase[2].value.images[0].url
+      : "",
+    renditionUrl,
+  );
+  assert.equal(
+    project?.showcase[3].type === "image_pair"
+      ? project.showcase[3].value.firstImage.url
+      : "",
+    renditionUrl,
+  );
+  assert.equal(
+    project?.showcase[5].type === "website_preview_grid"
+      ? project.showcase[5].value.items[0].image.url
+      : "",
+    renditionUrl,
+  );
+  assert.equal(
+    project?.showcase[6].type === "wide_image"
+      ? project.showcase[6].value.image.url
+      : "",
+    renditionUrl,
   );
   assert.equal(
     project?.showcase[2].type === "image_grid"

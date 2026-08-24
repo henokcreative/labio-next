@@ -74,10 +74,13 @@ export default function CaseStudyShowcase({
                       className="showcase-video-item"
                       key={video.id || `${video.value.url}-${videoIndex}`}
                     >
+                      <StreamFieldRenderer
+                        blocks={[{ type: "embed", value: video.value.url }]}
+                        embedPresentation="showcase"
+                      />
                       {video.value.heading && (
                         <h2 className="showcase-video-heading">{video.value.heading}</h2>
                       )}
-                      <StreamFieldRenderer blocks={[{ type: "embed", value: video.value.url }]} />
                       {video.value.caption && (
                         <p className="showcase-caption">{video.value.caption}</p>
                       )}

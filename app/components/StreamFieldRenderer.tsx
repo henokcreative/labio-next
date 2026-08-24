@@ -23,7 +23,13 @@ function getEmbedUrl(value: string): string | null {
   return null;
 }
 
-function StreamBlock({ block }: { block: CmsStreamBlock }) {
+function StreamBlock({
+  block,
+  embedPresentation,
+}: {
+  block: CmsStreamBlock;
+  embedPresentation: "default" | "showcase";
+}) {
   switch (block.type) {
     case "heading":
       return block.value.level === "h3" ? (
@@ -57,7 +63,11 @@ function StreamBlock({ block }: { block: CmsStreamBlock }) {
     case "embed": {
       const embedUrl = getEmbedUrl(block.value);
       return embedUrl ? (
-        <ConsentAwareEmbed embedUrl={embedUrl} sourceUrl={block.value} />
+        <ConsentAwareEmbed
+          embedUrl={embedUrl}
+          sourceUrl={block.value}
+          presentation={embedPresentation}
+        />
       ) : (
         <p className="cms-embed-fallback">
           <a href={block.value}>View embedded media</a>
@@ -78,16 +88,22 @@ function StreamBlock({ block }: { block: CmsStreamBlock }) {
 export default function StreamFieldRenderer({
   blocks,
   className = "",
+  embedPresentation = "default",
 }: {
   blocks: CmsStreamBlock[];
   className?: string;
+  embedPresentation?: "default" | "showcase";
 }) {
   if (blocks.length === 0) return null;
 
   return (
     <div className={("cms-stream " + className).trim()}>
       {blocks.map((block, index) => (
-        <StreamBlock key={block.id || block.type + index} block={block} />
+        <StreamBlock
+          key={block.id || block.type + index}
+          block={block}
+          embedPresentation={embedPresentation}
+        />
       ))}
     </div>
   );

@@ -57,20 +57,20 @@ export default function PhotoSlider({
               image={currentImage}
               sizes="(max-width: 900px) 100vw, calc(100vw - 360px)"
             />
+            <div className="showcase-slider-controls">
+              <button type="button" onClick={() => move(-1)} aria-label="Previous image">
+                <span aria-hidden="true">←</span>
+              </button>
+              <button type="button" onClick={() => move(1)} aria-label="Next image">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
           {currentImage.caption && <figcaption>{currentImage.caption}</figcaption>}
         </figure>
-        <div className="showcase-slider-controls">
-          <button type="button" onClick={() => move(-1)} aria-label="Previous image">
-            <span aria-hidden="true">←</span>
-          </button>
-          <p aria-live="polite">
-            {currentIndex + 1} / {images.length}
-          </p>
-          <button type="button" onClick={() => move(1)} aria-label="Next image">
-            <span aria-hidden="true">→</span>
-          </button>
-        </div>
+        <p className="showcase-slider-counter" aria-live="polite">
+          {currentIndex + 1} / {images.length}
+        </p>
       </div>
     </section>
   );
