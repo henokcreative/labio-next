@@ -6680,3 +6680,27 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
     gap: 32px;
   }
 }
+
+/* Case study — consistent editorial section labels */
+
+.project-page .section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: fit-content;
+  margin-bottom: 28px;
+
+  border: 0;
+  padding: 0;
+}
+
+.project-page .section-label > span {
+  display: block;
+  width: 28px;
+  height: 1px;
+  flex: 0 0 28px;
+
+  background: var(--labio-accent);
+  border: 0;
+}
