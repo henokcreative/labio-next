@@ -14,10 +14,7 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
-import {
-  shouldUseLegacyCaseStudyEmbed,
-  shouldUseLegacyCaseStudyGallery,
-} from "@/lib/case-study-showcase";
+import { shouldUseLegacyCaseStudyEmbed } from "@/lib/case-study-showcase";
 
 type WorkRouteProps = { params: Promise<{ slug: string }> };
 
@@ -60,7 +57,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
       || project.outcome,
   );
   const useLegacyEmbed = shouldUseLegacyCaseStudyEmbed(project.showcase);
-  const useLegacyGallery = shouldUseLegacyCaseStudyGallery(project.showcase);
 
   return (
     <PublicShell>
@@ -118,7 +114,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </section>
         )}
 
-        {useLegacyGallery && project.gallery.length > 0 && (
+        {project.gallery.length > 0 && (
           <section className="project-gallery">
             <div className="section-label">Selected work <span /></div>
             <div className="project-gallery-grid">
