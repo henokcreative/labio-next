@@ -102,7 +102,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
             </div>
             <StreamFieldRenderer blocks={project.body} className="project-details" />
           </section>
-        )}
+       
         {hasNarrative && (
           <section className="case-study-narrative" aria-label="Project details">
             {project.challenge && (
@@ -135,6 +135,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
             )}
           </section>
         )}
+         )}
 
         {project.showcase.length > 0 && (
           <CaseStudyShowcase blocks={project.showcase} />
