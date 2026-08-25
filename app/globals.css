@@ -6681,26 +6681,34 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
   }
 }
 
-/* Case study — consistent editorial section labels */
+/* Case study — one consistent horizontal gutter */
 
-.project-page .section-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  width: fit-content;
-  margin-bottom: 28px;
-
-  border: 0;
-  padding: 0;
+.project-page {
+  --case-study-gutter: 48px;
 }
 
-.project-page .section-label > span {
-  display: block;
-  width: 28px;
-  height: 1px;
-  flex: 0 0 28px;
+.project-page :where(
+  .project-header,
+  .case-study-narrative,
+  .project-information,
+  .project-services,
+  .project-gallery,
+  .case-study-cta,
+  .project-next,
+  .case-study-showcase-block
+) {
+  padding-left: var(--case-study-gutter);
+  padding-right: var(--case-study-gutter);
+}
 
-  background: var(--labio-accent);
-  border: 0;
+@media (max-width: 900px) {
+  .project-page {
+    --case-study-gutter: 28px;
+  }
+}
+
+@media (max-width: 650px) {
+  .project-page {
+    --case-study-gutter: 16px;
+  }
 }
