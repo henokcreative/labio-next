@@ -6680,13 +6680,15 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
     gap: 32px;
   }
 }
-
-/* Case study — one consistent horizontal gutter */
+/* =========================================================
+CASE STUDY — FINAL ALIGNMENT SYSTEM
+========================================================= */
 
 .project-page {
   --case-study-gutter: 48px;
 }
 
+/* Every major case-study section uses the same outer gutter */
 .project-page :where(
   .project-header,
   .case-study-narrative,
@@ -6701,12 +6703,38 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
   padding-right: var(--case-study-gutter);
 }
 
+/*
+Remove the global centered narrative constraint.
+
+This was causing Project Details content to begin farther
+inside the page than Project Story / Services / Gallery.
+*/
+.project-page .case-study-narrative article {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/*
+Showcase already has its own inner wrapper.
+Make that wrapper use the available case-study width rather
+than introducing another independent horizontal alignment.
+*/
+.project-page .case-study-showcase-inner {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Tablet */
 @media (max-width: 900px) {
   .project-page {
     --case-study-gutter: 28px;
   }
 }
 
+/* Mobile */
 @media (max-width: 650px) {
   .project-page {
     --case-study-gutter: 16px;
