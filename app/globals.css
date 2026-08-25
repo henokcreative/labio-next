@@ -44,6 +44,9 @@ a {
 
 .site-shell {
   min-height: 100vh;
+  width: min(100%, var(--public-shell-max));
+  margin-right: auto;
+  margin-left: auto;
   display: flex;
 }
 
@@ -53,9 +56,10 @@ a {
 ========================================= */
 
 .sidebar {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
+  align-self: flex-start;
+  flex: 0 0 var(--sidebar-width);
 
   width: var(--sidebar-width);
   height: 100vh;
@@ -260,9 +264,9 @@ a {
 ========================================= */
 
 .main-content {
-  margin-left: var(--sidebar-width);
-
-  width: calc(100% - var(--sidebar-width));
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
 
   min-height: 100vh;
 }
@@ -6468,14 +6472,14 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
 ========================================= */
 
 :root {
-  --public-canvas-max: 1120px;
+  --public-shell-max: 1240px;
+  --public-canvas-max: calc(
+    var(--public-shell-max) - var(--sidebar-width)
+  );
   --public-editorial-max: 720px;
   --public-narrative-max: 840px;
   --public-gutter: 32px;
-  --content-padding: max(
-    var(--public-gutter),
-    calc((100% - var(--public-canvas-max)) / 2)
-  );
+  --content-padding: var(--public-gutter);
 }
 
 .site-shell :where(
@@ -6552,9 +6556,20 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
     --public-gutter: 28px;
   }
 
+  .site-shell {
+    width: 100%;
+  }
+
   .site-shell .sidebar {
+    width: 100%;
+    flex: none;
     padding-right: var(--content-padding);
     padding-left: var(--content-padding);
+  }
+
+  .site-shell .main-content {
+    width: 100%;
+    flex: none;
   }
 }
 
