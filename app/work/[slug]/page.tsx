@@ -99,39 +99,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </div>
         </header>
 
-        {hasNarrative && (
-          <section className="case-study-narrative" aria-label="Case study">
-            {project.challenge && (
-              <article>
-                <h2>Challenge</h2>
-                <p>{project.challenge}</p>
-              </article>
-            )}
-            {project.approach && (
-              <article>
-                <h2>Approach</h2>
-                <p>{project.approach}</p>
-              </article>
-            )}
-            {project.deliverables.length > 0 && (
-              <article>
-                <h2>Deliverables</h2>
-                <ul>
-                  {project.deliverables.map((deliverable) => (
-                    <li key={deliverable}>{deliverable}</li>
-                  ))}
-                </ul>
-              </article>
-            )}
-            {project.outcome && (
-              <article>
-                <h2>Outcome</h2>
-                <p>{project.outcome}</p>
-              </article>
-            )}
-          </section>
-        )}
-
         {project.body.length > 0 && (
           <section className="project-information cms-project-body">
             <div className="project-intro">
@@ -173,6 +140,39 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
                 </figure>
               ))}
             </div>
+          </section>
+        )}
+
+        {hasNarrative && (
+          <section className="case-study-narrative" aria-label="Project details">
+            {project.challenge && (
+              <article>
+                <h2>Challenge</h2>
+                <p>{project.challenge}</p>
+              </article>
+            )}
+            {project.approach && (
+              <article>
+                <h2>Approach</h2>
+                <p>{project.approach}</p>
+              </article>
+            )}
+            {project.deliverables.length > 0 && (
+              <article>
+                <h2>Deliverables</h2>
+                <ul>
+                  {project.deliverables.map((deliverable) => (
+                    <li key={deliverable}>{deliverable}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+            {project.outcome && (
+              <article>
+                <h2>Outcome</h2>
+                <p>{project.outcome}</p>
+              </article>
+            )}
           </section>
         )}
 
