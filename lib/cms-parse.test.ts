@@ -567,6 +567,12 @@ test("case-study showcase parsing preserves every R2-backed image module and saf
     alt: "Showcase image",
     caption: "Editorial caption",
   };
+  const imageWithoutCaption = {
+    url: renditionUrl,
+    width: 1200,
+    height: 800,
+    alt: "Showcase image without a caption",
+  };
   const project = parseCaseStudyPage(
     {
       id: 30,
@@ -584,7 +590,11 @@ test("case-study showcase parsing preserves every R2-backed image module and saf
         },
         {
           type: "image_grid",
-          value: { heading: "Applications", columns: "2", images: [image] },
+          value: {
+            heading: "Applications",
+            columns: "2",
+            images: [imageWithoutCaption],
+          },
         },
         {
           type: "image_pair",
@@ -663,6 +673,15 @@ test("case-study showcase parsing preserves every R2-backed image module and saf
     renditionUrl,
   );
   assert.equal(
+    project?.showcase[2].type === "image_grid"
+      ? Object.prototype.hasOwnProperty.call(
+          project.showcase[2].value.images[0],
+          "caption",
+        )
+      : true,
+    false,
+  );
+  assert.equal(
     project?.showcase[3].type === "image_pair"
       ? project.showcase[3].value.firstImage.url
       : "",
@@ -728,6 +747,10 @@ test("empty showcase keeps the legacy gallery", () => {
   assert.equal(shouldUseLegacyCaseStudyGallery([]), true);
 });
 
+test("empty showcase keeps the legacy embed", () => {
+  assert.equal(shouldUseLegacyCaseStudyEmbed([]), true);
+});
+
 const caseStudyMediaTestImage = {
   url: "https://media.example.com/showcase.jpg",
   width: 1200,
@@ -787,6 +810,74 @@ test("mixed image and video showcase suppresses equivalent legacy media", () => 
 
   assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
   assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), false);
+});
+
+test("showcase-only modern case studies remain valid without legacy media", () => {
+  const project = parseCaseStudyPage(
+    {
+      id: 32,
+      title: "Modern project",
+      meta: {
+        ...meta,
+        type: "public_content.CaseStudyPage",
+        slug: "modern-project",
+      },
+      showcase: [{
+        type: "wide_image",
+        value: {
+          heading: "Selected work",
+          image: caseStudyMediaTestImage,
+          caption: "",
+        },
+      }],
+    },
+    apiUrl,
+  );
+
+  assert.equal(project?.showcase.length, 1);
+  assert.deepEqual(project?.gallery, []);
+  assert.equal(project?.embedUrl, "");
+  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), true);
+});
+
+test("published mixed-media case studies keep the intended compatibility boundary", () => {
+  const project = parseCaseStudyPage(
+    {
+      id: 10,
+      title: "Published project",
+      meta: {
+        ...meta,
+        type: "public_content.CaseStudyPage",
+        slug: "published-project",
+      },
+      showcase: [
+        {
+          type: "masonry_gallery",
+          value: {
+            heading: "",
+            images: [caseStudyMediaTestImage, caseStudyMediaTestImage],
+          },
+        },
+        {
+          type: "video",
+          value: {
+            heading: "Film",
+            url: "https://youtu.be/ksd_QTCcTls",
+            caption: "",
+          },
+        },
+      ],
+      gallery: [{ type: "image", value: caseStudyMediaTestImage }],
+      embed_url: "https://youtu.be/legacy-video",
+    },
+    apiUrl,
+  );
+
+  assert.equal(project?.gallery.length, 1);
+  assert.ok(project?.embedUrl);
+  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
+  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), false);
 });
 
 test("updates index preserves backend article and event ordering", () => {
