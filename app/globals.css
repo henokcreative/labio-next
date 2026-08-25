@@ -6462,3 +6462,104 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
     margin-bottom: 42px;
   }
 }
+
+/* =========================================
+   PUBLIC CONTENT WIDTH SYSTEM
+========================================= */
+
+:root {
+  --public-canvas-max: 1120px;
+  --public-editorial-max: 720px;
+  --public-narrative-max: 840px;
+  --public-gutter: 32px;
+  --content-padding: max(
+    var(--public-gutter),
+    calc((100% - var(--public-canvas-max)) / 2)
+  );
+}
+
+.site-shell :where(
+  .section,
+  .services-section,
+  .about-section,
+  .contact-page-section,
+  .collaborators-section,
+  .testimonials-section,
+  .public-page-header,
+  .public-list-section,
+  .public-content-section,
+  .editorial-list-section,
+  .public-cta,
+  .pricing-section,
+  .footer,
+  .project-header,
+  .case-study-narrative,
+  .project-information,
+  .project-services,
+  .project-next,
+  .project-gallery,
+  .case-study-cta,
+  .case-study-showcase-block,
+  .updates-feature-section,
+  .updates-list-section,
+  .updates-empty,
+  .update-detail-header,
+  .update-detail-next,
+  .home-updates-section,
+  .not-found-page
+) {
+  padding-right: var(--content-padding);
+  padding-left: var(--content-padding);
+}
+
+.site-shell :where(
+  .public-hero-image,
+  .event-information
+) {
+  margin-right: var(--content-padding);
+  margin-left: var(--content-padding);
+}
+
+.site-shell .cms-stream,
+.site-shell .about-editorial-body,
+.site-shell .standard-content .cms-stream {
+  max-width: var(--public-editorial-max);
+}
+
+.site-shell .case-study-narrative article {
+  max-width: var(--public-narrative-max);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.site-shell .case-study-showcase-inner {
+  max-width: var(--public-canvas-max);
+}
+
+.site-shell .update-media-showcase .case-study-showcase-inner {
+  max-width: 960px;
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  .site-shell .hero-image {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --public-gutter: 28px;
+  }
+
+  .site-shell .sidebar {
+    padding-right: var(--content-padding);
+    padding-left: var(--content-padding);
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --public-gutter: 16px;
+  }
+}
