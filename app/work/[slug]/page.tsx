@@ -52,9 +52,9 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
   );
   const hasNarrative = Boolean(
     project.challenge
-      || project.approach
-      || project.deliverables.length
-      || project.outcome,
+    || project.approach
+    || project.deliverables.length
+    || project.outcome,
   );
   const useLegacyEmbed = shouldUseLegacyCaseStudyEmbed(project.showcase);
 
@@ -103,6 +103,38 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
             <StreamFieldRenderer blocks={project.body} className="project-details" />
           </section>
         )}
+        {hasNarrative && (
+          <section className="case-study-narrative" aria-label="Project details">
+            {project.challenge && (
+              <article>
+                <h2>Challenge</h2>
+                <p>{project.challenge}</p>
+              </article>
+            )}
+            {project.approach && (
+              <article>
+                <h2>Approach</h2>
+                <p>{project.approach}</p>
+              </article>
+            )}
+            {project.deliverables.length > 0 && (
+              <article>
+                <h2>Deliverables</h2>
+                <ul>
+                  {project.deliverables.map((deliverable) => (
+                    <li key={deliverable}>{deliverable}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+            {project.outcome && (
+              <article>
+                <h2>Outcome</h2>
+                <p>{project.outcome}</p>
+              </article>
+            )}
+          </section>
+        )}
 
         {project.showcase.length > 0 && (
           <CaseStudyShowcase blocks={project.showcase} />
@@ -139,38 +171,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </section>
         )}
 
-        {hasNarrative && (
-          <section className="case-study-narrative" aria-label="Project details">
-            {project.challenge && (
-              <article>
-                <h2>Challenge</h2>
-                <p>{project.challenge}</p>
-              </article>
-            )}
-            {project.approach && (
-              <article>
-                <h2>Approach</h2>
-                <p>{project.approach}</p>
-              </article>
-            )}
-            {project.deliverables.length > 0 && (
-              <article>
-                <h2>Deliverables</h2>
-                <ul>
-                  {project.deliverables.map((deliverable) => (
-                    <li key={deliverable}>{deliverable}</li>
-                  ))}
-                </ul>
-              </article>
-            )}
-            {project.outcome && (
-              <article>
-                <h2>Outcome</h2>
-                <p>{project.outcome}</p>
-              </article>
-            )}
-          </section>
-        )}
 
         {project.services.length > 0 && (
           <section className="project-services">
