@@ -4916,6 +4916,10 @@ html[data-public-theme="dark"] .consent-layer {
   line-height: 1.08;
 }
 
+.case-study-showcase .showcase-media-label {
+  margin-bottom: clamp(22px, 3vw, 34px);
+}
+
 .showcase-image-figure,
 .showcase-slider-figure {
   margin: 0;

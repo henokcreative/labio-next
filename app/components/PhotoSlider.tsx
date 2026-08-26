@@ -50,7 +50,11 @@ export default function PhotoSlider({
       }}
     >
       <div className="case-study-showcase-inner">
-        {heading && <h2 className="showcase-heading">{heading}</h2>}
+        {heading && (
+          <h2 className="section-label showcase-media-label">
+            {heading} <span />
+          </h2>
+        )}
         <figure className="showcase-slider-figure">
           <div className="showcase-slider-media">
             <CmsImage
