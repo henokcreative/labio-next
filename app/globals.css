@@ -1550,9 +1550,9 @@ a {
 
   grid-template-columns: 1fr 1fr;
 
-  gap: 80px;
+  gap: 56px;
 
-  padding: 110px 48px;
+  padding: 88px 48px;
 
   border-bottom: 1px solid #eeeeee;
 }
@@ -1572,9 +1572,9 @@ a {
 }
 
 .project-details {
-  max-width: 520px;
+  max-width: 720px;
 
-  padding-top: 30px;
+  padding-top: 0;
 }
 
 .project-details p {
@@ -1600,7 +1600,7 @@ a {
 
   gap: 50px;
 
-  padding: 65px 48px;
+  padding: 80px 48px;
 
   border-bottom: 1px solid #eeeeee;
 }
@@ -1684,7 +1684,7 @@ a {
    TABLET
    --------------------------------------------------------- */
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
 
   .project-header {
     padding: 70px 32px 55px;
@@ -2382,7 +2382,7 @@ html[data-public-theme="dark"] .consent-layer {
 }
 
 .case-study-narrative {
-  padding: 38px 48px 78px;
+  padding: 40px 48px 72px;
   border-bottom: 1px solid var(--public-border);
 }
 
@@ -2457,7 +2457,7 @@ html[data-public-theme="dark"] .consent-layer {
   color: var(--color-primary);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .case-study-narrative {
     padding: 24px 32px 58px;
   }
