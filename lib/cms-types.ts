@@ -226,11 +226,8 @@ export type CmsCaseStudyPage = CmsPageBase & {
   outcome: string;
   projectUrl: string;
   cta: CmsLink;
-  body: CmsStreamBlock[];
   showcase: CmsCaseStudyShowcaseBlock[];
   heroImage: CmsImage | null;
-  gallery: CmsImage[];
-  embedUrl: string;
   services: CmsPageSummary[];
   publicationDate?: string;
   featured: boolean;

@@ -32,31 +32,6 @@ export function groupCaseStudyShowcaseBlocks(
   return groups;
 }
 
-const LEGACY_GALLERY_REPLACEMENT_TYPES = new Set<
-  CmsCaseStudyShowcaseBlock["type"]
->([
-  "photo_slider",
-  "masonry_gallery",
-  "image_grid",
-  "image_pair",
-  "website_preview_grid",
-  "wide_image",
-]);
-
-export function shouldUseLegacyCaseStudyGallery(
-  showcase: CmsCaseStudyShowcaseBlock[],
-): boolean {
-  return !showcase.some((block) =>
-    LEGACY_GALLERY_REPLACEMENT_TYPES.has(block.type),
-  );
-}
-
-export function shouldUseLegacyCaseStudyEmbed(
-  showcase: CmsCaseStudyShowcaseBlock[],
-): boolean {
-  return !showcase.some((block) => block.type === "video");
-}
-
 export function nextSlideIndex(
   currentIndex: number,
   slideCount: number,

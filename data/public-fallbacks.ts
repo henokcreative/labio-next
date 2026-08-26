@@ -169,28 +169,23 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
     category: project.category,
     summary: project.description,
     projectYear: "",
-    challenge: "",
-    approach: "",
+    challenge: project.challenge,
+    approach: project.approach,
     deliverables: [],
     outcome: "",
     projectUrl: "",
     cta: { label: "", url: "" },
-    body: [
-      {
-        type: "heading",
-        value: { text: "The challenge", level: "h2" },
-      },
-      { type: "rich_text", value: `<p>${project.challenge}</p>` },
-      {
-        type: "heading",
-        value: { text: "The approach", level: "h2" },
-      },
-      { type: "rich_text", value: `<p>${project.approach}</p>` },
-    ],
-    showcase: [],
+    showcase: project.images.length > 0
+      ? [{
+          type: "image_grid",
+          value: {
+            heading: "Selected images",
+            columns: 2,
+            images: project.images.map((image) => localImage(image.src, image.alt)),
+          },
+        }]
+      : [],
     heroImage: localImage(project.hero, project.title),
-    gallery: project.images.map((image) => localImage(image.src, image.alt)),
-    embedUrl: "",
     services: project.services.map((title, serviceIndex) => ({
       id: -1000 - index * 10 - serviceIndex,
       title,

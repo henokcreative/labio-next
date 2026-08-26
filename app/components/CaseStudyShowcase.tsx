@@ -8,7 +8,7 @@ import type {
 } from "@/lib/cms-types";
 import { groupCaseStudyShowcaseBlocks } from "@/lib/case-study-showcase";
 
-function Heading({
+function ShowcaseGroupLabel({
   children,
   variant,
 }: {
@@ -91,6 +91,9 @@ export default function CaseStudyShowcase({
           return (
             <section className="case-study-showcase-block showcase-video" key={key}>
               <div className="case-study-showcase-inner">
+                {variant === "case-study" && (
+                  <ShowcaseGroupLabel variant={variant}>Selected videos</ShowcaseGroupLabel>
+                )}
                 <div className={`showcase-video-grid ${countClass}`}>
                   {group.blocks.map((video, videoIndex) => (
                     <article
@@ -98,7 +101,7 @@ export default function CaseStudyShowcase({
                       key={video.id || `${video.value.url}-${videoIndex}`}
                     >
                       {variant === "case-study" && video.value.heading && (
-                        <Heading variant={variant}>{video.value.heading}</Heading>
+                        <h3 className="showcase-media-title">{video.value.heading}</h3>
                       )}
                       <StreamFieldRenderer
                         blocks={[{ type: "embed", value: video.value.url }]}
@@ -127,7 +130,7 @@ export default function CaseStudyShowcase({
             return (
               <section className="case-study-showcase-block" key={key}>
                 <div className="case-study-showcase-inner">
-                  <Heading variant={variant}>{block.value.heading}</Heading>
+                  <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <div className="showcase-masonry">
                     {block.value.images.map((image, imageIndex) => (
                       <ImageFigure
@@ -144,7 +147,7 @@ export default function CaseStudyShowcase({
             return (
               <section className="case-study-showcase-block" key={key}>
                 <div className="case-study-showcase-inner">
-                  <Heading variant={variant}>{block.value.heading}</Heading>
+                  <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <div className={`showcase-image-grid showcase-columns-${block.value.columns}`}>
                     {block.value.images.map((image, imageIndex) => (
                       <ImageFigure
@@ -163,7 +166,7 @@ export default function CaseStudyShowcase({
             return (
               <section className="case-study-showcase-block" key={key}>
                 <div className="case-study-showcase-inner">
-                  <Heading variant={variant}>{block.value.heading}</Heading>
+                  <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <div className="showcase-image-pair">
                     <ImageFigure image={block.value.firstImage} sizes="(max-width: 700px) 100vw, 45vw" />
                     <ImageFigure image={block.value.secondImage} sizes="(max-width: 700px) 100vw, 45vw" />
@@ -175,7 +178,7 @@ export default function CaseStudyShowcase({
             return (
               <section className="case-study-showcase-block" key={key}>
                 <div className="case-study-showcase-inner">
-                  <Heading variant={variant}>{block.value.heading}</Heading>
+                  <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <div className="showcase-website-grid">
                     {block.value.items.map((item, itemIndex) => (
                       <WebsitePreview key={`${item.image.url}-${itemIndex}`} item={item} />
@@ -188,7 +191,7 @@ export default function CaseStudyShowcase({
             return (
               <section className="case-study-showcase-block" key={key}>
                 <div className="case-study-showcase-inner showcase-wide-image">
-                  <Heading variant={variant}>{block.value.heading}</Heading>
+                  <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <figure className="showcase-image-figure">
                     <CmsImage
                       image={block.value.image}

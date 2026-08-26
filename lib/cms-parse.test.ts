@@ -18,7 +18,6 @@ import {
 } from "./cms-parse";
 import type {
   CmsAboutPage,
-  CmsCaseStudyShowcaseBlock,
   CmsCollaborator,
   CmsStandardPage,
 } from "./cms-types";
@@ -49,8 +48,6 @@ import {
 import {
   groupCaseStudyShowcaseBlocks,
   nextSlideIndex,
-  shouldUseLegacyCaseStudyEmbed,
-  shouldUseLegacyCaseStudyGallery,
 } from "./case-study-showcase";
 
 
@@ -491,7 +488,6 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(service?.relatedWorkEnabled, true);
   assert.equal(service?.relatedWorkHeading, "Selected projects");
   assert.equal(service?.ctaHeading, "Discuss your research");
-  assert.equal(project?.gallery[0].url, "https://api.example.com/media/work.jpg");
   assert.equal(project?.services[0].slug, "photography");
   assert.equal(project?.clientDisplayName, "Research Institute");
   assert.equal(project?.projectYear, "2025");
@@ -711,17 +707,25 @@ test("case-study showcase parsing preserves every R2-backed image module and saf
       : "unexpected",
     "",
   );
-  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), false);
 });
 
-test("empty showcase retains legacy media and slider controls wrap", () => {
+test("case-study parsing keeps canonical narrative and showcase fields only", () => {
   const project = parseCaseStudyPage(
     {
       id: 31,
-      title: "Legacy project",
-      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "legacy-project" },
-      showcase: [],
+      title: "Canonical project",
+      meta: { ...meta, type: "public_content.CaseStudyPage", slug: "canonical-project" },
+      challenge: "A clear challenge.",
+      approach: "A considered approach.",
+      body: [{ type: "rich_text", value: "<p>Legacy story.</p>" }],
+      showcase: [{
+        type: "video",
+        value: {
+          heading: "Research film",
+          url: "https://www.youtube.com/watch?v=abc123",
+          caption: "A short film.",
+        },
+      }],
       embed_url: "https://www.youtube.com/watch?v=abc123",
       gallery: [
         {
@@ -733,151 +737,18 @@ test("empty showcase retains legacy media and slider controls wrap", () => {
     apiUrl,
   );
 
-  assert.deepEqual(project?.showcase, []);
-  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), true);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), true);
-  assert.equal(project?.gallery.length, 1);
-  assert.equal(project?.embedUrl, "https://www.youtube.com/watch?v=abc123");
+  assert.equal(project?.challenge, "A clear challenge.");
+  assert.equal(project?.approach, "A considered approach.");
+  assert.equal(project?.showcase[0].type, "video");
+  assert.equal(Object.prototype.hasOwnProperty.call(project, "body"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(project, "gallery"), false);
+  assert.equal(Object.prototype.hasOwnProperty.call(project, "embedUrl"), false);
+});
+
+test("photo slider controls wrap safely", () => {
   assert.equal(nextSlideIndex(0, 3, -1), 2);
   assert.equal(nextSlideIndex(2, 3, 1), 0);
   assert.equal(nextSlideIndex(0, 0, 1), 0);
-});
-
-test("empty showcase keeps the legacy gallery", () => {
-  assert.equal(shouldUseLegacyCaseStudyGallery([]), true);
-});
-
-test("empty showcase keeps the legacy embed", () => {
-  assert.equal(shouldUseLegacyCaseStudyEmbed([]), true);
-});
-
-const caseStudyMediaTestImage = {
-  url: "https://media.example.com/showcase.jpg",
-  width: 1200,
-  height: 800,
-  alt: "Showcase image",
-  caption: "",
-};
-
-test("video-only showcase keeps the legacy gallery", () => {
-  const showcase: CmsCaseStudyShowcaseBlock[] = [{
-    type: "video",
-    value: { heading: "Film", url: "https://vimeo.com/123", caption: "" },
-  }];
-
-  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), true);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), false);
-});
-
-test("image showcase replaces the legacy gallery", () => {
-  const showcase: CmsCaseStudyShowcaseBlock[] = [{
-    type: "masonry_gallery",
-    value: {
-      heading: "Images",
-      images: [caseStudyMediaTestImage, caseStudyMediaTestImage],
-    },
-  }];
-
-  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), true);
-});
-
-test("image-only showcase keeps the legacy embed", () => {
-  const showcase: CmsCaseStudyShowcaseBlock[] = [{
-    type: "wide_image",
-    value: {
-      heading: "Image",
-      image: caseStudyMediaTestImage,
-      caption: "",
-    },
-  }];
-
-  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), true);
-});
-
-test("mixed image and video showcase suppresses equivalent legacy media", () => {
-  const showcase: CmsCaseStudyShowcaseBlock[] = [
-    {
-      type: "image_grid",
-      value: { heading: "Images", columns: 2, images: [caseStudyMediaTestImage] },
-    },
-    {
-      type: "video",
-      value: { heading: "Film", url: "https://vimeo.com/123", caption: "" },
-    },
-  ];
-
-  assert.equal(shouldUseLegacyCaseStudyGallery(showcase), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(showcase), false);
-});
-
-test("showcase-only modern case studies remain valid without legacy media", () => {
-  const project = parseCaseStudyPage(
-    {
-      id: 32,
-      title: "Modern project",
-      meta: {
-        ...meta,
-        type: "public_content.CaseStudyPage",
-        slug: "modern-project",
-      },
-      showcase: [{
-        type: "wide_image",
-        value: {
-          heading: "Selected work",
-          image: caseStudyMediaTestImage,
-          caption: "",
-        },
-      }],
-    },
-    apiUrl,
-  );
-
-  assert.equal(project?.showcase.length, 1);
-  assert.deepEqual(project?.gallery, []);
-  assert.equal(project?.embedUrl, "");
-  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), true);
-});
-
-test("published mixed-media case studies keep the intended compatibility boundary", () => {
-  const project = parseCaseStudyPage(
-    {
-      id: 10,
-      title: "Published project",
-      meta: {
-        ...meta,
-        type: "public_content.CaseStudyPage",
-        slug: "published-project",
-      },
-      showcase: [
-        {
-          type: "masonry_gallery",
-          value: {
-            heading: "",
-            images: [caseStudyMediaTestImage, caseStudyMediaTestImage],
-          },
-        },
-        {
-          type: "video",
-          value: {
-            heading: "Film",
-            url: "https://youtu.be/ksd_QTCcTls",
-            caption: "",
-          },
-        },
-      ],
-      gallery: [{ type: "image", value: caseStudyMediaTestImage }],
-      embed_url: "https://youtu.be/legacy-video",
-    },
-    apiUrl,
-  );
-
-  assert.equal(project?.gallery.length, 1);
-  assert.ok(project?.embedUrl);
-  assert.equal(shouldUseLegacyCaseStudyGallery(project?.showcase ?? []), false);
-  assert.equal(shouldUseLegacyCaseStudyEmbed(project?.showcase ?? []), false);
 });
 
 test("updates index preserves backend article and event ordering", () => {
