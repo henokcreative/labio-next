@@ -37,7 +37,7 @@ import type {
   CmsUpdatesIndexPage,
 } from "./cms-types";
 
-const CMS_REVALIDATE_SECONDS = 300;
+const CMS_REVALIDATE_SECONDS = 60;
 const CMS_REQUEST_TIMEOUT_MS = 5000;
 
 export type CmsCollectionResult<T> = {
