@@ -537,13 +537,6 @@ export function parseCaseStudyPage(
   if (!base) return null;
   const { raw, ...page } = base;
   const publicationDate = asString(raw.publication_date).trim();
-  const gallery = asArray(raw.gallery).flatMap((blockValue) => {
-    const block = asRecord(blockValue);
-    const image = block?.type === "image"
-      ? parseCmsImage(block.value, apiBaseUrl)
-      : null;
-    return image ? [image] : [];
-  });
 
   return {
     ...page,
@@ -558,11 +551,8 @@ export function parseCaseStudyPage(
     outcome: asString(raw.outcome).trim(),
     projectUrl: safeHref(raw.project_url),
     cta: parseLink(raw.cta_label, raw.cta_url),
-    body: parseStreamField(raw.body, apiBaseUrl),
     showcase: parseMediaShowcase(raw.showcase, apiBaseUrl),
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
-    gallery,
-    embedUrl: safeHref(raw.embed_url),
     services: parseSummaries(raw.services),
     ...(publicationDate ? { publicationDate } : {}),
     featured: asBoolean(raw.featured),

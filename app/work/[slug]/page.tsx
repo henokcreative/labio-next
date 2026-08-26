@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CaseStudyShowcase from "@/app/components/CaseStudyShowcase";
-import CmsImage from "@/app/components/CmsImage";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
-import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
 import Testimonials from "@/app/components/Testimonials";
 import { findFallbackCaseStudy } from "@/data/public-fallbacks";
 import {
@@ -14,7 +12,6 @@ import {
   getTestimonials,
 } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
-import { shouldUseLegacyCaseStudyEmbed } from "@/lib/case-study-showcase";
 
 type WorkRouteProps = { params: Promise<{ slug: string }> };
 
@@ -56,7 +53,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
     || project.deliverables.length
     || project.outcome,
   );
-  const useLegacyEmbed = shouldUseLegacyCaseStudyEmbed(project.showcase);
 
   return (
     <PublicShell>
@@ -95,31 +91,26 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </div>
         </header>
 
-        {project.body.length > 0 && (
-          <section className="project-information cms-project-body">
-            <div className="project-intro">
-              <div className="section-label">Project story <span /></div>
-            </div>
-            <StreamFieldRenderer blocks={project.body} className="project-details" />
-          </section>
-        )}
         {hasNarrative && (
-          <section className="case-study-narrative" aria-label="Project details">
+          <section className="case-study-narrative" aria-labelledby="project-story-heading">
+            <h2 id="project-story-heading" className="section-label case-study-story-label">
+              Project story <span />
+            </h2>
             {project.challenge && (
               <article>
-                <h2>Challenge</h2>
+                <h3>Challenge</h3>
                 <p>{project.challenge}</p>
               </article>
             )}
             {project.approach && (
               <article>
-                <h2>Approach</h2>
+                <h3>Approach</h3>
                 <p>{project.approach}</p>
               </article>
             )}
             {project.deliverables.length > 0 && (
               <article>
-                <h2>Deliverables</h2>
+                <h3>Deliverables</h3>
                 <ul>
                   {project.deliverables.map((deliverable) => (
                     <li key={deliverable}>{deliverable}</li>
@@ -129,7 +120,7 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
             )}
             {project.outcome && (
               <article>
-                <h2>Outcome</h2>
+                <h3>Outcome</h3>
                 <p>{project.outcome}</p>
               </article>
             )}
@@ -139,38 +130,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
         {project.showcase.length > 0 && (
           <CaseStudyShowcase blocks={project.showcase} />
         )}
-
-        {useLegacyEmbed && project.embedUrl && (
-          <section className="public-content-section">
-            <StreamFieldRenderer blocks={[{ type: "embed", value: project.embedUrl }]} />
-          </section>
-        )}
-
-        {project.gallery.length > 0 && (
-          <section className="project-gallery">
-            <div className="section-label">Selected work <span /></div>
-            <div className="project-gallery-grid">
-              {project.gallery.map((image, index) => (
-                <figure
-                  key={image.url + index}
-                  className={"project-gallery-item " + (index % 3 === 0 ? "gallery-large" : "gallery-small")}
-                >
-                  <div className="project-gallery-image">
-                    <CmsImage
-                      image={image}
-                      loading="eager"
-                      sizes={index % 3 === 0
-                        ? "(max-width: 650px) 100vw, calc(100vw - 280px)"
-                        : "(max-width: 650px) 100vw, 50vw"}
-                    />
-                  </div>
-                  {image.caption && <figcaption>{image.caption}</figcaption>}
-                </figure>
-              ))}
-            </div>
-          </section>
-        )}
-
 
         {project.services.length > 0 && (
           <section className="project-services">
