@@ -4642,6 +4642,10 @@ html[data-public-theme="dark"] .consent-layer {
   letter-spacing: -0.015em;
 }
 
+.project-page .testimonial blockquote {
+  font-size: clamp(16px, 1.6vw, 21px);
+}
+
 .testimonial figcaption {
   flex-direction: column;
   gap: 5px;
@@ -5308,6 +5312,10 @@ html[data-public-theme="dark"] .consent-layer {
 
   .testimonial blockquote {
     font-size: clamp(20px, 5.8vw, 24px);
+  }
+
+  .project-page .testimonial blockquote {
+    font-size: clamp(16px, 4.6vw, 19px);
   }
 
   .testimonial-composition {
@@ -6296,7 +6304,6 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
   max-width: var(--public-editorial-max);
 }
 
-.site-shell .case-study-narrative > .section-label,
 .site-shell .case-study-narrative article {
   max-width: var(--public-narrative-max);
   margin-right: auto;
