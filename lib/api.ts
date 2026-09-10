@@ -2,7 +2,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type ApiError = Error & { status?: number };
 
+let sessionGeneration = 0;
+
 export function clearTokens() {
+  sessionGeneration += 1;
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
 }
@@ -22,17 +25,29 @@ function expireSession() {
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const apiUrl = getApiUrl();
   const access = localStorage.getItem("access_token");
+  const generation = sessionGeneration;
+  const refreshToken = localStorage.getItem("refresh_token");
+  function assertCurrentSession() {
+    // Logout or a replacement session must retire pending refresh results.
+    if (generation !== sessionGeneration || localStorage.getItem("refresh_token") !== refreshToken) {
+      throw new Error("Authentication session changed.");
+    }
+  }
   const headers = new Headers(init.headers);
   if (access) headers.set("Authorization", `Bearer ${access}`);
   if (!(init.body instanceof FormData) && init.body) headers.set("Content-Type", "application/json");
   let response = await fetch(`${apiUrl}${path}`, { ...init, headers });
-  if (response.status === 401 && localStorage.getItem("refresh_token")) {
-    const refresh = await fetch(`${apiUrl}/api/auth/refresh/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh: localStorage.getItem("refresh_token") }) });
+  assertCurrentSession();
+  if (response.status === 401 && refreshToken) {
+    const refresh = await fetch(`${apiUrl}/api/auth/refresh/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh: refreshToken }) });
+    assertCurrentSession();
     if (refresh.ok) {
       const data = await refresh.json();
+      assertCurrentSession();
       localStorage.setItem("access_token", data.access);
       headers.set("Authorization", `Bearer ${data.access}`);
       response = await fetch(`${apiUrl}${path}`, { ...init, headers });
+      assertCurrentSession();
     } else expireSession();
   }
   if (response.status === 401) expireSession();
