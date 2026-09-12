@@ -6248,7 +6248,7 @@ html[data-public-theme="dark"][data-public-theme-preference="dark"] .site-shell 
 ========================================= */
 
 :root {
-  --public-shell-max: 1240px;
+  --public-shell-max: 1440px;
   --public-canvas-max: calc(
     var(--public-shell-max) - var(--sidebar-width)
   );
