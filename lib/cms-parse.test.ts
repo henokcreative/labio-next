@@ -977,6 +977,9 @@ test("invalid collaborators and testimonials are omitted defensively", () => {
 const fallbackAboutPage: CmsAboutPage = {
   id: -1,
   kind: "about",
+  teamEnabled: false,
+  teamHeading: "Our team",
+  teamMembers: [],
   title: "Fallback about",
   meta: {
     type: "fallback.AboutPage",
@@ -1065,7 +1068,7 @@ test("About migration content prefers substantive CMS data and falls back when e
   };
 
   assert.equal(resolveAboutPage(null, fallbackAboutPage), fallbackAboutPage);
-  assert.equal(resolveAboutPage(emptyCmsPage, fallbackAboutPage), fallbackAboutPage);
+  assert.deepEqual(resolveAboutPage(emptyCmsPage, fallbackAboutPage), fallbackAboutPage);
   assert.equal(resolveAboutPage(populatedCmsPage, fallbackAboutPage), populatedCmsPage);
 });
 
@@ -1326,4 +1329,42 @@ test("consecutive case-study videos form showcase grids without reordering block
   assert.equal(groups[1].type, "block");
   assert.equal(groups[2].type, "video_grid");
   assert.equal(groups[2].type === "video_grid" && groups[2].blocks.length, 1);
+});
+
+test("Team parser supports old payloads and rejects malformed members and unsafe links", () => {
+  const raw = { id: 12, title: "About", meta: { ...meta, type: "public_content.AboutPage" } };
+  const old = parseAboutPage(raw, apiUrl)!;
+  assert.equal(old.teamEnabled, false);
+  assert.deepEqual(old.teamMembers, []);
+  const member = { id: 1, name: "Example Person", role: "Producer", biography: "<script>plain text</script>" };
+  for (const url of ["javascript:alert(1)", "mailto:a@example.com", "tel:123", "//example.com", "/profile", "ftp://example.com", "https://user:pass@example.com", "https:example.com"]) {
+    const page = parseAboutPage({ ...raw, team_enabled: true, team_members: [{ ...member, professional_url: url }] }, apiUrl)!;
+    assert.equal(page.teamMembers[0].professionalUrl, "");
+    assert.equal(page.teamMembers[0].portrait, null);
+    assert.equal(page.teamMembers[0].biography, member.biography);
+  }
+  const page = parseAboutPage({ ...raw, team_enabled: true, team_members: [null, {}, { ...member, id: -1 }, { ...member, id: 1.5 }, { ...member, name: " " }, { ...member, role: "" }, { ...member, professional_url: "https://example.com/profile", portrait: { url: "/media/team.jpg", width: 640, height: 800, alt: "Person" } }, member] }, apiUrl)!;
+  assert.equal(page.teamMembers.length, 1);
+  assert.equal(page.teamMembers[0].professionalUrl, "https://example.com/profile");
+  assert.equal(page.teamMembers[0].portrait?.width, 640);
+  for (const enabled of [false, "true", undefined]) {
+    assert.deepEqual(parseAboutPage({ ...raw, team_enabled: enabled, team_members: [member] }, apiUrl)!.teamMembers, []);
+  }
+  assert.deepEqual(parseAboutPage({ ...raw, team_enabled: true, team_members: [] }, apiUrl)!.teamMembers, []);
+});
+
+test("About editorial fallback preserves CMS team settings without changing other fallback sections", () => {
+  const cms = { ...fallbackAboutPage, id: 12, intro: "", teamEnabled: true, teamHeading: "Meet us", teamMembers: [{ id: 1, name: "Example", role: "Producer", biography: "", portrait: null, professionalUrl: "" }] };
+  const resolved = resolveAboutPage(cms, fallbackAboutPage);
+  assert.equal(resolved.intro, fallbackAboutPage.intro);
+  assert.equal(resolved.testimonials, fallbackAboutPage.testimonials);
+  assert.equal(resolved.teamMembers, cms.teamMembers);
+  assert.equal(resolved.teamHeading, "Meet us");
+  assert.equal(resolved.teamEnabled, true);
+  const disabled = resolveAboutPage({ ...cms, teamEnabled: false, teamMembers: [] }, { ...fallbackAboutPage, teamEnabled: true, teamMembers: cms.teamMembers });
+  assert.equal(disabled.teamEnabled, false);
+  assert.deepEqual(disabled.teamMembers, []);
+  assert.equal(resolveAboutPage(null, fallbackAboutPage), fallbackAboutPage);
+  const populated = { ...cms, intro: "Published editorial content" };
+  assert.equal(resolveAboutPage(populated, fallbackAboutPage), populated);
 });

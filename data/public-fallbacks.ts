@@ -283,6 +283,9 @@ export const fallbackPortfolioIndex: CmsPortfolioIndexPage = {
 export const fallbackAbout: CmsAboutPage = {
   id: -4,
   kind: "about",
+  teamEnabled: false,
+  teamHeading: "Our team",
+  teamMembers: [],
   title: "Science\nunderstanding.\nCreative\ncommunication.",
   meta: {
     ...fallbackMeta("fallback.AboutPage", "about"),

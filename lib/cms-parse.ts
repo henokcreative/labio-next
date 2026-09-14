@@ -1,5 +1,6 @@
 import type {
   CmsAboutPage,
+  CmsTeamMember,
   CmsArticlePage,
   CmsArticleSummary,
   CmsArticleType,
@@ -559,6 +560,31 @@ export function parseCaseStudyPage(
   };
 }
 
+export function parseTeamMembers(value: unknown, apiBaseUrl: string): CmsTeamMember[] {
+  const seen = new Set<number>();
+  return asArray(value).flatMap((item) => {
+    const record = asRecord(item);
+    if (!record) return [];
+    const id = asNumber(record.id);
+    const name = asString(record.name).trim();
+    const role = asString(record.role).trim();
+    if (id === null || !Number.isSafeInteger(id) || id <= 0 || seen.has(id) || !name || !role) return [];
+    seen.add(id);
+    let professionalUrl = "";
+    const href = asString(record.professional_url).trim();
+    try {
+      const url = new URL(href);
+      if (/^https?:\/\//i.test(href) && ["http:", "https:"].includes(url.protocol) && !url.username && !url.password) {
+        professionalUrl = url.href;
+      }
+    } catch { /* Invalid optional links are omitted. */ }
+    return [{ id, name, role, professionalUrl,
+      biography: asString(record.biography).trim(),
+      portrait: parseCmsImage(record.portrait, apiBaseUrl),
+    }];
+  });
+}
+
 export function parseAboutPage(value: unknown, apiBaseUrl: string): CmsAboutPage | null {
   const base = parsePageBase(value, apiBaseUrl);
   if (!base) return null;
@@ -566,6 +592,9 @@ export function parseAboutPage(value: unknown, apiBaseUrl: string): CmsAboutPage
   return {
     ...page,
     kind: "about",
+    teamEnabled: raw.team_enabled === true,
+    teamHeading: asString(raw.team_heading).trim() || "Our team",
+    teamMembers: raw.team_enabled === true ? parseTeamMembers(raw.team_members, apiBaseUrl) : [],
     heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     intro: asString(raw.intro).trim(),
     body: parseStreamField(raw.body, apiBaseUrl),

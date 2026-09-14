@@ -3,6 +3,7 @@ import CmsImage from "@/app/components/CmsImage";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
+import TeamMembers from "@/app/components/TeamMembers";
 import Testimonials from "@/app/components/Testimonials";
 import { fallbackAbout } from "@/data/public-fallbacks";
 import { getAboutPage, getSiteSettings } from "@/lib/cms";
@@ -46,6 +47,8 @@ export default async function AboutPage() {
         )}
         <StreamFieldRenderer blocks={page.body} className="about-editorial-body" />
       </section>
+
+      {page.teamEnabled && <TeamMembers members={page.teamMembers} heading={page.teamHeading} />}
 
       {page.values.length > 0 && (
         <section className="editorial-list-section">

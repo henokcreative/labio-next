@@ -21,7 +21,13 @@ export function resolveAboutPage(
       || cmsPage.process.length
       || cmsPage.heroImage,
   );
-  return hasPublishedContent ? cmsPage : fallbackPage;
+  if (hasPublishedContent) return cmsPage;
+  return {
+    ...fallbackPage,
+    teamEnabled: cmsPage.teamEnabled,
+    teamHeading: cmsPage.teamHeading,
+    teamMembers: cmsPage.teamMembers,
+  };
 }
 
 export function resolveCollaborators(

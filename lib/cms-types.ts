@@ -233,8 +233,20 @@ export type CmsCaseStudyPage = CmsPageBase & {
   featured: boolean;
 };
 
+export type CmsTeamMember = {
+  id: number;
+  name: string;
+  role: string;
+  portrait: CmsImage | null;
+  biography: string;
+  professionalUrl: string;
+};
+
 export type CmsAboutPage = CmsPageBase & {
   kind: "about";
+  teamEnabled: boolean;
+  teamHeading: string;
+  teamMembers: CmsTeamMember[];
   heroImage: CmsImage | null;
   intro: string;
   body: CmsStreamBlock[];
