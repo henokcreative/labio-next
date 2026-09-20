@@ -103,7 +103,7 @@ export type CmsHomePage = CmsPageBase & {
   selectedWorkEyebrow: string;
   selectedWorkHeading: string;
   selectedWorkCta: CmsLink;
-  selectedWork: CmsPageSummary[];
+  selectedWork: Array<CmsPageSummary & { summaryOverride?: string }>;
   servicesEnabled: boolean;
   servicesEyebrow: string;
   servicesHeading: string;

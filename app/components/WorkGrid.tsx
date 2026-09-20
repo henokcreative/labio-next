@@ -11,10 +11,12 @@ export default function WorkGrid({
   projects,
   variant = "portfolio",
   headingLevel = "h3",
+  summaryOverrides = [],
 }: {
   projects: Array<CmsCaseStudyPage | CmsCaseStudySummary>;
   variant?: WorkGridVariant;
   headingLevel?: "h2" | "h3";
+  summaryOverrides?: ReadonlyArray<string | undefined>;
 }) {
   if (projects.length === 0) {
     return <p className="cms-empty">New case studies are being prepared.</p>;
@@ -25,29 +27,34 @@ export default function WorkGrid({
 
   return (
     <div className={`work-grid work-grid-${variant} ${countClass}`}>
-      {projects.map((project, index) => (
-        <Link
-          href={
-            "/work/" + ("slug" in project ? project.slug : project.meta.slug)
-          }
-          className="work-card"
-          key={project.id}
-        >
-          <div className="work-image">
-            <div className="work-brand-badge">
-              <BrandName variant="light" />
+      {projects.map((project, index) => {
+        const summary = variant === "featured"
+          ? summaryOverrides[index]?.trim() || project.summary
+          : project.summary;
+        return (
+          <Link
+            href={
+              "/work/" + ("slug" in project ? project.slug : project.meta.slug)
+            }
+            className="work-card"
+            key={project.id}
+          >
+            <div className="work-image">
+              <div className="work-brand-badge">
+                <BrandName variant="light" />
+              </div>
             </div>
-          </div>
-          <div className="work-card-body">
-            <div className="work-meta">
-              <span className="work-index">{String(index + 1).padStart(2, "0")}</span>
-              {project.category && <span className="work-category">{project.category}</span>}
+            <div className="work-card-body">
+              <div className="work-meta">
+                <span className="work-index">{String(index + 1).padStart(2, "0")}</span>
+                {project.category && <span className="work-category">{project.category}</span>}
+              </div>
+              <Heading>{project.title}</Heading>
+              {summary && <p>{summary}</p>}
             </div>
-            <Heading>{project.title}</Heading>
-            {project.summary && <p>{project.summary}</p>}
-          </div>
-        </Link>
-      ))}
+          </Link>
+        );
+      })}
     </div>
   );
 }

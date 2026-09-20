@@ -31,6 +31,7 @@ import {
   resolveHomeTestimonials,
   resolveCmsCollection,
   resolveSelectedHomeItems,
+  resolveSelectedHomeWork,
 } from "@/lib/public-content";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -61,7 +62,7 @@ export default async function Home() {
   const featuredServices = serviceResult.apiAvailable
     ? resolveSelectedHomeItems(cmsHome?.featuredServices ?? [], services)
     : resolveSelectedHomeItems(fallbackHome.featuredServices, fallbackServices);
-  const selectedWork = resolveSelectedHomeItems(home.selectedWork, projects);
+  const selectedWork = resolveSelectedHomeWork(home.selectedWork, projects).slice(0, 3);
   const displayedCollaborators = resolveHomeCollaborators(
     cmsHome,
     collaborators,
@@ -136,7 +137,11 @@ export default async function Home() {
               </Link>
             )}
           </div>
-          <WorkGrid projects={selectedWork.slice(0, 3)} variant="featured" />
+          <WorkGrid
+            projects={selectedWork.map((item) => item.project)}
+            variant="featured"
+            summaryOverrides={selectedWork.map((item) => item.summaryOverride)}
+          />
         </section>
       )}
 

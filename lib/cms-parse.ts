@@ -423,7 +423,12 @@ export function parseHomePage(value: unknown, apiBaseUrl: string): CmsHomePage |
       raw.selected_work_cta_label,
       raw.selected_work_cta_url,
     ),
-    selectedWork: parseSummaries(raw.selected_work),
+    selectedWork: asArray(raw.selected_work).flatMap((item) => {
+      const summary = parsePageSummary(item);
+      if (!summary) return [];
+      const summaryOverride = asString(asRecord(item)?.summary_override).trim();
+      return [{ ...summary, ...(summaryOverride ? { summaryOverride } : {}) }];
+    }),
     servicesEnabled: asBoolean(raw.services_enabled),
     servicesEyebrow: asString(raw.services_eyebrow).trim(),
     servicesHeading: asString(raw.services_heading).trim(),

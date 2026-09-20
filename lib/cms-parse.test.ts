@@ -34,6 +34,7 @@ import {
   resolveCmsCollection,
   resolveHomeTestimonials,
   resolveSelectedHomeItems,
+  resolveSelectedHomeWork,
   resolveStandardPage,
 } from "./public-content";
 import {
@@ -1367,4 +1368,26 @@ test("About editorial fallback preserves CMS team settings without changing othe
   assert.equal(resolveAboutPage(null, fallbackAboutPage), fallbackAboutPage);
   const populated = { ...cms, intro: "Published editorial content" };
   assert.equal(resolveAboutPage(populated, fallbackAboutPage), populated);
+});
+
+
+test("homepage work teasers are optional and remain attached to ordered selections", () => {
+  const project = { id: 7, summary: "Case study summary" };
+  const selection = { id: 7, title: "Project", slug: "project" };
+  const raw = { id: 1, title: "Home", meta, hero_heading: "Studio", hero_copy: "Local fixture", selected_work: [
+    { ...selection, summary_override: " Homepage teaser " },
+    { ...selection, id: 99, summary_override: "Unavailable" },
+    { ...selection, summary_override: "Second placement" },
+    { ...selection, summary_override: "   " },
+    selection,
+  ] };
+  const home = parseHomePage(raw, apiUrl)!;
+  assert.equal(home.selectedWork[0].summaryOverride, "Homepage teaser");
+  assert.equal(home.selectedWork[3].summaryOverride, undefined);
+  assert.equal(home.selectedWork[4].summaryOverride, undefined);
+  const selected = resolveSelectedHomeWork(home.selectedWork, [project]);
+  assert.deepEqual(selected.map((item) => item.summaryOverride), ["Homepage teaser", "Second placement", undefined, undefined]);
+  assert.ok(selected.every((item) => item.project === project));
+  assert.equal(project.summary, "Case study summary");
+  assert.deepEqual(resolveSelectedHomeWork([], [project]), []);
 });

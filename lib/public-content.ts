@@ -59,6 +59,16 @@ export function resolveSelectedHomeItems<T extends { id: number }>(
     .filter((item): item is T => Boolean(item));
 }
 
+export function resolveSelectedHomeWork<T extends { id: number }>(
+  selectedItems: CmsHomePage["selectedWork"],
+  availableItems: T[],
+): Array<{ project: T; summaryOverride?: string }> {
+  return selectedItems.flatMap((item) => {
+    const project = availableItems.find((project) => project.id === item.id);
+    return project ? [{ project, summaryOverride: item.summaryOverride }] : [];
+  });
+}
+
 export function resolveCmsCollection<T>(
   result: { items: T[]; apiAvailable: boolean },
   fallbackItems: T[],
