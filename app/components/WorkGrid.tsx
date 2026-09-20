@@ -34,7 +34,9 @@ export default function WorkGrid({
           key={project.id}
         >
           <div className="work-image">
-            <BrandName variant="auto" />
+            <div className="work-brand-badge">
+              <BrandName variant="light" />
+            </div>
           </div>
           <div className="work-card-body">
             <div className="work-meta">
