@@ -5340,11 +5340,11 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .work-image {
   display: grid;
-  place-items: center;
+  /* place-items: center; */
   width: 100%;
   overflow: hidden;
   background: #eeeeee;
-  aspect-ratio: 4 / 3;
+  /* aspect-ratio: 4 / 3; */
 }
 
 .work-card-body {
