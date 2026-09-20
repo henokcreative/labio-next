@@ -62,7 +62,7 @@ export default async function Home() {
   const featuredServices = serviceResult.apiAvailable
     ? resolveSelectedHomeItems(cmsHome?.featuredServices ?? [], services)
     : resolveSelectedHomeItems(fallbackHome.featuredServices, fallbackServices);
-  const selectedWork = resolveSelectedHomeWork(home.selectedWork, projects).slice(1, 4);
+  const selectedWork = resolveSelectedHomeWork(home.selectedWork, projects).slice(0, 4);
   const displayedCollaborators = resolveHomeCollaborators(
     cmsHome,
     collaborators,
