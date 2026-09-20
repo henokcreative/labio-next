@@ -537,10 +537,17 @@ a {
 /* Image */
 
 .work-image {
+  display: grid;
+  place-items: center;
   width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #eeeeee;
+}
+
+.work-image .brand-name {
+  font-size: clamp(16px, 1.5vw, 22px);
+  opacity: 0.75;
 }
 
 .work-image img {

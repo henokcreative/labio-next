@@ -1,5 +1,5 @@
 import Link from "next/link";
-import CmsImage from "./CmsImage";
+import BrandName from "./BrandName";
 import type {
   CmsCaseStudyPage,
   CmsCaseStudySummary,
@@ -21,9 +21,6 @@ export default function WorkGrid({
   }
 
   const Heading = headingLevel;
-  const sizes = variant === "portfolio"
-    ? "(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-    : "(max-width: 900px) 100vw, 33vw";
   const countClass = `work-grid-count-${Math.min(projects.length, 3)}`;
 
   return (
@@ -37,12 +34,7 @@ export default function WorkGrid({
           key={project.id}
         >
           <div className="work-image">
-            {project.heroImage && (
-              <CmsImage
-                image={project.heroImage}
-                sizes={sizes}
-              />
-            )}
+            <BrandName variant="auto" />
           </div>
           <div className="work-card-body">
             <div className="work-meta">
