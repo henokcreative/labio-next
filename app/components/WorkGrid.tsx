@@ -41,7 +41,7 @@ export default function WorkGrid({
           >
             <div className="work-image">
               <div className="work-brand-badge">
-                <BrandName variant="light" />
+                <BrandName variant="auto" />
               </div>
             </div>
             <div className="work-card-body">
