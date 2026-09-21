@@ -157,6 +157,7 @@ SIDEBAR / NAVIGATION
   display: flex;
   flex-direction: column;
   z-index: 100;
+  overflow:scroll;
 }
 
 .main-nav a,
