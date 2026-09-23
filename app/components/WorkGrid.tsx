@@ -23,7 +23,7 @@ export default function WorkGrid({
   }
 
   const Heading = headingLevel;
-  const countClass = `work-grid-count-${Math.min(projects.length, 4)}`;
+  const countClass = `work-grid-count-${Math.min(projects.length, 6)}`;
 
   return (
     <div className={`work-grid work-grid-${variant} ${countClass}`}>
