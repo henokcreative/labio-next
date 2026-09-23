@@ -220,14 +220,10 @@ export type CmsCaseStudyPage = CmsPageBase & {
   category: string;
   summary: string;
   projectYear: string;
-  challenge: string;
-  approach: string;
-  deliverables: string[];
-  outcome: string;
+  narrative: Extract<CmsStreamBlock, { type: "rich_text" }>[];
   projectUrl: string;
   cta: CmsLink;
   showcase: CmsCaseStudyShowcaseBlock[];
-  heroImage: CmsImage | null;
   services: CmsPageSummary[];
   publicationDate?: string;
   featured: boolean;

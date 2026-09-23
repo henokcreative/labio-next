@@ -1,3 +1,4 @@
+import { parseCaseStudyNarrative } from "@/lib/cms-parse";
 import { projects } from "./projects";
 import type {
   CmsAboutPage,
@@ -169,10 +170,10 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
     category: project.category,
     summary: project.description,
     projectYear: "",
-    challenge: project.challenge,
-    approach: project.approach,
-    deliverables: [],
-    outcome: "",
+    narrative: parseCaseStudyNarrative({
+      challenge: project.challenge,
+      approach: project.approach,
+    }),
     projectUrl: "",
     cta: { label: "", url: "" },
     showcase: project.images.length > 0
@@ -185,7 +186,6 @@ export const fallbackCaseStudies: CmsCaseStudyPage[] = Object.entries(projects).
           },
         }]
       : [],
-    heroImage: localImage(project.hero, project.title),
     services: project.services.map((title, serviceIndex) => ({
       id: -1000 - index * 10 - serviceIndex,
       title,

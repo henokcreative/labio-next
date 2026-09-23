@@ -492,10 +492,9 @@ test("service and work payloads retain only controlled route data", () => {
   assert.equal(project?.services[0].slug, "photography");
   assert.equal(project?.clientDisplayName, "Research Institute");
   assert.equal(project?.projectYear, "2025");
-  assert.equal(project?.challenge, "Make the research visible.");
-  assert.equal(project?.approach, "Work closely with the research team.");
-  assert.deepEqual(project?.deliverables, ["Editorial photography"]);
-  assert.equal(project?.outcome, "A reusable visual library.");
+  assert.match(project!.narrative[0].value, /<h3>Challenge<\/h3><p>Make the research visible\.<\/p>/);
+  assert.match(project!.narrative[0].value, /<li>Editorial photography<\/li>/);
+  assert.match(project!.narrative[0].value, /A reusable visual library/);
   assert.equal(project?.projectUrl, "https://project.example.com");
   assert.deepEqual(project?.cta, { label: "Discuss a project", url: "/contact" });
 });
@@ -546,10 +545,7 @@ test("case-study editorial additions stay optional and reject unsafe links", () 
   assert.equal(project?.clientDisplayName, "");
   assert.equal(project?.summary, "");
   assert.equal(project?.projectYear, "");
-  assert.equal(project?.challenge, "");
-  assert.equal(project?.approach, "");
-  assert.deepEqual(project?.deliverables, []);
-  assert.equal(project?.outcome, "");
+  assert.deepEqual(project?.narrative, []);
   assert.equal(project?.projectUrl, "");
   assert.deepEqual(project?.cta, { label: "Unsafe CTA", url: "" });
 });
@@ -738,8 +734,9 @@ test("case-study parsing keeps canonical narrative and showcase fields only", ()
     apiUrl,
   );
 
-  assert.equal(project?.challenge, "A clear challenge.");
-  assert.equal(project?.approach, "A considered approach.");
+  assert.match(project!.narrative[0].value, /A clear challenge/);
+  assert.match(project!.narrative[0].value, /A considered approach/);
+  assert.equal(Object.prototype.hasOwnProperty.call(project, "heroImage"), false);
   assert.equal(project?.showcase[0].type, "video");
   assert.equal(Object.prototype.hasOwnProperty.call(project, "body"), false);
   assert.equal(Object.prototype.hasOwnProperty.call(project, "gallery"), false);
@@ -1390,4 +1387,28 @@ test("homepage work teasers are optional and remain attached to ordered selectio
   assert.ok(selected.every((item) => item.project === project));
   assert.equal(project.summary, "Case study summary");
   assert.deepEqual(resolveSelectedHomeWork([], [project]), []);
+});
+
+
+test("case-study narrative is authoritative, ordered and restricted to rich text", () => {
+  const base = { id: 9, title: "Project", meta, challenge: "Old challenge" };
+  const html = '<h2>Story</h2><p><strong>Bold</strong> <em>Emphasis</em> <a href="/work">Work</a></p><ul><li>Brand<ul><li>Logo</li></ul></li></ul><ol><li>First</li></ol>';
+  const project = parseCaseStudyPage({ ...base, narrative: [
+    { id: "story", type: "rich_text", value: html },
+    { type: "embed", value: "https://example.com" },
+    { type: "rich_text", value: 123 },
+    null,
+    { id: "closing", type: "rich_text", value: "<p>Closing paragraph.</p>" },
+  ] }, apiUrl);
+  assert.deepEqual(project?.narrative, [
+    { id: "story", type: "rich_text", value: html },
+    { id: "closing", type: "rich_text", value: "<p>Closing paragraph.</p>" },
+  ]);
+  assert.deepEqual(parseCaseStudyPage({ ...base, narrative: [] }, apiUrl)?.narrative, []);
+  assert.deepEqual(parseCaseStudyPage({ ...base, narrative: null }, apiUrl)?.narrative, []);
+  const legacy = parseCaseStudyPage({ ...base, challenge: "<script>alert(1)</script>\n\nNext paragraph" }, apiUrl);
+  assert.equal(legacy?.narrative[0].value, "<h3>Challenge</h3><p>&lt;script&gt;alert(1)&lt;/script&gt;</p><p>Next paragraph</p>");
+  for (const field of ["challenge", "approach", "deliverables", "outcome", "heroImage"]) {
+    assert.equal(Object.prototype.hasOwnProperty.call(project, field), false);
+  }
 });

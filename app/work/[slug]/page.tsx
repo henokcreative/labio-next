@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import StreamFieldRenderer from "@/app/components/StreamFieldRenderer";
 import CaseStudyShowcase from "@/app/components/CaseStudyShowcase";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
@@ -47,12 +48,6 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
   const hasContext = Boolean(
     project.clientDisplayName || project.projectYear || project.category || project.projectUrl,
   );
-  const hasNarrative = Boolean(
-    project.challenge
-    || project.approach
-    || project.deliverables.length
-    || project.outcome,
-  );
 
   return (
     <PublicShell>
@@ -91,39 +86,12 @@ export default async function ProjectPage({ params }: WorkRouteProps) {
           </div>
         </header>
 
-        {hasNarrative && (
+        {project.narrative.length > 0 && (
           <section className="case-study-narrative" aria-labelledby="project-story-heading">
             <h2 id="project-story-heading" className="section-label case-study-story-label">
               Project story <span />
             </h2>
-            {project.challenge && (
-              <article>
-                <h3>Challenge</h3>
-                <p>{project.challenge}</p>
-              </article>
-            )}
-            {project.approach && (
-              <article>
-                <h3>Approach</h3>
-                <p>{project.approach}</p>
-              </article>
-            )}
-            {project.deliverables.length > 0 && (
-              <article>
-                <h3>Deliverables</h3>
-                <ul>
-                  {project.deliverables.map((deliverable) => (
-                    <li key={deliverable}>{deliverable}</li>
-                  ))}
-                </ul>
-              </article>
-            )}
-            {project.outcome && (
-              <article>
-                <h3>Outcome</h3>
-                <p>{project.outcome}</p>
-              </article>
-            )}
+            <StreamFieldRenderer blocks={project.narrative} className="case-study-editorial" />
           </section>
         )}
 

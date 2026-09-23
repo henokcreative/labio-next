@@ -2972,6 +2972,32 @@ RESPONSIVE / MEDIA QUERIES
   border-bottom: 1px solid var(--public-border);
 }
 
+/* Narrative lists are editorial content, not the legacy deliverables grid. */
+.case-study-narrative .case-study-editorial {
+  max-width: 720px;
+  margin: 32px 0 0;
+}
+
+.case-study-editorial .cms-rich-text > * + * {
+  margin-top: 1.25em;
+}
+
+.case-study-editorial .cms-rich-text ul,
+.case-study-editorial .cms-rich-text ol {
+  display: block;
+  padding-left: 1.5em;
+  list-style: revert;
+}
+
+.case-study-editorial .cms-rich-text li::before {
+  content: none;
+}
+
+.case-study-editorial .cms-rich-text li > ul,
+.case-study-editorial .cms-rich-text li > ol {
+  margin-top: 0.5em;
+}
+
 .case-study-story-label {
   margin-bottom: 8px;
 }

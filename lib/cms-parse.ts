@@ -535,6 +535,34 @@ export function parsePortfolioIndexPage(
   };
 }
 
+// Compatibility for older APIs and static fallback content only. An explicit
+// narrative (including an empty one) is authoritative after migration.
+export function parseCaseStudyNarrative(value: unknown): CmsCaseStudyPage["narrative"] {
+  const raw = asRecord(value) ?? {};
+  if (Object.prototype.hasOwnProperty.call(raw, "narrative")) {
+    return parseStreamField(raw.narrative, "").filter(
+      (block): block is CmsCaseStudyPage["narrative"][number] => block.type === "rich_text",
+    );
+  }
+  const escapeText = (text: string) => text.replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[char]!);
+  const paragraph = (text: string) => text.split(/\r?\n\s*\r?\n/)
+    .map((part) => `<p>${escapeText(part).replace(/\r?\n/g, "<br>")}</p>`).join("");
+  const parts: string[] = [];
+  for (const [field, heading] of [["challenge", "Challenge"], ["approach", "Approach"]]) {
+    const text = asString(raw[field]).trim();
+    if (text) parts.push(`<h3>${heading}</h3>${paragraph(text)}`);
+  }
+  const deliverables = parseStringBlocks(raw.deliverables, "deliverable");
+  if (deliverables.length) parts.push(`<h3>Deliverables</h3><ul>${deliverables.map(
+    (item) => `<li>${escapeText(item)}</li>`,
+  ).join("")}</ul>`);
+  const outcome = asString(raw.outcome).trim();
+  if (outcome) parts.push(`<h3>Outcome</h3>${paragraph(outcome)}`);
+  return parts.length ? [{ type: "rich_text", value: parts.join("") }] : [];
+}
+
 export function parseCaseStudyPage(
   value: unknown,
   apiBaseUrl: string,
@@ -551,14 +579,10 @@ export function parseCaseStudyPage(
     category: asString(raw.category).trim(),
     summary: asString(raw.summary).trim(),
     projectYear: asString(raw.project_year).trim(),
-    challenge: asString(raw.challenge).trim(),
-    approach: asString(raw.approach).trim(),
-    deliverables: parseStringBlocks(raw.deliverables, "deliverable"),
-    outcome: asString(raw.outcome).trim(),
+    narrative: parseCaseStudyNarrative(raw),
     projectUrl: safeHref(raw.project_url),
     cta: parseLink(raw.cta_label, raw.cta_url),
     showcase: parseMediaShowcase(raw.showcase, apiBaseUrl),
-    heroImage: parseCmsImage(raw.hero_image, apiBaseUrl),
     services: parseSummaries(raw.services),
     ...(publicationDate ? { publicationDate } : {}),
     featured: asBoolean(raw.featured),
