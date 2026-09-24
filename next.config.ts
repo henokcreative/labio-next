@@ -40,6 +40,7 @@ const remotePatterns = [
 const nextConfig: NextConfig = {
   images: {
     remotePatterns,
+    contentDispositionType: "inline",
   },
 };
 

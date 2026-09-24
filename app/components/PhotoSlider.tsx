@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import CmsImage from "./CmsImage";
+import ShowcaseImage from "./ShowcaseImage";
 import { nextSlideIndex } from "@/lib/case-study-showcase";
 import type { CmsImage as CmsImageData } from "@/lib/cms-types";
 
@@ -46,6 +46,7 @@ export default function PhotoSlider({
         const distance = endX - touchStartX.current;
         touchStartX.current = null;
         if (Math.abs(distance) < 40) return;
+        event.preventDefault();
         move(distance > 0 ? -1 : 1);
       }}
     >
@@ -57,10 +58,10 @@ export default function PhotoSlider({
         )}
         <figure className="showcase-slider-figure">
           <div className="showcase-slider-media">
-            <CmsImage
+            <ShowcaseImage
+              key={currentImage.url}
               image={currentImage}
               sizes="(max-width: 900px) 100vw, calc(100vw - 360px)"
-              loading="eager"
             />
             <div className="showcase-slider-controls">
               <button type="button" onClick={() => move(-1)} aria-label="Previous image">

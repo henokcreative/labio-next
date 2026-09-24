@@ -1,4 +1,4 @@
-import CmsImage from "./CmsImage";
+import ShowcaseImage from "./ShowcaseImage";
 import PhotoSlider from "./PhotoSlider";
 import StreamFieldRenderer from "./StreamFieldRenderer";
 import type {
@@ -35,7 +35,7 @@ function ImageFigure({
 }) {
   return (
     <figure className="showcase-image-figure">
-      <CmsImage image={image} sizes={sizes} loading="eager" />
+      <ShowcaseImage image={image} sizes={sizes} />
       {image.caption && <figcaption>{image.caption}</figcaption>}
     </figure>
   );
@@ -45,26 +45,19 @@ function WebsitePreview({ item }: { item: CmsWebsitePreview }) {
   const content = (
     <>
       <div className="showcase-website-media">
-        <CmsImage
+        <ShowcaseImage
           image={item.image}
           sizes="(max-width: 700px) 100vw, 40vw"
-          loading="eager"
         />
       </div>
       <div className="showcase-website-copy">
-        <h3>{item.label}{item.url && <span aria-hidden="true"> ↗</span>}</h3>
+        <h3>{item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer">{item.label}<span aria-hidden="true"> ↗</span></a> : item.label}</h3>
         {item.caption && <p>{item.caption}</p>}
       </div>
     </>
   );
 
-  return item.url ? (
-    <a href={item.url} target="_blank" rel="noopener noreferrer">
-      {content}
-    </a>
-  ) : (
-    <article>{content}</article>
-  );
+  return <article>{content}</article>;
 }
 
 export default function CaseStudyShowcase({
@@ -193,10 +186,9 @@ export default function CaseStudyShowcase({
                 <div className="case-study-showcase-inner showcase-wide-image">
                   <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <figure className="showcase-image-figure">
-                    <CmsImage
+                    <ShowcaseImage
                       image={block.value.image}
                       sizes="(max-width: 900px) 100vw, calc(100vw - 340px)"
-                      loading="eager"
                     />
                     {block.value.caption && <figcaption>{block.value.caption}</figcaption>}
                   </figure>

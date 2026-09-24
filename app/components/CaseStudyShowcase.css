@@ -84,6 +84,74 @@
 
 /* === Photo slider === */
 
+.showcase-image-trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: zoom-in;
+}
+
+.showcase-image-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+dialog.showcase-lightbox {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 64px 24px 48px;
+  border: 0;
+  background: rgb(0 0 0 / 94%);
+  color: #ffffff;
+}
+
+.showcase-lightbox[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.case-study-showcase dialog.showcase-lightbox img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 160px);
+  object-fit: contain;
+  transform: none;
+}
+
+.showcase-lightbox .showcase-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.showcase-lightbox a {
+  color: inherit;
+  font-size: 12px;
+}
+
+.showcase-lightbox button:focus-visible,
+.showcase-lightbox a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 .showcase-image-figure img,
 .showcase-slider-media img {
   display: block;
@@ -267,7 +335,9 @@
 /* === Website previews === */
 
 .showcase-website-grid a:hover .showcase-website-media img,
-.showcase-website-grid a:focus-visible .showcase-website-media img {
+.showcase-website-grid a:focus-visible .showcase-website-media img,
+.showcase-website-media .showcase-image-trigger:hover img,
+.showcase-website-media .showcase-image-trigger:focus-visible img {
   transform: scale(1.015);
 }
 
