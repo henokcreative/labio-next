@@ -1,6 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import {
   parseAboutPage,
   parseArticlePage,
@@ -60,7 +61,8 @@ function getCmsApiBaseUrl(): string | null {
 
 async function cmsRequest(
   path: string,
-  parameters?: Record<string, string>,
+  parameters: Record<string, string> | undefined,
+  isValid: (value: unknown) => boolean,
 ): Promise<unknown | null> {
   const baseUrl = getCmsApiBaseUrl();
   if (!baseUrl) return null;
@@ -70,15 +72,28 @@ async function cmsRequest(
     url.searchParams.set(key, value);
   }
 
-  try {
-    const response = await fetch(url, {
+  // Cache only validated CMS responses, never failure/fallback results. Next's
+  // function cache retains stale data on refresh errors, including during ISR.
+  // URL arguments include the origin, page type, slug and pagination parameters.
+  const request = unstable_cache(async (requestUrl: string) => {
+    const response = await fetch(requestUrl, {
       headers: { Accept: "application/json" },
-      next: { revalidate: CMS_REVALIDATE_SECONDS },
+      // The function cache owns the 60-second lifecycle; avoid a second cache
+      // storing HTTP-200 payloads before JSON/schema validation has succeeded.
+      cache: "no-store",
       signal: AbortSignal.timeout(CMS_REQUEST_TIMEOUT_MS),
     });
-    if (!response.ok) return null;
-    return await response.json();
+    if (!response.ok) throw new Error(`CMS request failed (${response.status})`);
+    const value: unknown = await response.json();
+    if (!isValid(value)) throw new Error("Invalid CMS response");
+    return value;
+  }, ["public-cms-v1", isValid.toString()], { revalidate: CMS_REVALIDATE_SECONDS });
+
+  try {
+    return await request(url.toString());
   } catch {
+    // Reached on a cold-cache failure. Warm refresh failures are handled by
+    // unstable_cache before this point, returning the previous valid response.
     return null;
   }
 }
@@ -101,8 +116,14 @@ async function getPageItemsResult<T>(
       limit: String(pageSize),
       offset: String(offset),
       ...(slug ? { slug } : {}),
+    }, (value) => {
+      if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+      const listing = value as Record<string, unknown>;
+      return Array.isArray(listing.items)
+        && listing.items.every((item) => parser(item, baseUrl) !== null);
     });
-    if (raw === null) break;
+    // Do not present an incomplete paginated collection as a successful result.
+    if (raw === null) return { items: [], apiAvailable: false };
     apiAvailable = true;
 
     const listing =
@@ -275,7 +296,8 @@ export const getCollaborators = cache(async (): Promise<CmsCollaborator[]> => {
   const baseUrl = getCmsApiBaseUrl();
   if (!baseUrl) return [];
   return parseCollaborators(
-    await cmsRequest("api/cms/v2/collaborators/"),
+    await cmsRequest("api/cms/v2/collaborators/", undefined, (value) =>
+      Array.isArray(value) && parseCollaborators(value, baseUrl).length === value.length),
     baseUrl,
   );
 });
@@ -284,7 +306,8 @@ export const getTestimonials = cache(async (): Promise<CmsTestimonial[]> => {
   const baseUrl = getCmsApiBaseUrl();
   if (!baseUrl) return [];
   return parseTestimonials(
-    await cmsRequest("api/cms/v2/testimonials/"),
+    await cmsRequest("api/cms/v2/testimonials/", undefined, (value) =>
+      Array.isArray(value) && parseTestimonials(value, baseUrl).length === value.length),
     baseUrl,
   );
 });
@@ -293,7 +316,8 @@ export const getSiteSettings = cache(async (): Promise<CmsSiteSettings | null> =
   const baseUrl = getCmsApiBaseUrl();
   if (!baseUrl) return null;
   return parseSiteSettings(
-    await cmsRequest("api/cms/v2/settings/"),
+    await cmsRequest("api/cms/v2/settings/", undefined, (value) =>
+      parseSiteSettings(value, baseUrl) !== null),
     baseUrl,
   );
 });
