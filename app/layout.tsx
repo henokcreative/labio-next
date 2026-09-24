@@ -4,6 +4,9 @@ import ConsentManager from "@/app/components/ConsentManager";
 import { getPublicThemeInitializationScript } from "@/lib/public-theme";
 import { publicSiteUrl } from "@/lib/public-url";
 import "./globals.css";
+// Stable stylesheet order also preserves the shared Updates showcase on navigation.
+import "./work/[slug]/case-study.css";
+import "./components/CaseStudyShowcase.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

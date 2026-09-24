@@ -8,7 +8,7 @@
 DESIGN TOKENS / :root
 ========================================================= */
 
-:root {
+:where(:root) {
   --color-primary: #df4646;
   --color-primary-dark: #b73636;
   --color-bg: #ffffff;
@@ -16,8 +16,30 @@ DESIGN TOKENS / :root
   --color-muted: #666666;
   --color-light: #f7f7f7;
   --sidebar-width: 180px;
-  --content-padding: 52px;
-  --section-padding: 88px;
+  --content-padding: var(--public-gutter);
+  --section-padding: clamp(76px, 7vw, 118px);
+  --public-shell-max: 1440px;
+  --public-canvas-max: calc(
+    var(--public-shell-max) - var(--sidebar-width)
+  );
+  --public-editorial-max: 720px;
+  --public-gutter: 32px;
+}
+
+/* Responsive token values. Low-specificity defaults above need no !important. */
+
+@media (max-width: 900px) {
+  html {
+    --sidebar-width: 0px;
+    --public-gutter: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    --public-gutter: 16px;
+    --section-padding: 58px;
+  }
 }
 
 /* =========================================================
@@ -403,10 +425,7 @@ HOME / LANDING PAGE
 ========================================================= */
 
 .hero {
-  min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr);
-  gap: 58px;
   align-items: center;
 }
 
@@ -435,10 +454,6 @@ HOME / LANDING PAGE
   display: flex;
   align-items: center;
   gap: 32px;
-}
-
-.hero-image img {
-  object-fit: cover;
 }
 
 .hero-image::after {
@@ -499,54 +514,13 @@ WORK GRID / WORK CARDS
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: #666666;
-}
-
-.section-label span {
   display: block;
   width: 42px;
   height: 1px;
   background: var(--color-primary);
 }
 
-/* =========================================================
-CASE STUDY / WORK DETAIL
-========================================================= */
-
-.service-list div {
-  padding: 9px 13px;
-  border: 1px solid #dddddd;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: #555555;
-}
-
-.project-next a {
-  color: #111111;
-  text-decoration: none;
-  font-size: 15px;
-  transition: color 180ms ease;
-}
-
-.project-next a:hover {
-  color: var(--color-primary);
-}
-
-.project-not-found a {
-  color: #666666;
-  text-decoration: none;
-}
-
-.case-study-context div {
-  min-width: 120px;
-}
-
-.case-study-context dt {
-  margin-bottom: 7px;
-  color: var(--color-muted);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
+/* CASE STUDY / WORK DETAIL — owned by work/[slug]/case-study.css and components/CaseStudyShowcase.css */
 
 /* Cascade order retained: global layout. */
 
@@ -556,12 +530,6 @@ CASE STUDY / WORK DETAIL
   font-size: 9px;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-}
-
-.case-study-context dd {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 13px;
 }
 
 /* Cascade order retained: global layout. */
@@ -574,52 +542,10 @@ CASE STUDY / WORK DETAIL
   overflow-wrap: anywhere;
 }
 
-.case-study-narrative article {
-  display: grid;
-  grid-template-columns: minmax(160px, 0.65fr) minmax(0, 1.35fr);
-  gap: 56px;
-  padding: 48px 0;
-  border-bottom: 1px solid var(--public-border);
-}
-
-.case-study-narrative article:last-child {
-  border-bottom: 0;
-}
-
-.case-study-narrative li::before {
-  content: "— ";
-  color: var(--color-primary);
-}
-
-.case-study-cta a:hover,
-.case-study-cta a:focus-visible {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
 /* Cascade order retained: global layout. */
 
 .footer a:hover {
   color: var(--color-primary-dark);
-}
-
-.project-page .testimonial blockquote {
-  font-size: clamp(16px, 1.6vw, 21px);
-}
-
-.showcase-website-grid a:hover .showcase-website-media img,
-.showcase-website-grid a:focus-visible .showcase-website-media img {
-  transform: scale(1.015);
-}
-
-html[data-public-theme="dark"] .site-shell .project-client {
-  color: var(--color-muted) !important;
-}
-
-.site-shell .case-study-narrative article {
-  max-width: var(--public-narrative-max);
-  margin-right: auto;
-  margin-left: auto;
 }
 
 /* =========================================================
@@ -863,34 +789,12 @@ CONTACT
   font-weight: 400;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.case-study-narrative h3 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
 .contact-success p {
   max-width: 400px;
   margin: 0;
   color: var(--color-muted);
   font-size: 15px;
   line-height: 1.7;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.project-heading p {
-  max-width: 620px;
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.7;
-  text-align: left;
-  color: #666666;
 }
 
 .contact-honeypot {
@@ -924,24 +828,16 @@ CMS / RICH TEXT / SHARED CONTENT
 }
 
 .collaborator-item img {
-  width: 100%;
-  height: 100%;
   object-fit: contain;
 }
 
 .testimonial blockquote {
   margin: 0 0 28px;
-  max-width: 680px;
-  font-size: clamp(22px, 2.5vw, 34px);
   font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: -0.025em;
 }
 
 .testimonial figcaption {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
   color: #777777;
   font-size: 12px;
 }
@@ -1057,43 +953,6 @@ CMS / RICH TEXT / SHARED CONTENT
   object-fit: cover;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-image-figure img,
-.showcase-slider-media img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.showcase-slider-media img {
-  max-height: 680px;
-  object-fit: contain;
-}
-
-.showcase-masonry img {
-  max-height: 680px;
-  object-fit: contain;
-}
-
-.showcase-image-grid img,
-.showcase-image-pair img {
-  max-height: 620px;
-  object-fit: contain;
-}
-
-.showcase-website-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 280ms ease;
-}
-
-.showcase-wide-image img {
-  max-height: 760px;
-  object-fit: contain;
-}
-
 /* Cascade order retained: team. */
 
 .team-card-portrait img {
@@ -1151,13 +1010,6 @@ CMS / RICH TEXT / SHARED CONTENT
   line-height: 1.5;
 }
 
-.update-media-showcase .showcase-wide-image img,
-.update-media-showcase .showcase-image-grid img,
-.update-media-showcase .showcase-image-pair img,
-.update-media-showcase .showcase-masonry img {
-  max-height: 620px;
-}
-
 /* =========================================================
 FORMS / BUTTONS / INTERACTIVE STATES
 ========================================================= */
@@ -1192,7 +1044,6 @@ FORMS / BUTTONS / INTERACTIVE STATES
 
 .hero-image {
   position: relative;
-  min-height: 590px;
   background: #eeeeee;
   overflow: hidden;
 }
@@ -1241,14 +1092,7 @@ FORMS / BUTTONS / INTERACTIVE STATES
 /* Cascade order retained: typography. */
 
 .section-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
   margin-bottom: 38px;
-}
-
-.section-label {
-  margin-bottom: 22px;
 }
 
 /* Cascade order retained: work grid / work cards. */
@@ -1339,12 +1183,6 @@ FORMS / BUTTONS / INTERACTIVE STATES
   color: var(--color-primary);
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.project-back:hover {
-  color: var(--color-primary);
-}
-
 /* Cascade order retained: about. */
 
 .about-button:hover {
@@ -1409,16 +1247,6 @@ FORMS / BUTTONS / INTERACTIVE STATES
   padding-left: 18px;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.case-study-narrative ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 34px;
-  padding: 0;
-  list-style: none;
-}
-
 /* Cascade order retained: services. */
 
 .pricing-item-details ul {
@@ -1451,13 +1279,6 @@ html[data-public-theme="dark"] .consent-layer {
 .cms-embed-consent a {
   color: var(--color-muted);
   font-size: 12px;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.case-study-context a {
-  color: inherit;
-  text-underline-offset: 3px;
 }
 
 .consent-options label {
@@ -1849,10 +1670,6 @@ RESPONSIVE / MEDIA QUERIES
     margin-bottom: 40px;
   }
 
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .service-item:nth-child(2) {
     border-right: none;
   }
@@ -1875,10 +1692,6 @@ RESPONSIVE / MEDIA QUERIES
 @media (max-width: 600px) {
   .services-section {
     padding: 60px 24px;
-  }
-
-  .services-grid {
-    grid-template-columns: 1fr;
   }
 
   .service-item,
@@ -2084,12 +1897,6 @@ RESPONSIVE / MEDIA QUERIES
   }
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.project-heading {
-  max-width: 900px;
-}
-
 /* Cascade order retained: forms / buttons / interactive states. */
 
 .invite-card {
@@ -2103,28 +1910,20 @@ RESPONSIVE / MEDIA QUERIES
 
 /* (max-width: 900px) — original override order retained. */
 @media (max-width: 900px) {
-  :root {
-    --sidebar-width: 0px;
-    --content-padding: 28px;
-    --section-padding: 65px;
-  }
 
   .site-shell {
     display: block;
   }
 
   .sidebar {
-    position: relative;
     width: 100%;
     height: auto;
-    padding: 25px 24px;
     border-right: none;
     border-bottom: 1px solid #eeeeee;
   }
 
   .brand {
     margin-bottom: 28px;
-    font-size: 21px;
   }
 
   .main-nav {
@@ -2137,15 +1936,6 @@ RESPONSIVE / MEDIA QUERIES
     padding: 5px 0;
   }
 
-  .main-nav a.active::before {
-    display: none;
-  }
-
-  .sidebar-section {
-    margin-top: 25px;
-    padding-top: 20px;
-  }
-
   .service-nav {
     flex-direction: row;
     flex-wrap: wrap;
@@ -2153,10 +1943,7 @@ RESPONSIVE / MEDIA QUERIES
   }
 
   .sidebar-bottom {
-    margin-top: 28px;
-    display: flex;
     justify-content: space-between;
-    align-items: flex-end;
   }
 
   .social-links {
@@ -2169,8 +1956,6 @@ RESPONSIVE / MEDIA QUERIES
   }
 
   .hero {
-    min-height: auto;
-    grid-template-columns: 1fr;
     gap: 45px;
   }
 
@@ -2230,30 +2015,6 @@ RESPONSIVE / MEDIA QUERIES
     flex-wrap: wrap;
     gap: 20px;
   }
-}
-
-/* Cascade order retained: design tokens / :root. */
-
-:root {
-  --content-padding: clamp(32px, 4vw, 76px);
-  --section-padding: clamp(76px, 7vw, 118px);
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.project-heading h1 {
-  margin: 0 0 25px;
-  font-size: clamp(48px, 7vw, 92px);
-  line-height: 0.98;
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  color: #111111;
-}
-
-.project-not-found h1 {
-  margin: 0;
-  font-size: 42px;
-  font-weight: 400;
 }
 
 /* (max-width: 600px) — original override order retained. */
@@ -2350,63 +2111,6 @@ RESPONSIVE / MEDIA QUERIES
   margin: 0;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.project-page {
-  min-height: 100vh;
-  background: #ffffff;
-  color: var(--color-text);
-}
-
-.project-header {
-  padding: 90px 48px 65px;
-  border-bottom: 1px solid #eeeeee;
-}
-
-.project-back {
-  display: inline-block;
-  margin-bottom: 75px;
-  color: #777777;
-  text-decoration: none;
-  font-size: 11px;
-  transition: color 180ms ease;
-}
-
-.project-heading .section-label {
-  margin-bottom: 20px;
-}
-
-.project-services {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 50px;
-  padding: 80px 48px;
-  border-bottom: 1px solid #eeeeee;
-}
-
-.service-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  height: fit-content;
-}
-
-.project-next {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 85px 48px;
-}
-
-.project-not-found {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 25px;
-}
-
 /* Cascade order retained: cms / rich text / shared content. */
 
 .event-information dl {
@@ -2487,7 +2191,6 @@ RESPONSIVE / MEDIA QUERIES
 /* Cascade order retained: cms / rich text / shared content. */
 
 .testimonial:nth-child(even) {
-  padding-left: 42px;
   border-left: 1px solid #dddddd;
 }
 
@@ -2503,14 +2206,6 @@ RESPONSIVE / MEDIA QUERIES
 .footer a:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 4px;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-slider-controls button:focus-visible,
-.showcase-website-grid a:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
 }
 
 /* Cascade order retained: forms / buttons / interactive states. */
@@ -2572,18 +2267,6 @@ RESPONSIVE / MEDIA QUERIES
   outline: none;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-photo-slider:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -4px;
-}
-
-.showcase-video-play:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
-}
-
 /* Cascade order retained: cms / rich text / shared content. */
 
 .updates-feature:focus-visible,
@@ -2603,72 +2286,8 @@ RESPONSIVE / MEDIA QUERIES
 }
 
 /* (max-width: 900px) — original override order retained. */
-@media (max-width: 900px) {
-  .project-header {
-    padding: 70px 32px 55px;
-  }
-
-  .project-back {
-    margin-bottom: 55px;
-  }
-
-  .project-services {
-    grid-template-columns: 1fr;
-    gap: 25px;
-    padding: 55px 32px;
-  }
-
-  .project-next {
-    padding: 65px 32px;
-  }
-}
 
 /* (max-width: 600px) — original override order retained. */
-@media (max-width: 600px) {
-  .project-header {
-    padding: 55px 24px 45px;
-  }
-
-  .project-back {
-    margin-bottom: 45px;
-  }
-
-  .project-heading h1 {
-    font-size: 48px;
-  }
-
-  .project-heading p {
-    font-size: 14px;
-  }
-
-  .project-services {
-    padding: 45px 24px;
-  }
-
-  .project-next {
-    padding: 55px 24px;
-    display: block;
-  }
-
-  .project-next a {
-    display: block;
-    margin-top: 25px;
-  }
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.case-study-cta a {
-  display: inline-flex;
-  align-items: center;
-  gap: 22px;
-  padding: 14px 18px;
-  border: 1px solid var(--color-text);
-  color: var(--color-text);
-  font-size: 13px;
-  text-decoration: none;
-  transition: border-color 180ms ease, color 180ms ease;
-}
 
 /* Cascade order retained: global layout. */
 
@@ -2729,17 +2348,6 @@ RESPONSIVE / MEDIA QUERIES
   margin: 0 0 18px;
   color: var(--color-muted);
   font-size: 14px;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.case-study-narrative p,
-.case-study-narrative ul {
-  max-width: 720px;
-  margin: 0;
-  color: var(--color-muted);
-  font-size: 17px;
-  line-height: 1.75;
 }
 
 /* Cascade order retained: forms / buttons / interactive states. */
@@ -2956,100 +2564,9 @@ RESPONSIVE / MEDIA QUERIES
   justify-content: flex-start;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.case-study-context {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px 54px;
-  margin: 42px 0 0;
-  padding: 28px 0 0;
-  border-top: 1px solid var(--public-border);
-}
-
-.case-study-narrative {
-  padding: 40px 48px 72px;
-  border-bottom: 1px solid var(--public-border);
-}
-
 /* Narrative lists are editorial content, not the legacy deliverables grid. */
-.case-study-narrative .case-study-editorial {
-  max-width: 640px;
-  margin: 32px 0 0;
-}
 
 /* Keep project context quieter than shared editorial content and the showcase. */
-.case-study-editorial .cms-rich-text {
-  color: var(--color-muted);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.75;
-}
-
-.case-study-editorial .cms-rich-text p,
-.case-study-editorial .cms-rich-text ul,
-.case-study-editorial .cms-rich-text ol {
-  color: inherit;
-  font-size: inherit;
-  line-height: inherit;
-}
-
-.case-study-editorial .cms-rich-text > * + * {
-  margin-top: 1em;
-}
-
-.case-study-editorial .cms-rich-text h2,
-.case-study-editorial .cms-rich-text h3 {
-  margin: 28px 0 10px;
-  color: var(--color-muted);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.case-study-editorial .cms-rich-text h3 {
-  font-size: 14px;
-}
-
-.case-study-editorial .cms-rich-text > :first-child {
-  margin-top: 0;
-}
-
-.case-study-editorial .cms-rich-text li + li {
-  margin-top: 4px;
-}
-
-.case-study-editorial .cms-rich-text ul,
-.case-study-editorial .cms-rich-text ol {
-  display: block;
-  padding-left: 1.5em;
-  list-style: revert;
-}
-
-.case-study-editorial .cms-rich-text li::before {
-  content: none;
-}
-
-.case-study-editorial .cms-rich-text li > ul,
-.case-study-editorial .cms-rich-text li > ol {
-  margin-top: 0.5em;
-}
-
-.case-study-story-label {
-  margin-bottom: 8px;
-}
-
-.case-study-cta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 62px 48px;
-  border-bottom: 1px solid var(--public-border);
-  background: var(--public-surface-subtle);
-}
 
 /* Cascade order retained: forms / buttons / interactive states. */
 
@@ -3099,21 +2616,6 @@ RESPONSIVE / MEDIA QUERIES
 }
 
 /* (max-width: 900px) — original override order retained. */
-@media (max-width: 900px) {
-  .case-study-narrative {
-    padding: 24px 32px 58px;
-  }
-
-  .case-study-narrative article {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    padding: 38px 0;
-  }
-
-  .case-study-cta {
-    padding: 52px 32px;
-  }
-}
 
 /* Cascade order retained: about. */
 
@@ -3124,33 +2626,6 @@ RESPONSIVE / MEDIA QUERIES
 }
 
 /* (max-width: 600px) — original override order retained. */
-@media (max-width: 600px) {
-  .case-study-context {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-    margin-top: 32px;
-  }
-
-  .case-study-narrative {
-    padding: 18px 24px 48px;
-  }
-
-  .case-study-narrative p,
-  .case-study-narrative ul {
-    font-size: 15px;
-  }
-
-  .case-study-narrative ul {
-    grid-template-columns: 1fr;
-  }
-
-  .case-study-cta {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 44px 24px;
-  }
-}
 
 /* Cascade order retained: forms / buttons / interactive states. */
 
@@ -3189,12 +2664,6 @@ RESPONSIVE / MEDIA QUERIES
 
 .business-identity a {
   color: inherit;
-  text-underline-offset: 3px;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-video-poster a {
   text-underline-offset: 3px;
 }
 
@@ -3304,18 +2773,6 @@ RESPONSIVE / MEDIA QUERIES
   line-height: 1.2;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-website-copy h3,
-.showcase-website-copy p {
-  margin: 0;
-}
-
-.showcase-website-copy h3 {
-  font-size: 16px;
-  font-weight: 500;
-}
-
 /* Cascade order retained: cms / rich text / shared content. */
 
 .standard-content .cms-stream h2 {
@@ -3402,7 +2859,6 @@ RESPONSIVE / MEDIA QUERIES
 
 .portal-brand {
   font-weight: 800;
-  letter-spacing: .08em;
   color: inherit;
   text-decoration: none;
 }
@@ -3634,22 +3090,6 @@ RESPONSIVE / MEDIA QUERIES
   text-align: left;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-slider-controls button {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border: 1px solid rgb(255 255 255 / 55%);
-  border-radius: 50%;
-  background: rgb(17 17 17 / 72%);
-  box-shadow: 0 2px 14px rgb(0 0 0 / 18%);
-  color: #ffffff;
-  cursor: pointer;
-  pointer-events: auto;
-  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
-}
-
 /* Cascade order retained: forms / buttons / interactive states. */
 
 .conversation-list > button:hover,
@@ -3661,16 +3101,6 @@ RESPONSIVE / MEDIA QUERIES
 .message-form button:hover,
 .file-row button:hover {
   background: var(--color-primary);
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-slider-controls button:hover,
-.showcase-slider-controls button:focus-visible {
-  border-color: #ffffff;
-  background: rgb(17 17 17 / 90%);
-  color: #ffffff;
-  transform: scale(1.04);
 }
 
 /* Cascade order retained: global layout. */
@@ -3688,10 +3118,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .about-section,
   .contact-page-section,
   .contact-success-mark,
-  .project-header,
-  .project-services,
-  .case-study-showcase-block,
-  .service-list div,
   .public-page-header,
   .public-content-section,
   .collaborators-section,
@@ -3709,13 +3135,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .standard-content .cms-stream > .cms-rich-text:first-child
   ) {
   border-color: var(--public-border);
-}
-
-html[data-public-theme="dark"] .site-shell :where(
-  .showcase-website-media,
-  .showcase-slider-controls button
-  ) {
-  border-color: var(--public-border-strong);
 }
 
 /* Cascade order retained: forms / buttons / interactive states. */
@@ -3933,9 +3352,6 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .approval-note {
   width: 100%;
-  min-height: 64px;
-  margin-top: 12px;
-  padding: 12px;
   border: 1px solid #dddddd;
   border-radius: 8px;
 }
@@ -3957,20 +3373,12 @@ html[data-public-theme="dark"] .site-shell :where(
 /* Cascade order retained: cms / rich text / shared content. */
 
 .collaborators-section {
-  padding: 48px 0;
-  overflow: hidden;
   border-top: 1px solid #eeeeee;
   border-bottom: 1px solid #eeeeee;
 }
 
 .collaborators-heading {
-  padding: 0 var(--content-padding);
   margin-bottom: 34px;
-  color: #777777;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-align: center;
-  text-transform: uppercase;
 }
 
 .collaborators-track {
@@ -3988,21 +3396,15 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .collaborator-item {
   display: grid;
-  width: 170px;
-  height: 64px;
   place-items: center;
-  opacity: 0.72;
   filter: grayscale(1);
-  transition: opacity 180ms ease, filter 180ms ease;
 }
 
 .testimonials-section {
-  padding: 100px var(--content-padding);
   border-top: 1px solid #eeeeee;
 }
 
 .testimonials-list {
-  display: grid;
   gap: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   border-top: 1px solid #dddddd;
@@ -4012,9 +3414,6 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .about-page-header {
   display: grid;
-  grid-template-columns: 1fr minmax(320px, 0.65fr);
-  gap: 70px;
-  align-items: center;
 }
 
 /* Cascade order retained: cms / rich text / shared content. */
@@ -4106,7 +3505,6 @@ html[data-public-theme="dark"] .site-shell :where(
 /* Cascade order retained: about. */
 
 .about-page-image {
-  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #eeeeee;
 }
@@ -4120,7 +3518,6 @@ html[data-public-theme="dark"] .site-shell :where(
 }
 
 .public-hero-image {
-  height: min(72vw, 760px);
   margin: 48px var(--content-padding);
   overflow: hidden;
   background: #eeeeee;
@@ -4286,14 +3683,6 @@ html[data-public-theme="dark"] .site-shell :where(
   gap: 24px;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.project-client {
-  margin-top: 14px !important;
-  color: #999999 !important;
-  font-size: 12px !important;
-}
-
 /* Cascade order retained: forms / buttons / interactive states. */
 
 .portal-card-copy {
@@ -4343,30 +3732,6 @@ html[data-public-theme="dark"] .site-shell :where(
   line-height: 1.55;
   color: #666666;
   margin: 0;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-video-poster p,
-.showcase-video-poster a {
-  margin: 0;
-  color: rgb(255 255 255 / 72%);
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-.showcase-website-grid a,
-.showcase-website-grid article {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-}
-
-.showcase-website-copy p {
-  margin-top: 7px;
-  color: #666666;
-  font-size: 12px;
-  line-height: 1.6;
 }
 
 /* Cascade order retained: contact. */
@@ -4453,13 +3818,8 @@ html[data-public-theme="dark"] .site-shell :where(
     padding-left: 28px;
   }
 
-  .about-page-header {
-    grid-template-columns: 1fr;
-  }
-
   .about-page-image {
     max-width: 620px;
-    aspect-ratio: 4 / 3;
   }
 
   .editorial-list-grid {
@@ -4519,15 +3879,6 @@ html[data-public-theme="dark"] .site-shell :where(
 }
 
 /* (max-width: 600px) — original override order retained. */
-@media (max-width: 600px) {
-  .collaborators-section {
-    padding: 38px 0;
-  }
-
-  .collaborators-heading {
-    padding: 0 22px;
-  }
-}
 
 /* (max-width: 600px) — original override order retained. */
 @media (max-width: 600px) {
@@ -4573,10 +3924,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .public-cta {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .pricing-item {
-    padding: 36px 0 40px;
   }
 
   .pricing-item-featured {
@@ -4925,7 +4272,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .sidebar,
   .work-card,
   .services-section,
-  .project-page,
   .contact-route-section
   ) {
   background: var(--public-surface);
@@ -4943,9 +4289,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .work-image,
   .about-image,
   .public-hero-image,
-  .about-page-image,
-  .showcase-slider-media,
-  .showcase-website-media
+  .about-page-image
   ) {
   background: var(--public-surface-subtle);
 }
@@ -4970,11 +4314,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .public-page-intro,
   .cms-rich-text,
   .cms-content-image figcaption,
-  .showcase-image-figure figcaption,
-  .showcase-slider-figure figcaption,
-  .showcase-caption,
-  .showcase-slider-counter,
-  .showcase-website-copy p,
   .cms-quote cite,
   .cms-embed-fallback,
   .cms-empty,
@@ -4986,10 +4325,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .pricing-item-details li,
   .pricing-related a,
   .pricing-positioning,
-  .project-back,
-  .project-heading p,
-  .service-list div,
-  .project-not-found a,
   .footer
   ) {
   color: var(--color-muted);
@@ -5000,13 +4335,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .section-link,
   .service-item h2,
   .service-item h3,
-  .service-link,
-  .project-heading h1,
-  .project-next a,
-  .showcase-heading,
-  .showcase-video-heading,
-  .showcase-website-copy h3,
-  .showcase-slider-controls button
+  .service-link
   ) {
   color: var(--color-text);
 }
@@ -5240,17 +4569,6 @@ html[data-public-theme="dark"] .site-shell :where(
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-video .case-study-showcase-inner {
-  max-width: 1180px;
-}
-
-.showcase-video-item .cms-embed,
-.showcase-video-item .cms-embed-consent {
-  width: 100%;
-}
-
 /* Cascade order retained: about. */
 
 .about-page-header {
@@ -5303,10 +4621,6 @@ html[data-public-theme="dark"] .site-shell :where(
     gap: 42px;
     padding-top: 76px;
     padding-bottom: 70px;
-  }
-
-  .about-page-header h1 {
-    font-size: clamp(58px, 18vw, 82px);
   }
 
   .about-page-header .public-page-lead {
@@ -5498,15 +4812,6 @@ html[data-public-theme="dark"] .site-shell :where(
   border-bottom: 1px solid #dddddd;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-video-play:hover,
-.showcase-video-play:focus-visible {
-  border-color: #ffffff;
-  background: rgb(255 255 255 / 14%);
-  transform: scale(1.04);
-}
-
 /* Cascade order retained: sidebar / navigation. */
 
 .theme-option:last-child {
@@ -5522,21 +4827,6 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .service-editorial-body .cms-stream {
   margin-left: clamp(0px, 9vw, 130px);
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.case-study-showcase .showcase-media-label {
-  margin-bottom: clamp(22px, 3vw, 34px);
-}
-
-.showcase-masonry .showcase-image-figure {
-  margin-bottom: clamp(16px, 2vw, 24px);
-  break-inside: avoid;
-}
-
-.showcase-video-item .cms-stream {
-  margin: 0;
 }
 
 /* Cascade order retained: contact. */
@@ -5557,22 +4847,6 @@ html[data-public-theme="dark"] .site-shell :where(
   grid-template-columns: 72px minmax(0, 1fr);
   gap: clamp(24px, 3vw, 38px);
   align-items: start;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-masonry {
-  columns: 3 260px;
-  column-gap: clamp(16px, 2vw, 24px);
-}
-
-.showcase-columns-2,
-.showcase-image-pair {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.showcase-columns-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 /* Cascade order retained: cms / rich text / shared content. */
@@ -5603,17 +4877,6 @@ html[data-public-theme="dark"] .site-shell :where(
   pointer-events: none;
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.showcase-slider-media {
-  position: relative;
-  display: grid;
-  min-height: min(62vw, 620px);
-  place-items: center;
-  overflow: hidden;
-  background: #f2f2f2;
-}
-
 /* Cascade order retained: cms / rich text / shared content. */
 
 .public-list-section {
@@ -5621,48 +4884,7 @@ html[data-public-theme="dark"] .site-shell :where(
   padding-bottom: clamp(96px, 9vw, 140px);
 }
 
-/* Cascade order retained: case study / work detail. */
-
 /* Case-study visual showcase */
-.case-study-showcase-block {
-  padding: clamp(72px, 8vw, 112px) var(--content-padding);
-  border-bottom: 1px solid #eeeeee;
-}
-
-.showcase-slider-controls {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 clamp(12px, 2vw, 24px);
-  pointer-events: none;
-}
-
-.showcase-image-grid,
-.showcase-image-pair {
-  display: grid;
-  gap: clamp(16px, 2vw, 24px);
-  align-items: start;
-}
-
-.showcase-video-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(24px, 3vw, 40px);
-  align-items: start;
-}
-
-.showcase-video-count-1 {
-  grid-template-columns: minmax(0, 760px);
-}
-
-.showcase-video-poster-content {
-  display: grid;
-  gap: 14px;
-  place-items: center;
-  text-align: center;
-}
 
 /* Cascade order retained: cms / rich text / shared content. */
 
@@ -5672,125 +4894,11 @@ html[data-public-theme="dark"] .site-shell :where(
   margin-bottom: clamp(34px, 4vw, 58px);
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.case-study-showcase-inner {
-  width: min(100%, 1240px);
-  margin: 0 auto;
-}
-
-.showcase-heading {
-  max-width: 760px;
-  margin: 0 0 clamp(28px, 4vw, 48px);
-  color: #111111;
-  font-size: clamp(28px, 3.5vw, 48px);
-  font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 1.08;
-}
-
-.showcase-image-figure,
-.showcase-slider-figure {
-  margin: 0;
-}
-
-.showcase-image-figure figcaption,
-.showcase-slider-figure figcaption,
-.showcase-caption {
-  margin: 10px 0 0;
-  color: #666666;
-  font-size: 11px;
-  line-height: 1.55;
-}
-
-.showcase-slider-counter {
-  margin: 16px 0 0;
-  color: #666666;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-align: center;
-}
-
-.showcase-video-count-2 {
-  max-width: 920px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.showcase-media-title {
-  margin: 0 0 16px;
-  color: var(--color-text);
-  font-size: clamp(14px, 1.3vw, 17px);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-  text-transform: none;
-}
-
-.showcase-video-heading {
-  margin: 18px 0 0;
-  color: #111111;
-  font-size: clamp(20px, 2vw, 28px);
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 1.15;
-}
-
-.showcase-video-poster {
-  display: grid;
-  min-height: 0;
-  padding: clamp(24px, 4vw, 48px);
-  place-items: center;
-  background: radial-gradient(circle at 20% 15%, rgb(143 20 20 / 34%), transparent 42%),
-    linear-gradient(145deg, #1d1d1d, #090909);
-  color: #ffffff;
-}
-
-.showcase-video-brand {
-  font-size: 13px;
-}
-
-.showcase-video-play {
-  display: grid;
-  width: 58px;
-  height: 58px;
-  margin-top: 4px;
-  padding: 0 0 0 3px;
-  place-items: center;
-  border: 1px solid rgb(255 255 255 / 62%);
-  border-radius: 50%;
-  background: rgb(255 255 255 / 7%);
-  color: #ffffff;
-  cursor: pointer;
-  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
-}
-
 /* Cascade order retained: global layout. */
 
 .footer,
 .cms-content-image figcaption {
   color: #666666;
-}
-
-/* Cascade order retained: case study / work detail. */
-
-.showcase-website-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: clamp(18px, 2.5vw, 30px);
-}
-
-.showcase-website-media {
-  aspect-ratio: 4 / 3;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  border: 1px solid #e3e3e3;
-  background: #f2f2f2;
-}
-
-.showcase-website-copy {
-  padding-top: 16px;
 }
 
 /* Cascade order retained: team. */
@@ -5831,57 +4939,8 @@ html[data-public-theme="dark"] .site-shell :where(
 }
 
 /* (max-width: 760px) — original override order retained. */
-@media (max-width: 760px) {
-  .case-study-showcase-block {
-    padding: 64px 24px;
-  }
-
-  .showcase-masonry {
-    columns: 2 220px;
-  }
-
-  .showcase-columns-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .showcase-video-grid,
-  .showcase-video-count-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .showcase-video-count-1 {
-    grid-template-columns: minmax(0, 680px);
-  }
-}
 
 /* (max-width: 560px) — original override order retained. */
-@media (max-width: 560px) {
-  .showcase-masonry {
-    columns: 1;
-  }
-
-  .showcase-columns-2,
-  .showcase-columns-3,
-  .showcase-image-pair,
-  .showcase-video-grid,
-  .showcase-video-count-1,
-  .showcase-video-count-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .showcase-slider-media {
-    min-height: 72vw;
-  }
-
-  .showcase-slider-controls {
-    padding: 0 10px;
-  }
-
-  .showcase-slider-controls button {
-    width: 38px;
-    height: 38px;
-  }
-}
 
 /* Cascade order retained: cms / rich text / shared content. */
 
@@ -6088,17 +5147,8 @@ html[data-public-theme="dark"] .site-shell :where(
   padding-bottom: 30px;
 }
 
-.update-media-showcase .case-study-showcase-block {
-  padding-top: clamp(50px, 6vw, 76px);
-  padding-bottom: clamp(50px, 6vw, 76px);
-}
-
 /* (max-width: 600px) — original override order retained. */
 @media (max-width: 600px) {
-  :root {
-    --content-padding: 22px;
-    --section-padding: 58px;
-  }
 
   .hero {
     gap: 42px;
@@ -6151,10 +5201,6 @@ html[data-public-theme="dark"] .site-shell :where(
     font-size: clamp(20px, 5.8vw, 24px);
   }
 
-  .project-page .testimonial blockquote {
-    font-size: clamp(16px, 4.6vw, 19px);
-  }
-
   .testimonial-composition {
     display: block;
   }
@@ -6179,19 +5225,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .pricing-item {
     padding: 34px 0;
   }
-}
-
-/* Cascade order retained: design tokens / :root. */
-
-:root {
-  --public-shell-max: 1440px;
-  --public-canvas-max: calc(
-    var(--public-shell-max) - var(--sidebar-width)
-  );
-  --public-editorial-max: 720px;
-  --public-narrative-max: 840px;
-  --public-gutter: 32px;
-  --content-padding: var(--public-gutter);
 }
 
 /* Cascade order retained: sidebar / navigation. */
@@ -6298,16 +5331,6 @@ html[data-public-theme="dark"] .site-shell :where(
   line-height: 0.95;
 }
 
-.update-media-showcase .case-study-showcase-inner {
-  max-width: 960px;
-}
-
-.update-media-showcase .showcase-heading {
-  max-width: 680px;
-  margin-bottom: clamp(24px, 3vw, 36px);
-  font-size: clamp(25px, 3vw, 38px);
-}
-
 /* Cascade order retained: home / landing page. */
 
 .home-updates-heading .section-label {
@@ -6322,17 +5345,7 @@ html[data-public-theme="dark"] .site-shell :where(
   max-width: var(--public-editorial-max);
 }
 
-/* Cascade order retained: case study / work detail. */
-
-.site-shell .case-study-showcase-inner {
-  max-width: var(--public-canvas-max);
-}
-
 /* Cascade order retained: cms / rich text / shared content. */
-
-.site-shell .update-media-showcase .case-study-showcase-inner {
-  max-width: 960px;
-}
 
 /* (max-width: 900px) — original override order retained. */
 @media (max-width: 900px) {
@@ -6726,12 +5739,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .public-cta,
   .pricing-section,
   .footer,
-  .project-header,
-  .case-study-narrative,
-  .project-services,
-  .project-next,
-  .case-study-cta,
-  .case-study-showcase-block,
   .updates-feature-section,
   .updates-list-section,
   .updates-empty,
@@ -6802,9 +5809,6 @@ html[data-public-theme="dark"] .site-shell :where(
 
 /* (max-width: 900px) — original override order retained. */
 @media (max-width: 900px) {
-  :root {
-    --public-gutter: 28px;
-  }
 
   .site-shell {
     width: 100%;
@@ -6846,11 +5850,6 @@ html[data-public-theme="dark"] .site-shell :where(
 }
 
 /* (max-width: 600px) — original override order retained. */
-@media (max-width: 600px) {
-  :root {
-    --public-gutter: 16px;
-  }
-}
 
 /* (min-width: 901px) and (hover: hover) and (pointer: fine) — original override order retained. */
 @media (min-width: 901px) and (hover: hover) and (pointer: fine) {
