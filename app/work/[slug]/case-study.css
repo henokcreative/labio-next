@@ -133,6 +133,8 @@
   margin-top: 1em;
 }
 
+.case-study-editorial > h2,
+.case-study-editorial > h3,
 .case-study-editorial .cms-rich-text h2,
 .case-study-editorial .cms-rich-text h3 {
   margin: 28px 0 10px;
@@ -144,6 +146,7 @@
   text-transform: none;
 }
 
+.case-study-editorial > h3,
 .case-study-editorial .cms-rich-text h3 {
   font-size: 14px;
 }
@@ -285,6 +288,35 @@ html[data-public-theme="dark"] .site-shell :where(
 }
 
 /* === Responsive === */
+
+/* Flatten only rich-text wrappers; nested lists and inline markup stay intact. */
+@media (min-width: 601px) {
+  .case-study-narrative .case-study-editorial {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 28px var(--public-gutter);
+    align-items: start;
+    max-width: none;
+  }
+
+  .case-study-editorial > .cms-rich-text {
+    display: contents;
+  }
+
+  .case-study-editorial > *,
+  .case-study-editorial .cms-rich-text > * {
+    grid-column: 6 / span 7;
+    min-width: 0;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .case-study-editorial > :is(h2, h3),
+  .case-study-editorial .cms-rich-text > :is(h2, h3) {
+    grid-column: 1 / span 5;
+    margin: 0;
+  }
+}
 
 @media (max-width: 900px) {
   .project-header {
