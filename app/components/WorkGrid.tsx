@@ -7,6 +7,13 @@ import type {
 
 type WorkGridVariant = "featured" | "portfolio" | "related";
 
+const trimSummary = (text: string, maxLength = 140) => {
+  if (text.length <= maxLength) return text;
+  const trimmed = text.slice(0, maxLength).trimEnd();
+  const lastSpace = trimmed.lastIndexOf(" ");
+  return `${lastSpace > 0 ? trimmed.slice(0, lastSpace) : trimmed}…`;
+};
+
 export default function WorkGrid({
   projects,
   variant = "portfolio",
@@ -50,7 +57,7 @@ export default function WorkGrid({
                 {project.category && <span className="work-category">{project.category}</span>}
               </div>
               <Heading>{project.title}</Heading>
-              {summary && <p>{summary}</p>}
+              {summary && <p>{trimSummary(summary)}</p>}
             </div>
           </Link>
         );
