@@ -4682,7 +4682,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .hero-image {
   min-height: 0;
-  /* height: min(74vh, 760px); */
+  height: min(74vh, 760px);
   aspect-ratio: 4 / 5;
 }
 
