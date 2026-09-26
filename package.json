@@ -16,6 +16,7 @@
     "test:portal": "tsc lib/api.ts lib/portal-navigation.ts lib/portal-navigation.test.ts lib/protected-file-download.ts lib/protected-file-download.test.ts --target ES2022 --module commonjs --moduleResolution node --esModuleInterop --skipLibCheck --noEmit false --outDir .cache/portal-tests && node --test .cache/portal-tests/portal-navigation.test.js .cache/portal-tests/protected-file-download.test.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
