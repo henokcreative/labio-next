@@ -221,9 +221,16 @@ export const getCaseStudyPages = cache(async (): Promise<CmsCaseStudyPage[]> => 
 
 export const getCaseStudyPage = cache(
   async (slug: string): Promise<CmsCaseStudyPage | null> => {
-    return (
-      await getPageItems("public_content.CaseStudyPage", parseCaseStudyPage, slug)
-    )[0] ?? null;
+    const result = await getPageItemsResult(
+      "public_content.CaseStudyPage", parseCaseStudyPage, slug,
+    );
+    // A warm cache already serves stale CMS data on refresh failure. If no
+    // usable cache exists, fail the render rather than publish fallback content
+    // or a false 404. Only a successful lookup can establish that a slug is absent.
+    if (!result.apiAvailable) {
+      throw new Error("Case study CMS is temporarily unavailable");
+    }
+    return result.items[0] ?? null;
   },
 );
 
