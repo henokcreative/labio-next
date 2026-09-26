@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Montserrat } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ConsentManager from "@/app/components/ConsentManager";
 import { getPublicThemeInitializationScript } from "@/lib/public-theme";
 import { publicSiteUrl } from "@/lib/public-url";
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         {children}
         <ConsentManager />
+        <SpeedInsights />
       </body>
     </html>
   );
