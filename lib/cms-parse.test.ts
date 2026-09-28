@@ -1338,11 +1338,13 @@ test("Team parser supports old payloads and rejects malformed members and unsafe
   for (const url of ["javascript:alert(1)", "mailto:a@example.com", "tel:123", "//example.com", "/profile", "ftp://example.com", "https://user:pass@example.com", "https:example.com"]) {
     const page = parseAboutPage({ ...raw, team_enabled: true, team_members: [{ ...member, professional_url: url }] }, apiUrl)!;
     assert.equal(page.teamMembers[0].professionalUrl, "");
+    assert.equal(page.teamMembers[0].email, "");
     assert.equal(page.teamMembers[0].portrait, null);
     assert.equal(page.teamMembers[0].biography, member.biography);
   }
   const page = parseAboutPage({ ...raw, team_enabled: true, team_members: [null, {}, { ...member, id: -1 }, { ...member, id: 1.5 }, { ...member, name: " " }, { ...member, role: "" }, { ...member, professional_url: "https://example.com/profile", portrait: { url: "/media/team.jpg", width: 640, height: 800, alt: "Person" } }, member] }, apiUrl)!;
   assert.equal(page.teamMembers.length, 1);
+  assert.equal(parseAboutPage({ ...raw, team_enabled: true, team_members: [{ ...member, email: " person@example.com " }] }, apiUrl)!.teamMembers[0].email, "person@example.com");
   assert.equal(page.teamMembers[0].professionalUrl, "https://example.com/profile");
   assert.equal(page.teamMembers[0].portrait?.width, 640);
   for (const enabled of [false, "true", undefined]) {

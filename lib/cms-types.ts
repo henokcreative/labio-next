@@ -230,6 +230,7 @@ export type CmsCaseStudyPage = CmsPageBase & {
 };
 
 export type CmsTeamMember = {
+  email?: string;
   id: number;
   name: string;
   role: string;
