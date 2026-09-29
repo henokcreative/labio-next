@@ -8,10 +8,18 @@ import "./globals.css";
 // Stable stylesheet order also preserves the shared Updates showcase on navigation.
 import "./work/[slug]/case-study.css";
 import "./components/CaseStudyShowcase.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const futura = localFont({
+  src: [
+    { path: "./fonts/FuturaLT.woff2", weight: "400", style: "normal" },
+    // Both upright faces report 400; prefer Book for normal site text.
+    { path: "./fonts/FuturaLT-Book.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/FuturaLT-Heavy.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-futura",
+  display: "swap",
 });
 
 const montserratBrand = Montserrat({
@@ -57,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${montserratBrand.variable} h-full antialiased`}
+      className={`${futura.variable} ${montserratBrand.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

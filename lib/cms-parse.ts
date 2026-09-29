@@ -608,6 +608,7 @@ export function parseTeamMembers(value: unknown, apiBaseUrl: string): CmsTeamMem
       }
     } catch { /* Invalid optional links are omitted. */ }
     return [{ id, name, role, professionalUrl,
+      email: asString(record.email).trim(),
       biography: asString(record.biography).trim(),
       portrait: parseCmsImage(record.portrait, apiBaseUrl),
     }];

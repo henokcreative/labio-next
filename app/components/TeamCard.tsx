@@ -16,6 +16,11 @@ export default function TeamCard({ member }: { member: CmsTeamMember }) {
       )}
       <h3 id={headingId}>{member.name}</h3>
       <p className="team-card-role">{member.role}</p>
+      {member.email && (
+        <a href={`mailto:${member.email}`} className="team-card-email">
+          {member.email}
+        </a>
+      )}
       {member.biography && (
         <div className="team-card-biography">
           <p>{member.biography}</p>
