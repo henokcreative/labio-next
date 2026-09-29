@@ -8,6 +8,7 @@ import "./globals.css";
 // Stable stylesheet order also preserves the shared Updates showcase on navigation.
 import "./work/[slug]/case-study.css";
 import "./components/CaseStudyShowcase.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const futura = localFont({
   src: [
