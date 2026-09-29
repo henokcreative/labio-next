@@ -9,6 +9,7 @@ import "./globals.css";
 import "./work/[slug]/case-study.css";
 import "./components/CaseStudyShowcase.css";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const futura = localFont({
   src: [
@@ -75,6 +76,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         {children}
         <ConsentManager />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
