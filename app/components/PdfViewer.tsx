@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist";
 import type { CmsImage as CmsImageData } from "@/lib/cms-types";
 import CmsImage from "./CmsImage";
@@ -11,6 +11,8 @@ export default function PdfViewer({ url, title, cover }: { url: string; title: s
   const root = useRef<HTMLElement>(null);
   const surface = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const pagesId = useId();
+  const [pagesOpen, setPagesOpen] = useState(false);
   const pageStrip = useRef<HTMLElement>(null);
   const loadStarted = useRef(0);
   const firstRenderComplete = useRef(false);
@@ -121,7 +123,7 @@ export default function PdfViewer({ url, title, cover }: { url: string; title: s
     else if (selected.offsetLeft + selected.offsetWidth > strip.scrollLeft + strip.clientWidth) {
       strip.scrollLeft = selected.offsetLeft + selected.offsetWidth - strip.clientWidth;
     }
-  }, [pageNumber, hasRendered, mode]);
+  }, [pageNumber, hasRendered, mode, pagesOpen]);
 
   const wide = mode === "flipbook" && width >= 900;
   const pages = publicationSpread(pageNumber, pdf?.numPages ?? 1, wide);
@@ -139,19 +141,23 @@ export default function PdfViewer({ url, title, cover }: { url: string; title: s
       <div className="pdf-toolbar" role="group" aria-label="PDF controls">
         <button aria-pressed={mode === "reader"} onClick={() => setMode("reader")}>Reader</button>
         <button aria-pressed={mode === "flipbook"} onClick={() => setMode("flipbook")}>Book view</button>
-        <button disabled={!pdf || pages[0] === 1} onClick={() => move(-1)}>Previous</button>
-        <span aria-live="polite">{pdf ? `${pages.join("–")} / ${pdf.numPages}` : "Loading PDF…"}</span>
-        <button disabled={!pdf || pages[pages.length - 1] === pdf.numPages} onClick={() => move(1)}>Next</button>
+        <button className="pdf-secondary-control" aria-label="Previous page" disabled={!pdf || pages[0] === 1} onClick={() => move(-1)}>←</button>
+        <button disabled={!pdf || !hasRendered} aria-expanded={pagesOpen} aria-controls={pagesId}
+          aria-label={pdf ? `Pages ${pages.join("–")} of ${pdf.numPages}. Show or hide page navigation` : "Loading PDF"}
+          onClick={() => setPagesOpen(open => !open)}>
+          <span aria-live="polite">{pdf ? `${pages.join("–")} / ${pdf.numPages}` : "Loading PDF…"}</span> <span aria-hidden="true">{pagesOpen ? "▴" : "▾"}</span>
+        </button>
+        <button className="pdf-secondary-control" aria-label="Next page" disabled={!pdf || pages[pages.length - 1] === pdf.numPages} onClick={() => move(1)}>→</button>
         <button disabled={!pdf || zoom <= 0.5} onClick={() => setZoom((value) => Math.max(0.5, value - 0.25))} aria-label="Zoom out">−</button>
         <button disabled={!pdf || zoom >= 3} onClick={() => setZoom((value) => Math.min(3, value + 0.25))} aria-label="Zoom in">+</button>
-        <button disabled={!pdf} onClick={() => setZoom(1)}>Reset zoom</button>
+        <button className="pdf-secondary-control" disabled={!pdf} onClick={() => setZoom(1)}>Reset zoom</button>
         {canFullscreen && <button onClick={() => {
           const action = fullscreen ? document.exitFullscreen() : root.current?.requestFullscreen();
           void action?.catch(() => {});
         }}>{fullscreen ? "Exit fullscreen" : "Fullscreen"}</button>}
       </div>
       {error && <p role="alert">{error} <a href={url} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a></p>}
-      {pdf && hasRendered && <nav ref={pageStrip} className="pdf-page-strip" aria-label="Publication pages">
+      {pdf && hasRendered && <nav id={pagesId} hidden={!pagesOpen} ref={pageStrip} className="pdf-page-strip" aria-label="Publication pages">
         {Array.from({ length: pdf.numPages }, (_, index) => index + 1).map(number => (
           <button key={number} type="button" aria-label={`Go to page ${number}`} aria-current={pages.includes(number) ? "page" : undefined}
             onClick={() => setPageNumber(number)}>{number}</button>

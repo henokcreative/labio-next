@@ -26,17 +26,16 @@ export default async function PublicationPage({ params }: Props) {
   return (
     <PublicShell>
       <header className="public-page-header publication-detail-header">
-        <Link href="/publications">← Publications</Link>
+        <Link href="/publications">← Print Design</Link>
         <div className="publication-hero">
+          {publication.coverImage && <div className="publication-hero-cover"><CmsImage image={publication.coverImage} priority sizes="(max-width: 700px) 85vw, 50vw" /></div>}
           <div>
-            <p className="publication-eyebrow">Print Design</p>
             <h1>{publication.title}</h1>
             {publication.shortDescription && <p className="public-page-lead">{publication.shortDescription}</p>}
             {publication.publicationYear !== null && <p className="publication-hero-year">{publication.publicationYear}</p>}
-            <a className="publication-view-link" href="#publication-reader">View publication ↓</a>
+            <a className="publication-view-link" href="#publication-reader">Read ↓</a>
             <a className="publication-original-link" href={publication.pdfUrl} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a>
           </div>
-          {publication.coverImage && <div className="publication-hero-cover"><CmsImage image={publication.coverImage} priority sizes="(max-width: 700px) 85vw, 35vw" /></div>}
         </div>
       </header>
       <div className="publication-reader" id="publication-reader">
@@ -44,8 +43,7 @@ export default async function PublicationPage({ params }: Props) {
       </div>
       <section className="publication-conversion" aria-labelledby="publication-contact">
         <p className="publication-eyebrow">Print Design</p>
-        <h2 id="publication-contact">Need a report, research publication or editorial piece like this?</h2>
-        <p>We design scientific and research publications from concept to final production.</p>
+        <h2 id="publication-contact">Research reports, books and publications for science, research and innovation.</h2>
         <Link href="/contact">Start a project →</Link>
       </section>
       <PublicFooter settings={settings} />
