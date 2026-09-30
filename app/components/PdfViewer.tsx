@@ -2,11 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist";
+import PdfSpread from "./PdfSpread";
+import { movePublication, publicationSpread } from "@/lib/publication-spread";
 
 export default function PdfViewer({ url, title }: { url: string; title: string }) {
   const root = useRef<HTMLElement>(null);
   const surface = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const [mode, setMode] = useState<"reader" | "flipbook">("reader");
+  const touch = useRef<{ x: number; y: number } | null>(null);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [zoom, setZoom] = useState(1);
@@ -49,7 +53,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
   }, []);
 
   useEffect(() => {
-    if (!pdf || !width || !canvas.current) return;
+    if (mode !== "reader" || !pdf || !width || !canvas.current) return;
     let disposed = false;
     let task: RenderTask | undefined;
     const element = canvas.current;
@@ -75,9 +79,11 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
       }
     });
     return () => { disposed = true; task?.cancel(); };
-  }, [pdf, pageNumber, width, zoom]);
+  }, [pdf, pageNumber, width, zoom, mode]);
 
-  const move = (direction: number) => setPageNumber((page) => Math.max(1, Math.min(pdf?.numPages ?? 1, page + direction)));
+  const wide = mode === "flipbook" && width >= 900;
+  const pages = publicationSpread(pageNumber, pdf?.numPages ?? 1, wide);
+  const move = (direction: number) => setPageNumber((page) => movePublication(page, pdf?.numPages ?? 1, direction, wide));
 
   return (
     <section className="pdf-viewer" ref={root} aria-label={`${title} PDF reader`} tabIndex={0}
@@ -89,9 +95,11 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
         }
       }}>
       <div className="pdf-toolbar" role="group" aria-label="PDF controls">
-        <button disabled={!pdf || pageNumber === 1} onClick={() => move(-1)}>Previous</button>
-        <span aria-live="polite">{pdf ? `${pageNumber} / ${pdf.numPages}` : "Loading PDF…"}</span>
-        <button disabled={!pdf || pageNumber === pdf.numPages} onClick={() => move(1)}>Next</button>
+        <button aria-pressed={mode === "reader"} onClick={() => setMode("reader")}>Reader</button>
+        <button aria-pressed={mode === "flipbook"} onClick={() => setMode("flipbook")}>Flipbook</button>
+        <button disabled={!pdf || pages[0] === 1} onClick={() => move(-1)}>Previous</button>
+        <span aria-live="polite">{pdf ? `${pages.join("–")} / ${pdf.numPages}` : "Loading PDF…"}</span>
+        <button disabled={!pdf || pages[pages.length - 1] === pdf.numPages} onClick={() => move(1)}>Next</button>
         <button disabled={!pdf || zoom <= 0.5} onClick={() => setZoom((value) => Math.max(0.5, value - 0.25))} aria-label="Zoom out">−</button>
         <button disabled={!pdf || zoom >= 3} onClick={() => setZoom((value) => Math.min(3, value + 0.25))} aria-label="Zoom in">+</button>
         <button disabled={!pdf} onClick={() => setZoom(1)}>Reset zoom</button>
@@ -101,9 +109,24 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
         }}>{fullscreen ? "Exit fullscreen" : "Fullscreen"}</button>}
       </div>
       {error && <p role="alert">{error} <a href={url} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a></p>}
-      <div className="pdf-surface" ref={surface} aria-busy={rendering && !error}>
+      <div className="pdf-surface" ref={surface} aria-busy={mode === "reader" && rendering && !error}
+        onTouchStart={(event) => {
+          const point = event.touches[0];
+          touch.current = event.touches.length === 1 ? { x: point.clientX, y: point.clientY } : null;
+        }}
+        onTouchEnd={(event) => {
+          const start = touch.current;
+          touch.current = null;
+          if (!start || mode !== "flipbook" || zoom !== 1) return;
+          const point = event.changedTouches[0];
+          const dx = point.clientX - start.x;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(point.clientY - start.y) * 1.5) move(dx < 0 ? 1 : -1);
+        }}>
+        {mode === "flipbook" && pdf ? <PdfSpread pdf={pdf} page={pageNumber} width={width} zoom={zoom} wide={wide} title={title} url={url} /> : <>
+
         {!error && rendering && <p role="status">Loading page…</p>}
         <canvas ref={canvas} hidden={Boolean(error)} role="img" aria-label={`${title}, page ${pageNumber}. Open the original PDF for selectable text.`} />
+        </>}
       </div>
     </section>
   );
