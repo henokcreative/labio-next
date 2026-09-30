@@ -1,4 +1,5 @@
 import type {
+  CmsPublication,
   CmsAboutPage,
   CmsTeamMember,
   CmsArticlePage,
@@ -1017,4 +1018,23 @@ function parseNavigationLink(value: unknown): CmsNavigationLink | null {
     href,
     external: Boolean(explicitHref && asBoolean(record.external)),
   };
+}
+
+export function parsePublications(value: unknown, apiBaseUrl: string): CmsPublication[] {
+  return asArray(value).flatMap((item) => {
+    const record = asRecord(item);
+    if (!record) return [];
+    const id = asNumber(record.id);
+    const title = asString(record.title).trim();
+    const slug = asString(record.slug).trim();
+    const pdfUrl = resolveCmsMediaUrl(record.pdf_url, apiBaseUrl);
+    if (id === null || !Number.isSafeInteger(id) || id <= 0 || !title || !slug || !pdfUrl) return [];
+    const year = asNumber(record.publication_year);
+    return [{
+      id, title, slug, pdfUrl,
+      shortDescription: asString(record.short_description).trim(),
+      publicationYear: year !== null && Number.isInteger(year) && year > 0 && year <= 9999 ? year : null,
+      coverImage: parseCmsImage(record.cover_image, apiBaseUrl),
+    }];
+  });
 }

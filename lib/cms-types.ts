@@ -419,3 +419,13 @@ export type CmsPublicPage =
   | CmsPricingPage
   | CmsUpdatesIndexPage
   | CmsUpdatePage;
+
+export type CmsPublication = {
+  id: number;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  publicationYear: number | null;
+  coverImage: CmsImage | null;
+  pdfUrl: string;
+};

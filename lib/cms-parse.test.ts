@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  parsePublications,
   parseAboutPage,
   parseArticlePage,
   parseCaseStudyPage,
@@ -1413,4 +1414,21 @@ test("case-study narrative is authoritative, ordered and restricted to rich text
   for (const field of ["challenge", "approach", "deliverables", "outcome", "heroImage"]) {
     assert.equal(Object.prototype.hasOwnProperty.call(project, field), false);
   }
+});
+
+test("publications normalize URLs and safely parse optional fields", () => {
+  const base = "https://cms.example.com";
+  const minimal = { id: 1, title: "Report", slug: "report", pdf_url: "/documents/1/report.pdf" };
+  assert.deepEqual(parsePublications([minimal], base), [{
+    id: 1, title: "Report", slug: "report", pdfUrl: base + minimal.pdf_url,
+    shortDescription: "", publicationYear: null, coverImage: null,
+  }]);
+  const parsed = parsePublications([{ ...minimal, short_description: " Summary ", publication_year: 2026,
+    cover_image: { url: "/media/cover.jpg", width: 400, height: 600, alt: "Cover" } }], base)[0];
+  assert.equal(parsed.shortDescription, "Summary");
+  assert.equal(parsed.publicationYear, 2026);
+  assert.equal(parsed.coverImage?.url, base + "/media/cover.jpg");
+  assert.deepEqual(parsePublications([null, {}, { ...minimal, pdf_url: "javascript:alert(1)" }], base), []);
+  assert.deepEqual(parsePublications(null, base), []);
+  assert.equal(parsePublications([{ ...minimal, publication_year: "2026", cover_image: {} }], base)[0].publicationYear, null);
 });

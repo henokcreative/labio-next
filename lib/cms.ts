@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import {
+  parsePublications,
   parseAboutPage,
   parseArticlePage,
   parseCaseStudyPage,
@@ -20,6 +21,7 @@ import {
   parseUpdatesIndexPage,
 } from "./cms-parse";
 import type {
+  CmsPublication,
   CmsAboutPage,
   CmsArticlePage,
   CmsCaseStudyPage,
@@ -325,6 +327,16 @@ export const getSiteSettings = cache(async (): Promise<CmsSiteSettings | null> =
   return parseSiteSettings(
     await cmsRequest("api/cms/v2/settings/", undefined, (value) =>
       parseSiteSettings(value, baseUrl) !== null),
+    baseUrl,
+  );
+});
+
+export const getPublications = cache(async (): Promise<CmsPublication[]> => {
+  const baseUrl = getCmsApiBaseUrl();
+  if (!baseUrl) return [];
+  return parsePublications(
+    await cmsRequest("api/cms/v2/publications/", undefined, (value) =>
+      Array.isArray(value) && parsePublications(value, baseUrl).length === value.length),
     baseUrl,
   );
 });
