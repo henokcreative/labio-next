@@ -2,13 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist";
+import type { CmsImage as CmsImageData } from "@/lib/cms-types";
+import CmsImage from "./CmsImage";
 import PdfSpread from "./PdfSpread";
 import { movePublication, publicationSpread } from "@/lib/publication-spread";
 
-export default function PdfViewer({ url, title }: { url: string; title: string }) {
+export default function PdfViewer({ url, title, cover }: { url: string; title: string; cover?: CmsImageData | null }) {
   const root = useRef<HTMLElement>(null);
   const surface = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const pageStrip = useRef<HTMLElement>(null);
   const loadStarted = useRef(0);
   const firstRenderComplete = useRef(false);
   const trace = (stage: string) => {
@@ -16,6 +19,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
       console.debug(`[PDF] ${stage}: ${Math.round(performance.now() - loadStarted.current)}ms`);
     }
   };
+  const [hasRendered, setHasRendered] = useState(false);
   const [mode, setMode] = useState<"reader" | "flipbook">("reader");
   const touch = useRef<{ x: number; y: number } | null>(null);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
@@ -96,6 +100,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
       if (!disposed) {
         if (!firstRenderComplete.current) trace("first render complete");
         firstRenderComplete.current = true;
+        setHasRendered(true);
         setRendering(false);
       }
     }).catch((reason: unknown) => {
@@ -106,6 +111,17 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
     });
     return () => { disposed = true; task?.cancel(); };
   }, [pdf, pageNumber, width, zoom, mode]);
+
+  useEffect(() => {
+    const strip = pageStrip.current;
+    const selected = strip?.querySelector<HTMLButtonElement>('[aria-current="page"]');
+    if (!strip || !selected) return;
+    // Scroll only the filmstrip, never the surrounding document.
+    if (selected.offsetLeft < strip.scrollLeft) strip.scrollLeft = selected.offsetLeft;
+    else if (selected.offsetLeft + selected.offsetWidth > strip.scrollLeft + strip.clientWidth) {
+      strip.scrollLeft = selected.offsetLeft + selected.offsetWidth - strip.clientWidth;
+    }
+  }, [pageNumber, hasRendered, mode]);
 
   const wide = mode === "flipbook" && width >= 900;
   const pages = publicationSpread(pageNumber, pdf?.numPages ?? 1, wide);
@@ -122,7 +138,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
       }}>
       <div className="pdf-toolbar" role="group" aria-label="PDF controls">
         <button aria-pressed={mode === "reader"} onClick={() => setMode("reader")}>Reader</button>
-        <button aria-pressed={mode === "flipbook"} onClick={() => setMode("flipbook")}>Flipbook</button>
+        <button aria-pressed={mode === "flipbook"} onClick={() => setMode("flipbook")}>Book view</button>
         <button disabled={!pdf || pages[0] === 1} onClick={() => move(-1)}>Previous</button>
         <span aria-live="polite">{pdf ? `${pages.join("–")} / ${pdf.numPages}` : "Loading PDF…"}</span>
         <button disabled={!pdf || pages[pages.length - 1] === pdf.numPages} onClick={() => move(1)}>Next</button>
@@ -135,6 +151,12 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
         }}>{fullscreen ? "Exit fullscreen" : "Fullscreen"}</button>}
       </div>
       {error && <p role="alert">{error} <a href={url} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a></p>}
+      {pdf && hasRendered && <nav ref={pageStrip} className="pdf-page-strip" aria-label="Publication pages">
+        {Array.from({ length: pdf.numPages }, (_, index) => index + 1).map(number => (
+          <button key={number} type="button" aria-label={`Go to page ${number}`} aria-current={pages.includes(number) ? "page" : undefined}
+            onClick={() => setPageNumber(number)}>{number}</button>
+        ))}
+      </nav>}
       <div className="pdf-surface" ref={surface} aria-busy={mode === "reader" && rendering && !error}
         onTouchStart={(event) => {
           const point = event.touches[0];
@@ -148,10 +170,14 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
           const dx = point.clientX - start.x;
           if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(point.clientY - start.y) * 1.5) move(dx < 0 ? 1 : -1);
         }}>
-        {mode === "flipbook" && pdf ? <PdfSpread pdf={pdf} page={pageNumber} width={width} zoom={zoom} wide={wide} title={title} url={url} /> : <>
+        {!hasRendered && !error && cover && <div className="pdf-loading-cover">
+          <CmsImage image={cover} loading="eager" sizes="(max-width: 700px) 85vw, 60vw" />
+          <p role="status">Loading publication…</p>
+        </div>}
+        {mode === "flipbook" && pdf ? <PdfSpread pdf={pdf} page={pageNumber} width={width} zoom={zoom} wide={wide} title={title} url={url} onReady={setHasRendered} onError={setError} /> : <>
 
-        {!error && rendering && <p role="status">Loading page…</p>}
-        <canvas ref={canvas} hidden={Boolean(error)} role="img" aria-label={`${title}, page ${pageNumber}. Open the original PDF for selectable text.`} />
+        {!error && rendering && !(cover && !hasRendered) && <p role="status">Loading page…</p>}
+        <canvas ref={canvas} hidden={Boolean(error) || (!hasRendered && Boolean(cover))} role="img" aria-label={`${title}, page ${pageNumber}. Open the original PDF for selectable text.`} />
         </>}
       </div>
     </section>

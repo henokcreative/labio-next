@@ -20,7 +20,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  height: clamp(240px, 28vw, 380px);
+  height: clamp(280px, 32vw, 460px);
   margin-bottom: 24px;
 }
 
@@ -80,3 +80,5 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.publication-card a:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 6px; }

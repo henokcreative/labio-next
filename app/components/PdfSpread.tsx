@@ -12,9 +12,11 @@ type Props = {
   wide: boolean;
   title: string;
   url: string;
+  onReady?: (ready: boolean) => void;
+  onError?: (message: string) => void;
 };
 
-export default function PdfSpread({ pdf, page, width, zoom, wide, title, url }: Props) {
+export default function PdfSpread({ pdf, page, width, zoom, wide, title, url, onReady, onError }: Props) {
   const book = useRef<HTMLDivElement>(null);
   const left = useRef<HTMLCanvasElement>(null);
   const right = useRef<HTMLCanvasElement>(null);
@@ -112,10 +114,15 @@ export default function PdfSpread({ pdf, page, width, zoom, wide, title, url }: 
       }
       previous.current = first;
       setStatus("");
+      onReady?.(true);
     }
 
     void render().catch(() => {
-      if (!disposed) { setFailed(true); setStatus("Unable to display this spread. Open the original PDF below."); }
+      if (!disposed) {
+        setFailed(true);
+        setStatus("Unable to display this spread. Open the original PDF below.");
+        onError?.("This spread could not be displayed. Please open the original PDF.");
+      }
     }).finally(() => {
       buffers.forEach((buffer) => { buffer.width = buffer.height = 0; });
       loaded.forEach((pdfPage) => pdfPage.cleanup());
@@ -127,7 +134,7 @@ export default function PdfSpread({ pdf, page, width, zoom, wide, title, url }: 
       leaf?.remove();
       if (leaf) leaf.width = leaf.height = 0;
     };
-  }, [pdf, first, last, width, zoom, wide, title]);
+  }, [pdf, first, last, width, zoom, wide, title, onReady, onError]);
 
   return (
     <>

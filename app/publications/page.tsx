@@ -9,7 +9,7 @@ import "./publications.css";
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(
     null,
-    "Publications — LaBio Media",
+    "Print Design — LaBio Media",
     "Publications from LaBio Media: science, research and creative communication.",
     await getSiteSettings(),
     "/publications",
@@ -25,9 +25,9 @@ export default async function PublicationsPage() {
   return (
     <PublicShell>
       <header className="public-page-header">
-        <h1>Publications</h1>
+        <h1>Print Design</h1>
       </header>
-      <section className="publications-list" aria-label="Publications">
+      <section className="publications-list" aria-label="Print Design publications">
         <PublicationGrid publications={publications} />
       </section>
       <PublicFooter settings={settings} />
