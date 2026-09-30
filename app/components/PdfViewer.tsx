@@ -26,7 +26,11 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
     void import("pdfjs-dist").then(async (pdfjs) => {
       if (disposed) return;
       pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
-      loading = pdfjs.getDocument({ url: `/api/publications/pdf?${new URLSearchParams({ url })}` });
+      loading = pdfjs.getDocument({
+        url: `/api/publications/pdf?${new URLSearchParams({ url })}`,
+        // Self-hosted pdfjs-dist 5.6.205 decoders; refresh assets when upgrading PDF.js.
+        wasmUrl: "/pdfjs/wasm/",
+      });
       const document = await loading.promise;
       if (!disposed) setPdf(document);
     }).catch(() => {
