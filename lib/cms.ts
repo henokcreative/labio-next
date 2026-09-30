@@ -331,12 +331,20 @@ export const getSiteSettings = cache(async (): Promise<CmsSiteSettings | null> =
   );
 });
 
-export const getPublications = cache(async (): Promise<CmsPublication[]> => {
+const getPublicationItems = cache(async (): Promise<CmsPublication[] | null> => {
   const baseUrl = getCmsApiBaseUrl();
-  if (!baseUrl) return [];
-  return parsePublications(
-    await cmsRequest("api/cms/v2/publications/", undefined, (value) =>
-      Array.isArray(value) && parsePublications(value, baseUrl).length === value.length),
-    baseUrl,
-  );
+  if (!baseUrl) return null;
+  const raw = await cmsRequest("api/cms/v2/publications/", undefined, (value) =>
+    Array.isArray(value) && parsePublications(value, baseUrl).length === value.length);
+  return raw === null ? null : parsePublications(raw, baseUrl);
+});
+
+export const getPublications = cache(async (): Promise<CmsPublication[]> => {
+  return (await getPublicationItems()) ?? [];
+});
+
+export const getPublication = cache(async (slug: string): Promise<CmsPublication | null> => {
+  const publications = await getPublicationItems();
+  if (publications === null) throw new Error("Publication CMS is temporarily unavailable");
+  return publications.find((publication) => publication.slug === slug) ?? null;
 });

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { CmsPublication } from "@/lib/cms-types";
 import CmsImage from "./CmsImage";
 
@@ -16,9 +17,9 @@ export default function PublicationCard({ publication }: { publication: CmsPubli
       {publication.shortDescription && (
         <p className="publication-description">{publication.shortDescription}</p>
       )}
-      <span className="publication-action" aria-disabled="true">
-        Open publication <span>— coming soon</span>
-      </span>
+      <Link className="publication-action" href={`/publications/${encodeURIComponent(publication.slug)}`}>
+        Open publication <span aria-hidden="true">↗</span>
+      </Link>
     </article>
   );
 }

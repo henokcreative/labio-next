@@ -1,0 +1,86 @@
+.publication-detail-header > a {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 13px;
+  text-underline-offset: 4px;
+}
+
+.publication-reader {
+  padding: 0 var(--content-padding) var(--section-padding);
+}
+
+.pdf-viewer {
+  min-width: 0;
+  color: var(--color-text);
+  background: var(--public-surface);
+}
+
+.pdf-viewer:fullscreen {
+  padding: 16px;
+  overflow: auto;
+}
+
+.pdf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-block: 1px solid var(--public-border);
+  font-size: 13px;
+}
+
+.pdf-toolbar button {
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pdf-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.pdf-toolbar button:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pdf-viewer:focus-visible,
+.pdf-viewer button:focus-visible,
+.pdf-viewer a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.pdf-surface {
+  width: 100%;
+  overflow: auto;
+  padding-block: 20px;
+}
+
+.pdf-surface canvas {
+  display: block;
+  margin-inline: auto;
+  background: white;
+}
+
+.pdf-surface canvas[hidden] {
+  display: none;
+}
+
+.pdf-viewer > p,
+.pdf-surface > p {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .pdf-toolbar {
+    gap: 4px 8px;
+  }
+}
