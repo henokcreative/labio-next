@@ -234,6 +234,10 @@ function parseMediaShowcase(
       const base = id ? { id } : {};
       const heading = asString(blockContent.heading).trim();
 
+      if (type === "print_design") {
+        const publication = parsePublications([blockContent.publication], apiBaseUrl)[0];
+        return publication ? [{ ...base, type, value: { publication } }] : [];
+      }
       if (type === "photo_slider" || type === "masonry_gallery") {
         const images = parseShowcaseImages(blockContent.images, apiBaseUrl);
         return images.length >= 2

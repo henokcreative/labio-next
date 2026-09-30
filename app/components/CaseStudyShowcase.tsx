@@ -1,3 +1,5 @@
+import Link from "next/link";
+import CmsImage from "./CmsImage";
 import ShowcaseImage from "./ShowcaseImage";
 import PhotoSlider from "./PhotoSlider";
 import StreamFieldRenderer from "./StreamFieldRenderer";
@@ -120,6 +122,29 @@ export default function CaseStudyShowcase({
         const block = group.block;
         const key = block.id || `${block.type}-${index}`;
         switch (block.type) {
+          case "print_design": {
+            const publication = block.value.publication;
+            return (
+              <section className="case-study-showcase-block showcase-print-design" key={key}>
+                <div className="case-study-showcase-inner">
+                  <ShowcaseGroupLabel variant={variant}>Print Design</ShowcaseGroupLabel>
+                  <Link className="showcase-print-link" href={`/publications/${encodeURIComponent(publication.slug)}`}>
+                    {publication.coverImage && (
+                      <div className="showcase-print-cover">
+                        <CmsImage image={publication.coverImage} sizes="(max-width: 700px) 80vw, 30vw" />
+                      </div>
+                    )}
+                    <div className="showcase-print-copy">
+                      <h3>{publication.title}</h3>
+                      {publication.publicationYear !== null && <p>{publication.publicationYear}</p>}
+                      {publication.shortDescription && <p>{publication.shortDescription}</p>}
+                      <span className="showcase-print-action">Open publication <span aria-hidden="true">→</span></span>
+                    </div>
+                  </Link>
+                </div>
+              </section>
+            );
+          }
           case "photo_slider":
             return <PhotoSlider key={key} {...block.value} />;
           case "masonry_gallery":

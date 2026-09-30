@@ -1432,3 +1432,29 @@ test("publications normalize URLs and safely parse optional fields", () => {
   assert.deepEqual(parsePublications(null, base), []);
   assert.equal(parsePublications([{ ...minimal, publication_year: "2026", cover_image: {} }], base)[0].publicationYear, null);
 });
+
+test("print design resolves publication data and omits unavailable references", () => {
+  const project = parseCaseStudyPage({
+    id: 30,
+    title: "Print project",
+    meta: { ...meta, type: "public_content.CaseStudyPage", slug: "print-project" },
+    showcase: [
+      { id: "print-1", type: "print_design", value: { publication: {
+        id: 7, title: "Report", slug: "report", pdf_url: "/documents/report.pdf",
+      } } },
+      { type: "print_design", value: { publication: null } },
+      { type: "print_design", value: { publication: { title: "Invalid" } } },
+      { id: "print-2", type: "print_design", value: { publication: {
+        id: 8, title: "Book", slug: "book", pdf_url: "/documents/book.pdf", publication_year: 2026,
+      } } },
+    ],
+  }, "https://api.labiomedia.com");
+  assert.deepEqual(project?.showcase.map(block => block.id), ["print-1", "print-2"]);
+  const block = project?.showcase[0];
+  assert.equal(block?.type, "print_design");
+  if (block?.type !== "print_design") return;
+  assert.equal(block.value.publication.slug, "report");
+  assert.equal(block.value.publication.coverImage, null);
+  assert.equal(block.value.publication.publicationYear, null);
+  assert.equal(block.value.publication.pdfUrl, "https://api.labiomedia.com/documents/report.pdf");
+});

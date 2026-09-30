@@ -184,6 +184,10 @@ export type CmsWebsitePreview = {
 
 export type CmsMediaShowcaseBlock =
   | (CmsShowcaseBlockBase & {
+      type: "print_design";
+      value: { publication: CmsPublication };
+    })
+  | (CmsShowcaseBlockBase & {
       type: "photo_slider" | "masonry_gallery";
       value: { heading: string; images: CmsImage[] };
     })
