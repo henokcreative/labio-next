@@ -9,6 +9,13 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
   const root = useRef<HTMLElement>(null);
   const surface = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const loadStarted = useRef(0);
+  const firstRenderComplete = useRef(false);
+  const trace = (stage: string) => {
+    if (process.env.NODE_ENV === "development") {
+      console.debug(`[PDF] ${stage}: ${Math.round(performance.now() - loadStarted.current)}ms`);
+    }
+  };
   const [mode, setMode] = useState<"reader" | "flipbook">("reader");
   const touch = useRef<{ x: number; y: number } | null>(null);
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
@@ -22,6 +29,8 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
 
   useEffect(() => {
     let disposed = false;
+    loadStarted.current = performance.now();
+    firstRenderComplete.current = false;
     let loading: ReturnType<typeof import("pdfjs-dist").getDocument> | undefined;
     void import("pdfjs-dist").then(async (pdfjs) => {
       if (disposed) return;
@@ -30,9 +39,16 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
         url: `/api/publications/pdf?${new URLSearchParams({ url })}`,
         // Self-hosted pdfjs-dist 5.6.205 decoders; refresh assets when upgrading PDF.js.
         wasmUrl: "/pdfjs/wasm/",
+        // Request only needed ranges instead of downloading the entire booklet
+        // in parallel with the first page. Non-range servers retain full loading.
+        disableStream: true,
+        disableAutoFetch: true,
       });
       const document = await loading.promise;
-      if (!disposed) setPdf(document);
+      if (!disposed) {
+        trace("document loaded");
+        setPdf(document);
+      }
     }).catch(() => {
       if (!disposed) setError("This PDF could not be loaded. Please open the original PDF.");
     });
@@ -45,7 +61,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
   useEffect(() => {
     const element = surface.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.floor(entry.contentRect.width)));
     observer.observe(element);
     setCanFullscreen(Boolean(document.fullscreenEnabled));
     const changed = () => setFullscreen(document.fullscreenElement === root.current);
@@ -65,6 +81,7 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
     setError("");
     void pdf.getPage(pageNumber).then(async (page) => {
       if (disposed) return;
+      if (!firstRenderComplete.current) trace("first page obtained");
       const original = page.getViewport({ scale: 1 });
       const viewport = page.getViewport({ scale: Math.min(width / original.width, 1.5) * zoom });
       // Bound the backing canvas for mobile memory limits, including large PDFs.
@@ -73,9 +90,14 @@ export default function PdfViewer({ url, title }: { url: string; title: string }
       element.height = Math.floor(viewport.height * ratio);
       element.style.width = `${viewport.width}px`;
       element.style.height = `${viewport.height}px`;
+      if (!firstRenderComplete.current) trace("first render start");
       task = page.render({ canvas: element, viewport, transform: [ratio, 0, 0, ratio, 0, 0] });
       await task.promise;
-      if (!disposed) setRendering(false);
+      if (!disposed) {
+        if (!firstRenderComplete.current) trace("first render complete");
+        firstRenderComplete.current = true;
+        setRendering(false);
+      }
     }).catch((reason: unknown) => {
       if (!disposed && !(reason instanceof Error && reason.name === "RenderingCancelledException")) {
         setError("This page could not be displayed. Please open the original PDF.");
