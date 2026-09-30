@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PublicShell from "@/app/components/PublicShell";
 import PublicFooter from "@/app/components/PublicFooter";
-import CmsImage from "@/app/components/CmsImage";
 import PdfViewer from "@/app/components/PdfViewer";
 import { getPublication, getSiteSettings } from "@/lib/cms";
 import { pageMetadata } from "@/lib/public-metadata";
@@ -27,17 +26,14 @@ export default async function PublicationPage({ params }: Props) {
     <PublicShell>
       <header className="public-page-header publication-detail-header">
         <Link href="/publications">← Print Design</Link>
-        <div className="publication-hero">
-          {publication.coverImage && <div className="publication-hero-cover"><CmsImage image={publication.coverImage} priority sizes="(max-width: 700px) 85vw, 50vw" /></div>}
-          <div className="publication-intro">
-            <div className="publication-meta-row">
-              <h1>{publication.title}</h1>
-              {publication.publicationYear !== null && <span className="publication-hero-year">{publication.publicationYear}</span>}
-              <a href="#publication-reader">Read ↓</a>
-              <a href={publication.pdfUrl} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a>
-            </div>
-            {publication.shortDescription && <p className="public-page-lead">{publication.shortDescription}</p>}
+        <div className="publication-intro">
+          <div className="publication-meta-row">
+            <h1>{publication.title}</h1>
+            {publication.publicationYear !== null && <span className="publication-hero-year">{publication.publicationYear}</span>}
+            <a href="#publication-reader">Read ↓</a>
+            <a href={publication.pdfUrl} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a>
           </div>
+          {publication.shortDescription && <p className="public-page-lead">{publication.shortDescription}</p>}
         </div>
       </header>
       <div className="publication-reader" id="publication-reader">
