@@ -194,3 +194,18 @@
 .publication-conversion { padding-inline: var(--content-padding); }
 .pdf-toolbar button:not([aria-pressed]):not([aria-expanded]) { color: var(--color-muted); font-size: 12px; }
 .pdf-page-strip[hidden] { display: none; }
+
+.pdf-preview { text-align: center; padding-block: 20px; }
+.pdf-read-button {
+  display: block;
+  margin: 20px auto 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
