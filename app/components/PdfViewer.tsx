@@ -7,29 +7,7 @@ import CmsImage from "./CmsImage";
 import PdfSpread from "./PdfSpread";
 import { movePublication, publicationSpread } from "@/lib/publication-spread";
 
-type PdfViewerProps = { url: string; title: string; cover?: CmsImageData | null };
-
-export default function PdfViewer(props: PdfViewerProps) {
-  const [started, setStarted] = useState(false);
-  if (started) {
-    return <div ref={element => element?.querySelector<HTMLElement>(".pdf-viewer")?.focus()}>
-      <ActivePdfViewer {...props} />
-    </div>;
-  }
-  return (
-    <section className="pdf-viewer pdf-preview" aria-label={`${props.title} publication preview`}>
-      {props.cover ? <div className="pdf-loading-cover">
-        <CmsImage image={props.cover} loading="eager" sizes="(max-width: 700px) 85vw, 60vw" />
-      </div> : <p>{props.title} is ready to read.</p>}
-      <button className="pdf-read-button" type="button" onClick={() => setStarted(true)}>
-        Read publication →
-      </button>
-      <a className="pdf-original" href={props.url} target="_blank" rel="noopener noreferrer">Open original PDF ↗</a>
-    </section>
-  );
-}
-
-function ActivePdfViewer({ url, title, cover }: PdfViewerProps) {
+export default function PdfViewer({ url, title, cover }: { url: string; title: string; cover?: CmsImageData | null }) {
   const root = useRef<HTMLElement>(null);
   const surface = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
