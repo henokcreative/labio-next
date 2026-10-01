@@ -49,6 +49,7 @@ export default function PdfViewer({ url, title, cover }: { url: string; title: s
         // in parallel with the first page. Non-range servers retain full loading.
         disableStream: true,
         disableAutoFetch: true,
+        rangeChunkSize: 524288,
       });
       const document = await loading.promise;
       if (!disposed) {
