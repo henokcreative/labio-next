@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import CmsImage from "./CmsImage";
+import BrandedCmsImage from "./BrandedCmsImage";
 import type { CmsImage as CmsImageData } from "@/lib/cms-types";
 
-export default function ShowcaseImage({ image, sizes }: { image: CmsImageData; sizes: string }) {
+export default function ShowcaseImage({ image, sizes, brandMark = false }: { image: CmsImageData; sizes: string; brandMark?: "light" | "dark" | false }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [opened, setOpened] = useState(false);
 
@@ -20,7 +21,9 @@ export default function ShowcaseImage({ image, sizes }: { image: CmsImageData; s
           dialog.current?.showModal();
         }}
       >
-        <CmsImage image={image} sizes={sizes} loading="eager" />
+        {brandMark
+          ? <BrandedCmsImage image={image} sizes={sizes} loading="eager" brandMark={brandMark} />
+          : <CmsImage image={image} sizes={sizes} loading="eager" />}
       </button>
       <dialog
         ref={dialog}

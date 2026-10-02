@@ -61,6 +61,7 @@ export default function PhotoSlider({
             <ShowcaseImage
               key={currentImage.url}
               image={currentImage}
+              brandMark="light"
               sizes="(max-width: 900px) 100vw, calc(100vw - 360px)"
             />
             <div className="showcase-slider-controls">

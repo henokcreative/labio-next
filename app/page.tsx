@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import BrandedCmsImage from "./components/BrandedCmsImage";
-import CmsImage from "./components/CmsImage";
 import CollaboratorsSlider from "./components/CollaboratorsSlider";
 import ContactForm from "./components/ContactForm";
 import LatestUpdates from "./components/LatestUpdates";
@@ -197,9 +196,7 @@ export default async function Home() {
               )}
             </div>
             {home.aboutImage && (
-              <div className="about-image">
-                <CmsImage image={home.aboutImage} sizes="(max-width: 768px) 100vw, 50vw" />
-              </div>
+              <BrandedCmsImage className="about-image" image={home.aboutImage} sizes="(max-width: 768px) 100vw, 50vw" brandMark="light" />
             )}
           </div>
         </section>
