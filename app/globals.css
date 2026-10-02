@@ -4683,7 +4683,7 @@ html[data-public-theme="dark"] .site-shell :where(
 /* Cascade order retained: home / landing page. */
 
 .hero {
-  min-height: 100svh;
+ min-height: clamp(680px, 72svh, 860px);
   grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
   gap: clamp(52px, 6vw, 96px);
 }
