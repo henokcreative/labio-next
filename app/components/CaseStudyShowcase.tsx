@@ -31,13 +31,15 @@ function ShowcaseGroupLabel({
 function ImageFigure({
   image,
   sizes,
+  brandMark,
 }: {
   image: CmsImageData;
   sizes: string;
+  brandMark: "light" | false;
 }) {
   return (
     <figure className="showcase-image-figure">
-      <ShowcaseImage image={image} sizes={sizes} />
+      <ShowcaseImage image={image} sizes={sizes} brandMark={brandMark} />
       {image.caption && <figcaption>{image.caption}</figcaption>}
     </figure>
   );
@@ -155,6 +157,7 @@ export default function CaseStudyShowcase({
                   <div className="showcase-masonry">
                     {block.value.images.map((image, imageIndex) => (
                       <ImageFigure
+                        brandMark={variant === "case-study" ? "light" : false}
                         key={`${image.url}-${imageIndex}`}
                         image={image}
                         sizes="(max-width: 700px) 100vw, 32vw"
@@ -172,6 +175,7 @@ export default function CaseStudyShowcase({
                   <div className={`showcase-image-grid showcase-columns-${block.value.columns}`}>
                     {block.value.images.map((image, imageIndex) => (
                       <ImageFigure
+                        brandMark={variant === "case-study" ? "light" : false}
                         key={`${image.url}-${imageIndex}`}
                         image={image}
                         sizes={block.value.columns === 2
@@ -189,8 +193,8 @@ export default function CaseStudyShowcase({
                 <div className="case-study-showcase-inner">
                   <ShowcaseGroupLabel variant={variant}>{block.value.heading}</ShowcaseGroupLabel>
                   <div className="showcase-image-pair">
-                    <ImageFigure image={block.value.firstImage} sizes="(max-width: 700px) 100vw, 45vw" />
-                    <ImageFigure image={block.value.secondImage} sizes="(max-width: 700px) 100vw, 45vw" />
+                    <ImageFigure brandMark={variant === "case-study" ? "light" : false} image={block.value.firstImage} sizes="(max-width: 700px) 100vw, 45vw" />
+                    <ImageFigure brandMark={variant === "case-study" ? "light" : false} image={block.value.secondImage} sizes="(max-width: 700px) 100vw, 45vw" />
                   </div>
                 </div>
               </section>
@@ -216,6 +220,7 @@ export default function CaseStudyShowcase({
                   <figure className="showcase-image-figure">
                     <ShowcaseImage
                       image={block.value.image}
+                      brandMark={variant === "case-study" ? "light" : false}
                       sizes="(max-width: 900px) 100vw, calc(100vw - 340px)"
                     />
                     {block.value.caption && <figcaption>{block.value.caption}</figcaption>}
