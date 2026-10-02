@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import BrandName from "./components/BrandName";
+import BrandedCmsImage from "./components/BrandedCmsImage";
 import CmsImage from "./components/CmsImage";
 import CollaboratorsSlider from "./components/CollaboratorsSlider";
 import ContactForm from "./components/ContactForm";
@@ -106,14 +106,13 @@ export default async function Home() {
           </div>
         </div>
         {home.heroImage && (
-          <div className="hero-image">
-            <CmsImage
-              image={home.heroImage}
-              priority
-              sizes="(max-width: 900px) 100vw, 50vw"
-            />
-            <div className="hero-image-label"><BrandName variant="light" /></div>
-          </div>
+          <BrandedCmsImage
+            className="hero-image"
+            image={home.heroImage}
+            priority
+            sizes="(max-width: 900px) 100vw, 50vw"
+            brandMark="light"
+          />
         )}
       </section>
 

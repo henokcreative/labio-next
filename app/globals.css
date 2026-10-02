@@ -1072,11 +1072,20 @@ FORMS / BUTTONS / INTERACTIVE STATES
 
 /* Cascade order retained: home / landing page. */
 
-.hero-image-label {
+.branded-cms-image {
+  position: relative;
+}
+
+:where(.branded-cms-image) > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.branded-cms-image-mark {
   position: absolute;
-  left: 30px;
-  bottom: 28px;
-  color: white;
+  bottom: clamp(16px, 3vw, 28px);
+  pointer-events: none;
   font-size: 10px;
   letter-spacing: 0.12em;
   z-index: 2;
@@ -1797,7 +1806,15 @@ RESPONSIVE / MEDIA QUERIES
   font-size: 18px;
 }
 
-.hero-image-label .brand-name {
+.branded-cms-image-mark-bottom-left {
+  left: clamp(16px, 3vw, 30px);
+}
+
+.branded-cms-image-mark-bottom-right {
+  right: clamp(16px, 3vw, 30px);
+}
+
+.branded-cms-image-mark .brand-name {
   font-size: 10px;
 }
 
