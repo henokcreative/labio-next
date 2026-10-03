@@ -5883,3 +5883,71 @@ html[data-public-theme="dark"] .site-shell :where(
     transition: none !important;
   }
 }
+
+/* Work catalogue: Services-inspired rhythm, with internal dividers only. */
+.work-grid {
+  --work-column-gap: clamp(24px, 3vw, 44px);
+  --work-row-gap: clamp(38px, 5vw, 72px);
+  gap: var(--work-row-gap) var(--work-column-gap);
+}
+.work-grid > .work-card {
+  position: relative;
+  min-width: 0;
+}
+.work-grid .work-card-body { padding: 27px 25px 25px; }
+.work-grid .work-meta { justify-content: flex-start; gap: 12px; margin-bottom: 36px; }
+.work-grid .work-category { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.work-grid .work-category::before {
+  content: "";
+  width: 20px;
+  height: 1px;
+  flex-shrink: 0;
+  background: var(--color-primary);
+}
+.work-grid > .work-card::before,
+.work-grid > .work-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-text) 14%, transparent);
+}
+.work-grid > .work-card::before {
+  display: var(--work-vertical, none);
+  left: calc(var(--work-column-gap) / -2);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+.work-grid > .work-card::after {
+  display: var(--work-horizontal, none);
+  top: calc(var(--work-row-gap) / -2);
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+/* Rules precede columns/rows, so there is never an outer or final-row border. */
+:where(.work-grid > .work-card:not(:nth-child(3n + 1))) { --work-vertical: block; }
+:where(.work-grid > .work-card:nth-child(n + 4)) { --work-horizontal: block; }
+
+/* Featured/related use two columns on smaller desktop widths. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  :where(.work-grid-featured > .work-card, .work-grid-related > .work-card) { --work-vertical: none; --work-horizontal: none; }
+  :where(.work-grid-featured > .work-card:nth-child(even), .work-grid-related > .work-card:nth-child(even)) { --work-vertical: block; }
+  :where(.work-grid-featured > .work-card:nth-child(n + 3), .work-grid-related > .work-card:nth-child(n + 3)) { --work-horizontal: block; }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  :where(.work-grid > .work-card) { --work-vertical: none; --work-horizontal: none; }
+  :where(.work-grid > .work-card:nth-child(even)) { --work-vertical: block; }
+  :where(.work-grid > .work-card:nth-child(n + 3)) { --work-horizontal: block; }
+}
+/* Preserve the existing one/two-item related-grid exceptions. */
+:where(.work-grid-related.work-grid-count-1 > .work-card, .work-grid-related.work-grid-count-2 > .work-card) { --work-vertical: none; --work-horizontal: none; }
+@media (min-width: 601px) {
+  :where(.work-grid-related.work-grid-count-2 > .work-card:nth-child(2)) { --work-vertical: block; }
+}
+@media (max-width: 600px) {
+  .work-grid { --work-row-gap: 48px; --work-column-gap: 48px; }
+  .work-grid .work-card-body { padding-inline: 0; }
+  :where(.work-grid > .work-card) { --work-vertical: none; --work-horizontal: none; }
+  :where(.work-grid > .work-card:nth-child(n + 2)) { --work-horizontal: block; }
+}
