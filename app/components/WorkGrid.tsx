@@ -1,5 +1,4 @@
 import Link from "next/link";
-import BrandName from "./BrandName";
 import type {
   CmsCaseStudyPage,
   CmsCaseStudySummary,
@@ -46,11 +45,6 @@ export default function WorkGrid({
             className="work-card"
             key={project.id}
           >
-            <div className="work-image">
-              <div className="work-brand-badge">
-                <BrandName variant="auto" />
-              </div>
-            </div>
             <div className="work-card-body">
               <div className="work-meta">
                 <span className="work-index">{String(index + 1).padStart(2, "0")}</span>
