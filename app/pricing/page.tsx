@@ -3,7 +3,7 @@ import Link from "next/link";
 import PublicFooter from "@/app/components/PublicFooter";
 import PublicShell from "@/app/components/PublicShell";
 import { getPricingPage, getSiteSettings } from "@/lib/cms";
-import { formatOfferPrice } from "@/lib/pricing";
+import { offerPricePresentation } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/public-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,7 +32,7 @@ export default async function PricingPage() {
           {page.items.length > 0 && (
             <div className="pricing-list">
               {page.items.map((item, index) => {
-                const displayPrice = formatOfferPrice(item);
+                const displayPrice = offerPricePresentation(item);
                 const hasDetails = Boolean(
                   item.idealFor || item.features.length || item.context,
                 );
@@ -55,7 +55,13 @@ export default async function PricingPage() {
                           <p className="pricing-description">{item.description}</p>
                         )}
                       </div>
-                      {displayPrice && <p className="pricing-label">{displayPrice}</p>}
+                      {displayPrice.amount && (
+                        <div className="pricing-label">
+                          {displayPrice.label && <span className="pricing-mode-label">{displayPrice.label}</span>}
+                          <span>{displayPrice.amount}</span>
+                          <p className="pricing-scope-note">Final scope and cost agreed before production.</p>
+                        </div>
+                      )}
                     </header>
 
                     {hasDetails && (

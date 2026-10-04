@@ -3589,9 +3589,10 @@ html[data-public-theme="dark"] .site-shell :where(
 .pricing-label {
   margin: 4px 0 0;
   color: var(--color-text);
-  font-size: clamp(20px, 2.1vw, 30px);
-  letter-spacing: -0.025em;
-  white-space: nowrap;
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 240px;
+  white-space: normal;
 }
 
 /* Cascade order retained: global layout. */
@@ -5951,3 +5952,7 @@ html[data-public-theme="dark"] .site-shell :where(
   :where(.work-grid > .work-card) { --work-vertical: none; --work-horizontal: none; }
   :where(.work-grid > .work-card:nth-child(n + 2)) { --work-horizontal: block; }
 }
+
+/* Advisory price treatment, scoped to Pricing only. */
+.pricing-mode-label { display: block; color: var(--color-muted); font-size: 11px; margin-bottom: 4px; }
+.pricing-label .pricing-scope-note { margin: 10px 0 0; color: var(--color-muted); font-size: 11px; line-height: 1.6; }

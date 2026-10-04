@@ -26,7 +26,7 @@ import {
   isBusinessIdentityLegalPage,
   resolveBusinessIdentity,
 } from "./business-identity";
-import { formatOfferPrice } from "./pricing";
+import { formatOfferPrice, offerPricePresentation } from "./pricing";
 import {
   resolveAboutPage,
   resolveCollaborators,
@@ -1457,4 +1457,11 @@ test("print design resolves publication data and omits unavailable references", 
   assert.equal(block.value.publication.coverImage, null);
   assert.equal(block.value.publication.publicationYear, null);
   assert.equal(block.value.publication.pdfUrl, "https://api.labiomedia.com/documents/report.pdf");
+});
+
+test("advisory pricing separates starting labels without changing custom wording", () => {
+  assert.deepEqual(offerPricePresentation({ pricingMode: "starting_from", currency: "€", priceLabel: "1,000" }), { label: "Starting from", amount: "€1,000" });
+  assert.deepEqual(offerPricePresentation({ pricingMode: "fixed", currency: "€", priceLabel: "500" }), { label: "Fixed price", amount: "€500" });
+  assert.deepEqual(offerPricePresentation({ pricingMode: "custom", currency: "€", priceLabel: "Let’s talk" }), { label: "", amount: "Let’s talk" });
+  assert.deepEqual(offerPricePresentation({ pricingMode: "starting_from", currency: "€", priceLabel: "Scoped individually" }), { label: "", amount: "Scoped individually" });
 });

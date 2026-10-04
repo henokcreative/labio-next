@@ -40,3 +40,11 @@ export function formatOfferPrice({
     ? `From ${formattedAmount}`
     : formattedAmount;
 }
+
+export function offerPricePresentation(input: PricingLabelInput): { label: string; amount: string } {
+  const formatted = formatOfferPrice(input);
+  if (input.pricingMode === "starting_from" && /^From\s/i.test(formatted)) {
+    return { label: "Starting from", amount: formatted.replace(/^From\s+/i, "") };
+  }
+  return { label: input.pricingMode === "fixed" ? "Fixed price" : "", amount: formatted };
+}
