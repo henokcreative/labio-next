@@ -2656,9 +2656,26 @@ RESPONSIVE / MEDIA QUERIES
 /* Cascade order retained: services. */
 
 .pricing-related a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 4px 0;
   color: var(--color-muted);
-  font-size: 11px;
-  text-underline-offset: 4px;
+  font-size: 12px;
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  text-underline-offset: 5px;
+  overflow-wrap: anywhere;
+}
+
+.pricing-related a:hover,
+.pricing-related a:focus-visible {
+  text-decoration-color: var(--color-primary);
+}
+
+.pricing-related a:focus-visible,
+.pricing-item-cta:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
 }
 
 /* Cascade order retained: global layout. */
@@ -3615,13 +3632,24 @@ html[data-public-theme="dark"] .site-shell :where(
 .pricing-related {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 20px;
+  gap: 4px 24px;
   margin: 30px 0 0 84px;
+  padding-top: 14px;
+  border-top: 1px solid var(--public-border);
 }
 
 .pricing-item-cta {
   display: inline-flex;
-  margin: 30px 0 0 84px;
+  min-height: 44px;
+  margin: 24px 0 0 84px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--color-primary);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.pricing-item-cta > span {
+  color: var(--color-primary);
 }
 
 .pricing-positioning {
