@@ -3571,6 +3571,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .pricing-item.pricing-item-featured {
   padding-block: clamp(48px, 6vw, 80px);
+  padding-left: 10px;
 }
 
 .pricing-item-featured .pricing-item-title h3 {
