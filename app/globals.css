@@ -872,7 +872,7 @@ CMS / RICH TEXT / SHARED CONTENT
 
 /* Cascade order retained: services. */
 
-.pricing-item-details h3 {
+.pricing-item-details h4 {
   margin: 0 0 12px;
   color: var(--color-text);
   font-size: 10px;
@@ -2722,7 +2722,7 @@ RESPONSIVE / MEDIA QUERIES
 
 /* Cascade order retained: services. */
 
-.pricing-item h2 {
+.pricing-item-title h3 {
   margin: 0;
   font-size: clamp(28px, 3vw, 42px);
   font-weight: 400;
@@ -3569,11 +3569,78 @@ html[data-public-theme="dark"] .site-shell :where(
   border-bottom: 1px solid var(--public-border-strong);
 }
 
-.pricing-item-featured {
-  margin: 0 -24px;
-  padding-right: 24px;
-  padding-left: 24px;
-  background: var(--public-surface-subtle);
+.pricing-item.pricing-item-featured {
+  padding-block: clamp(48px, 6vw, 80px);
+}
+
+.pricing-item-featured .pricing-item-title h3 {
+  font-size: clamp(32px, 4vw, 52px);
+}
+
+.pricing-item.pricing-item-compact {
+  padding-block: 28px;
+}
+
+.pricing-item-compact .pricing-item-title h3 {
+  font-size: clamp(23px, 2.5vw, 30px);
+}
+
+.pricing-item-compact .pricing-item-details {
+  display: block;
+  margin-top: 24px;
+  padding-top: 20px;
+}
+
+.pricing-item-compact .pricing-item-details > * + * {
+  margin-top: 20px;
+}
+
+.pricing-group + .pricing-group {
+  margin-top: clamp(56px, 7vw, 96px);
+}
+
+.pricing-group-heading {
+  margin-bottom: 28px;
+}
+
+.pricing-kicker,
+.pricing-related-label {
+  color: var(--color-muted);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pricing-group-heading h2,
+.pricing-positioning h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.pricing-related-work,
+.pricing-related-services {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 20px;
+  width: 100%;
+}
+
+.pricing-related .pricing-related-work a {
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.pricing-context {
+  grid-column: 1 / -1;
+  max-width: 760px;
+}
+
+.pricing-item-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .pricing-item-heading {
@@ -3622,7 +3689,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .pricing-item-details {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 34px;
   margin: 42px 0 0 84px;
   padding-top: 30px;
@@ -3954,13 +4021,6 @@ html[data-public-theme="dark"] .site-shell :where(
   .public-cta {
     align-items: flex-start;
     flex-direction: column;
-  }
-
-  .pricing-item-featured {
-    margin-right: -14px;
-    margin-left: -14px;
-    padding-right: 14px;
-    padding-left: 14px;
   }
 
   .pricing-item-heading {
@@ -5983,4 +6043,3 @@ html[data-public-theme="dark"] .site-shell :where(
 
 /* Advisory price treatment, scoped to Pricing only. */
 .pricing-mode-label { display: block; color: var(--color-muted); font-size: 11px; margin-bottom: 4px; }
-.pricing-label .pricing-scope-note { margin: 10px 0 0; color: var(--color-muted); font-size: 11px; line-height: 1.6; }

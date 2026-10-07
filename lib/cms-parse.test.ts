@@ -27,6 +27,7 @@ import {
   resolveBusinessIdentity,
 } from "./business-identity";
 import { formatOfferPrice, offerPricePresentation } from "./pricing";
+import { groupPricingItems } from "./pricing-groups";
 import {
   resolveAboutPage,
   resolveCollaborators,
@@ -1464,4 +1465,29 @@ test("advisory pricing separates starting labels without changing custom wording
   assert.deepEqual(offerPricePresentation({ pricingMode: "fixed", currency: "€", priceLabel: "500" }), { label: "Fixed price", amount: "€500" });
   assert.deepEqual(offerPricePresentation({ pricingMode: "custom", currency: "€", priceLabel: "Let’s talk" }), { label: "", amount: "Let’s talk" });
   assert.deepEqual(offerPricePresentation({ pricingMode: "starting_from", currency: "€", priceLabel: "Scoped individually" }), { label: "", amount: "Scoped individually" });
+});
+
+
+test("pricing grouping preserves every offer and its original index", () => {
+  const items = parsePricingPage({
+    id: 8,
+    title: "Pricing",
+    meta: { ...meta, type: "public_content.PricingPage", slug: "pricing" },
+    pricing_items: [false, true, false, true, false].map((featured, index) => ({
+      id: index + 1, title: `Offer ${index + 1}`, featured,
+    })),
+  }, apiUrl)!.items;
+  const grouped = groupPricingItems(items);
+  assert.deepEqual(grouped.core.map(entry => entry.index), [0]);
+  assert.deepEqual(grouped.integrated.map(entry => entry.index), [1, 3]);
+  assert.deepEqual(grouped.additional.map(entry => entry.index), [2, 4]);
+  for (const entry of Object.values(grouped).flat()) {
+    assert.equal(entry.item, items[entry.index]);
+  }
+  const normal = items.map(item => ({ ...item, featured: false }));
+  assert.equal(groupPricingItems(normal).core.length, items.length);
+  assert.equal(groupPricingItems(normal).additional.length, 0);
+  assert.equal(groupPricingItems(items.slice(1)).core.length, 0);
+  assert.equal(groupPricingItems(items.slice(0, 2)).additional.length, 0);
+  assert.deepEqual(groupPricingItems([]), { core: [], integrated: [], additional: [] });
 });
