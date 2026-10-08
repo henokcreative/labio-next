@@ -4874,8 +4874,8 @@ html[data-public-theme="dark"] .site-shell :where(
   align-items: center;
   gap: 34px clamp(30px, 5vw, 76px);
   padding: 26px 0;
-  border-top: 1px solid #e5e5e5;
-  border-bottom: 1px solid #e5e5e5;
+  /* border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5; */
 }
 
 .collaborator-item {
