@@ -28,6 +28,13 @@ DESIGN TOKENS / :root
 
 /* Responsive token values. Low-specificity defaults above need no !important. */
 
+/* Grow visual layouts gradually on wide desktops; retain all reading-width caps. */
+@media (min-width: 1441px) {
+  html {
+    --public-shell-max: clamp(1440px, calc(75vw + 360px), 1800px);
+  }
+}
+
 @media (max-width: 900px) {
   html {
     --sidebar-width: 0px;
