@@ -3654,7 +3654,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .pricing-item-heading {
   display: grid;
-  /* grid-template-columns: 56px minmax(0, 1fr) auto; */
+  grid-template-columns: 56px minmax(0, 1fr) auto;
   gap: 28px;
   align-items: start;
 }
