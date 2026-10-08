@@ -4789,6 +4789,7 @@ html[data-public-theme="dark"] .site-shell :where(
 .work-section {
   padding-top: clamp(90px, 9vw, 140px);
   padding-bottom: clamp(96px, 10vw, 150px);
+  border-top: 1px solid #eeeeee;
 }
 
 .work-grid {
