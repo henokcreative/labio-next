@@ -979,7 +979,7 @@ CMS / RICH TEXT / SHARED CONTENT
   z-index: 1;
   max-width: 760px;
   margin-bottom: 26px;
-  font-size: clamp(20px, 2vw, 26px);
+  font-size: clamp(20px, 1.2vw, 26px);
   line-height: 1.5;
   letter-spacing: -0.015em;
 }
@@ -5289,7 +5289,7 @@ html[data-public-theme="dark"] .site-shell :where(
   }
 
   .testimonial blockquote {
-    font-size: clamp(20px, 5.8vw, 24px);
+    font-size: clamp(20px, 3vw, 24px);
   }
 
   .testimonial-composition {
