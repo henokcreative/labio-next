@@ -11,7 +11,14 @@ function CollaboratorItems({ collaborators }: { collaborators: CmsCollaborator[]
       rel="noopener noreferrer"
       aria-label={`${collaborator.organizationName} website`}
     >
-      <CmsImage image={collaborator.logo} sizes="180px" />
+      <CmsImage
+        image={collaborator.logo}
+        sizes="180px"
+        className={collaborator.darkLogo ? "collaborator-logo-default" : undefined}
+      />
+      {collaborator.darkLogo && (
+        <CmsImage image={collaborator.darkLogo} sizes="180px" className="collaborator-logo-dark" />
+      )}
       <span className="sr-only">{collaborator.organizationName}</span>
     </a>
   ));

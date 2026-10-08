@@ -1491,3 +1491,26 @@ test("pricing grouping preserves every offer and its original index", () => {
   assert.equal(groupPricingItems(items.slice(0, 2)).additional.length, 0);
   assert.deepEqual(groupPricingItems([]), { core: [], integrated: [], additional: [] });
 });
+
+
+test("portfolio thumbnails are optional and never inferred from hero or showcase", () => {
+  const image = { url: "/media/thumb.jpg", width: 800, height: 600, alt: "Chosen thumbnail" };
+  const base = { id: 90, title: "Project", meta: { ...meta, type: "public_content.CaseStudyPage", slug: "project" }, hero_image: image };
+  assert.equal(parseCaseStudyPage(base, apiUrl)?.portfolioThumbnail, null);
+  assert.equal(parseCaseStudyPage({ ...base, portfolio_thumbnail: {} }, apiUrl)?.portfolioThumbnail, null);
+  assert.equal(parseCaseStudyPage({ ...base, portfolio_thumbnail: image }, apiUrl)?.portfolioThumbnail?.url, apiUrl + image.url);
+  const service = parseServicePage({ ...base, meta: { ...base.meta, type: "public_content.ServicePage" },
+    related_case_studies: [{ id: 90, title: "Project", slug: "project", portfolio_thumbnail: image }],
+  }, apiUrl);
+  assert.equal(service?.relatedCaseStudies[0].portfolioThumbnail?.url, apiUrl + image.url);
+});
+
+test("collaborators retain default logo and parse an optional dark asset", () => {
+  const logo = { url: "/media/logo.png", width: 200, height: 80, alt: "Partner" };
+  const base = { id: 1, organization_name: "Partner", logo, url: "https://example.org" };
+  assert.equal(parseCollaborators([base], apiUrl)[0].darkLogo, null);
+  assert.equal(parseCollaborators([{ ...base, dark_logo: {} }], apiUrl)[0].darkLogo, null);
+  const result = parseCollaborators([{ ...base, dark_logo: { ...logo, url: "/media/dark.png" } }], apiUrl)[0];
+  assert.equal(result.logo.url, apiUrl + logo.url);
+  assert.equal(result.darkLogo?.url, apiUrl + "/media/dark.png");
+});

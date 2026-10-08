@@ -197,6 +197,7 @@ function parseCaseStudySummaries(
       summary: asString(record.summary).trim(),
       category: asString(record.category).trim(),
       heroImage: parseCmsImage(record.hero_image, apiBaseUrl),
+      portfolioThumbnail: parseCmsImage(record.portfolio_thumbnail, apiBaseUrl),
     }];
   });
 }
@@ -580,6 +581,7 @@ export function parseCaseStudyPage(
   return {
     ...page,
     kind: "case-study",
+    portfolioThumbnail: parseCmsImage(raw.portfolio_thumbnail, apiBaseUrl),
     clientDisplayName: asString(raw.client_display_name).trim(),
     category: asString(raw.category).trim(),
     summary: asString(raw.summary).trim(),
@@ -906,6 +908,7 @@ export function parseCollaborators(
       id,
       organizationName,
       logo,
+      darkLogo: parseCmsImage(record.dark_logo, apiBaseUrl),
       url,
       displayOrder: asNumber(record.display_order) ?? 0,
       visualVariant: asString(record.visual_variant).trim(),

@@ -5,25 +5,6 @@ import type {
   CmsCaseStudySummary,
 } from "@/lib/cms-types";
 
-function projectImage(project: CmsCaseStudyPage | CmsCaseStudySummary) {
-  if ("heroImage" in project) return project.heroImage;
-  for (const block of project.showcase) {
-    switch (block.type) {
-      case "wide_image": return block.value.image;
-      case "image_pair": return block.value.firstImage;
-      case "image_grid":
-      case "masonry_gallery":
-      case "photo_slider":
-        if (block.value.images.length) return block.value.images[0];
-        break;
-      case "website_preview_grid":
-        if (block.value.items.length) return block.value.items[0].image;
-        break;
-    }
-  }
-  return null;
-}
-
 type WorkGridVariant = "featured" | "portfolio" | "related";
 
 const trimSummary = (text: string, maxLength = 140) => {
@@ -54,7 +35,7 @@ export default function WorkGrid({
   return (
     <div className={`work-grid work-grid-${variant} ${countClass}`}>
       {projects.map((project, index) => {
-        const image = variant === "featured" ? projectImage(project) : null;
+        const image = project.portfolioThumbnail;
         const summary = variant === "featured"
           ? summaryOverrides[index]?.trim() || project.summary
           : project.summary;

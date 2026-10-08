@@ -153,14 +153,11 @@ html[data-public-theme="dark"] .site-shell .collaborator-item {
 
 html[data-public-theme="dark"] .site-shell .collaborator-item img {
   opacity: 0.66;
-  /* Preserve source colours; outline opaque edges against the dark surface. */
-  filter: drop-shadow(0 0 1px var(--color-text));
 }
 
 html[data-public-theme="dark"] .site-shell .collaborator-item:hover img,
 html[data-public-theme="dark"] .site-shell .collaborator-item:focus-visible img {
   opacity: 1;
-  filter: drop-shadow(0 0 1px var(--color-text));
 }
 
 html[data-public-theme="dark"] .site-shell .contact-field :where(
@@ -946,14 +943,24 @@ font-size: clamp(16px,1vw,20px);}
   width: min(100%, 160px);
   height: 54px;
   opacity: 0.62;
-  filter: grayscale(1) saturate(0.15);
-  transition: filter 180ms ease, opacity 180ms ease;
+  transition: opacity 180ms ease;
 }
 
 .collaborator-item:hover img,
 .collaborator-item:focus-visible img {
   opacity: 1;
-  filter: none;
+}
+
+.collaborator-item .collaborator-logo-dark {
+  display: none;
+}
+
+html[data-public-theme="dark"] .collaborator-item .collaborator-logo-default {
+  display: none;
+}
+
+html[data-public-theme="dark"] .collaborator-item .collaborator-logo-dark {
+  display: block;
 }
 
 .testimonial-portrait img {
@@ -3423,7 +3430,6 @@ html[data-public-theme="dark"] .site-shell :where(
 .collaborator-item {
   display: grid;
   place-items: center;
-  filter: grayscale(1);
 }
 
 .testimonials-section {

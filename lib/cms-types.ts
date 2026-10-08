@@ -142,6 +142,7 @@ export type CmsServiceIndexPage = CmsPageBase & {
 };
 
 export type CmsCaseStudySummary = {
+  portfolioThumbnail?: CmsImage | null;
   id: number;
   title: string;
   slug: string;
@@ -219,6 +220,7 @@ export type CmsMediaShowcaseBlock =
 export type CmsCaseStudyShowcaseBlock = CmsMediaShowcaseBlock;
 
 export type CmsCaseStudyPage = CmsPageBase & {
+  portfolioThumbnail?: CmsImage | null;
   kind: "case-study";
   clientDisplayName: string;
   category: string;
@@ -365,6 +367,7 @@ export type CmsEventPage = CmsPageBase & {
 export type CmsUpdatePage = CmsArticlePage | CmsEventPage;
 
 export type CmsCollaborator = {
+  darkLogo?: CmsImage | null;
   id: number;
   organizationName: string;
   logo: CmsImage;
