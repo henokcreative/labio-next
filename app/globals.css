@@ -5269,7 +5269,7 @@ html[data-public-theme="dark"] .site-shell :where(
   }
 
   .collaborator-item {
-    height: 60px;
+    /* height: 60px; */
   }
 
   .testimonial blockquote {
