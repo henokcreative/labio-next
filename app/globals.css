@@ -4774,13 +4774,13 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .hero {
  min-height: clamp(680px, 72svh, 860px);
-  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
-  gap: clamp(52px, 6vw, 96px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 72px;
 }
 
 .hero-image {
-   width: min(100%, 620px);
-  max-height: 76svh;
+  width: 100%;
+  max-height: none;
   aspect-ratio: 4 / 5;
 }
 
@@ -5194,10 +5194,12 @@ html[data-public-theme="dark"] .site-shell :where(
   .hero {
     min-height: auto;
     grid-template-columns: 1fr;
+    gap: clamp(52px, 6vw, 96px);
   }
 
   .hero-image {
     width: min(100%, 720px);
+    max-height: 76svh;
     height: auto;
     aspect-ratio: 4 / 3;
   }
@@ -5901,6 +5903,7 @@ html[data-public-theme="dark"] .site-shell :where(
 @media (max-width: 1100px) and (min-width: 901px) {
   .site-shell .hero-image {
     width: 100%;
+    max-height: 76svh;
     height: auto;
   }
 }
