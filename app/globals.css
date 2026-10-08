@@ -3136,6 +3136,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .sidebar-bottom,
   .trusted,
   .work-card,
+  .work-section,
   .work-tags span,
   .services-section,
   .services-grid,
@@ -4370,6 +4371,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .sidebar,
   .work-card,
   .services-section,
+  .work-section,
   .contact-route-section
   ) {
   background: var(--public-surface);
@@ -4789,7 +4791,7 @@ html[data-public-theme="dark"] .site-shell :where(
 .work-section {
   padding-top: clamp(90px, 9vw, 140px);
   padding-bottom: clamp(96px, 10vw, 150px);
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--public-border);
 }
 
 .work-grid {
@@ -5829,6 +5831,7 @@ html[data-public-theme="dark"] .site-shell :where(
 .site-shell :where(
   .section,
   .services-section,
+  .work-section,
   .about-section,
   .contact-page-section,
   .collaborators-section,
