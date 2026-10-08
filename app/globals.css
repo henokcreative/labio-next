@@ -4851,7 +4851,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .collaborators-grid {
   display: grid;
-grid-template-columns: repeat(auto-fit,minmax(225px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   align-items: center;
   gap: 34px clamp(30px, 5vw, 76px);
   padding: 26px 24px;
