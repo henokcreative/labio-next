@@ -443,10 +443,10 @@ HOME / LANDING PAGE
   display: grid;
   align-items: center;
 }
-
+/* 
 .hero-content {
   max-width: 620px;
-}
+} */
 
 .hero h1 {
   margin: 0 0 34px;
