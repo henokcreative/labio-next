@@ -4780,7 +4780,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .hero-image {
   width: 100%;
-  max-height: none;
+  max-height: min(600px, 76svh);
   aspect-ratio: 4 / 5;
 }
 
