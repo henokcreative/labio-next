@@ -3654,7 +3654,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .pricing-item-heading {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) auto;
+  /* grid-template-columns: 56px minmax(0, 1fr) auto; */
   gap: 28px;
   align-items: start;
 }
@@ -3681,7 +3681,7 @@ html[data-public-theme="dark"] .site-shell :where(
 
 .pricing-label {
   margin: 4px 0 0;
-  color: var(--color-text);
+  color: var(--color-muted);
   font-size: 18px;
   line-height: 1.5;
   max-width: 240px;
