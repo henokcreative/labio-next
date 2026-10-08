@@ -97,11 +97,11 @@ export default async function Home() {
                 {home.primaryCta.label}
               </a>
             )}
-            {home.secondaryCta.label && home.secondaryCta.url && (
+            {/* {home.secondaryCta.label && home.secondaryCta.url && (
               <a href={home.secondaryCta.url} className="text-link">
                 {home.secondaryCta.label} <span aria-hidden="true">→</span>
               </a>
-            )}
+            )} */}
           </div>
         </div>
         {home.heroImage && (
@@ -162,12 +162,6 @@ export default async function Home() {
         </section>
       )}
 
-      {testimonialsEnabled && (
-        <Testimonials
-          testimonials={displayedTestimonials}
-          heading={home.testimonialsHeading}
-        />
-      )}
 
       {home.aboutEnabled && (
         <section id="about" className="about-section">
@@ -193,6 +187,12 @@ export default async function Home() {
         </section>
       )}
 
+      {testimonialsEnabled && (
+        <Testimonials
+          testimonials={displayedTestimonials}
+          heading={home.testimonialsHeading}
+        />
+      )}
       {collaboratorsEnabled && (
         <CollaboratorsSlider
           collaborators={displayedCollaborators}
