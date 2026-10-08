@@ -162,15 +162,6 @@ export default async function Home() {
         </section>
       )}
 
-      <LatestUpdates home={home} />
-
-      {collaboratorsEnabled && (
-        <CollaboratorsSlider
-          collaborators={displayedCollaborators}
-          heading={home.collaboratorsHeading}
-        />
-      )}
-
       {testimonialsEnabled && (
         <Testimonials
           testimonials={displayedTestimonials}
@@ -201,6 +192,15 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {collaboratorsEnabled && (
+        <CollaboratorsSlider
+          collaborators={displayedCollaborators}
+          heading={home.collaboratorsHeading}
+        />
+      )}
+
+      <LatestUpdates home={home} />
 
       {home.contactEnabled && (
         <section className="contact-page-section" id="contact">
