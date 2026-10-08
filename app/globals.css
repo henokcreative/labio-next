@@ -4854,7 +4854,7 @@ html[data-public-theme="dark"] .site-shell :where(
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   align-items: center;
   gap: 34px clamp(30px, 5vw, 76px);
-  padding: 26px 24px;
+  padding: 10px;
 }
 
 .collaborator-item {
@@ -5265,7 +5265,7 @@ html[data-public-theme="dark"] .site-shell :where(
   .collaborators-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 28px;
-    padding: 28px 16px;
+    padding: 10px;
   }
 
   .collaborator-item {
