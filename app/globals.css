@@ -6062,3 +6062,8 @@ html[data-public-theme="dark"] .site-shell :where(
 
 /* Advisory price treatment, scoped to Pricing only. */
 .pricing-mode-label { display: block; color: var(--color-muted); font-size: 11px; margin-bottom: 4px; }
+
+p {
+  margin-bottom: 1.4em
+
+}
