@@ -43,7 +43,10 @@ export default function PublicNavigation({
 
   return (
     <aside className="sidebar">
-      <Link href="/" className="brand" aria-label="LaBio Media home" onClick={closeMenu}>
+      <Link href="/" className="brand" aria-label="LaBio Media home" onClick={(event) => {
+    closeMenu();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }}>
         <BrandName variant="auto" />
       </Link>
 
