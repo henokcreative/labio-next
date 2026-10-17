@@ -1105,7 +1105,7 @@ FORMS / BUTTONS / INTERACTIVE STATES
 .services-section {
   padding: 100px 48px;
   background: #ffffff;
-  border-top: 1px solid #eeeeee;
+  /* border-top: 1px solid #eeeeee; */
 }
 
 .services-heading-row {
