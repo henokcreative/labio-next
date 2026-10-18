@@ -1105,12 +1105,9 @@ FORMS / BUTTONS / INTERACTIVE STATES
 .services-section {
   padding: 100px 48px;
   background: #ffffff;
-  /* border-top: 1px solid #eeeeee; */
+  border-top: 1px solid #eeeeee;
 }
 
-#services {
-border-top: 1px solid rgb(238, 238, 238);
-}
 .services-heading-row {
   display: flex;
   align-items: flex-end;

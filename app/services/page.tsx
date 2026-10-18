@@ -39,7 +39,7 @@ export default async function ServicesPage() {
         <h1>{page.title}</h1>
         <StreamFieldRenderer blocks={page.intro} className="public-page-intro" />
       </header>
-      <section className="services-section public-list-section">
+      <section className="public-list-section">
         <ServicesGrid services={services} headingLevel="h2" />
       </section>
       <PublicFooter settings={settings} />
